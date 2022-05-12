@@ -1,0 +1,51 @@
+td, th {
+    text-align: center;
+    padding: 8px;
+}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #343a40;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #e9ecef;
+}
+
+.dark tr:nth-child(even) {
+    background-color: #212529;
+}
+
+tr:hover {
+    background-color: #ced4da;
+}
+
+.dark tr:hover {
+    background-color: #495057;
+}
+
+.product-list-table {
+    overflow-y: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+
+.product-list-img {
+    height: 75px;
+}
+
+@media only screen and (max-width: 1800px) {
+    .product-list-img {
+        height: 50px;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .product-list-img {
+        height: 25px;
+    }
+}

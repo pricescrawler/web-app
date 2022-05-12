@@ -1,0 +1,35 @@
+.catalog-grid {
+    overflow-y: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.dark .search-text {
+    color: black;
+}
+
+.search-container {
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark .accordion-item {
+    background-color: black !important;
+}
+
+.dark .accordion-button {
+    color: white;
+    background-color: #495057;
+}
+
+.dark .accordion-button:not(.collapsed) {
+    color: white;
+    background-color: #495057;
+}
+
+@media only screen and (max-width: 600px) {
+    .search-container {
+        width: 90%;
+    }
+}

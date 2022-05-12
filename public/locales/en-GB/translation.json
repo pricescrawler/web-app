@@ -1,0 +1,73 @@
+{
+  "title": {
+    "base": "Prices Crawler",
+    "products-search": "Products Search",
+    "products-list": "Products List",
+    "product-details": "Product Details"
+  },
+  "menu": {
+    "home": "Search",
+    "product-list": "List ",
+    "about": "About",
+    "privacy-terms": "Privacy Terms",
+    "order": {
+      "asc": "Price ⬆️",
+      "desc": "Price ⬇️"
+    },
+    "language": "Language",
+    "dark-mode": "Dark Mode"
+  },
+  "general": {
+    "total-price": "Total Price",
+    "total-price-by-catalog": "Total Price by Catalog",
+    "search": "Search",
+    "search-for-some-product": "Search for some product",
+    "refresh-prices": "Refresh Prices",
+    "go": "Go",
+    "price-evolution": "Price Evolution",
+    "prices-history": "Prices History",
+    "date": "Date",
+    "no-data": "Error while loading data. Please refresh the page or try again later."
+  },
+  "pages": {
+    "about": {
+      "contact": "Contact",
+      "text1": "The main goal of this project is to enable the search of products prices in commerce websites and store them for future comparison and analysis.",
+      "text2": "Products data is automatically collected, this may result in data errors and inconsistencies. If you find any, please send an email.",
+      "text3": "This project is non commercial and is not affiliated with any company or organization. It is open-source and can be used by anyone."
+    },
+    "privacy-terms": {
+      "text1": "This website don't collect, store or use any personal data.",
+      "text2": "It doesn't use cookies or any other tracking technologies.",
+      "delete-local-data-text": "This will delete all the data stored locally on your device, including products lists. This action can't be undone.",
+      "delete-local-data-button": "Delete local data"
+    }
+  },
+  "data": {
+    "product-titles": {
+      "product-details": "Details",
+      "price-details": "Price",
+      "price-indicator": "Indicator",
+      "price-indicator-info": "Green - Price lower than the average price. Orange - Price equal to the average price. Red - Price higher than the average price."
+    },
+    "product-fields": {
+      "image": "Image",
+      "reference": "Reference",
+      "name": "Name",
+      "regular-price": "Regular Price",
+      "sale-price": "Sale Price",
+      "price-per-quantity": "Price per Quantity",
+      "quantity": "Quantity",
+      "brand": "Brand",
+      "locale": "Locale",
+      "description": "Description",
+      "catalog": "Catalog",
+      "campaign-price": "Campaign Price",
+      "history-page": "History Page",
+      "store-page": "Store Page",
+      "details": "Details",
+      "add-to-list": "Add to List",
+      "remove-add": "Remove | Add"
+    }
+  }
+}

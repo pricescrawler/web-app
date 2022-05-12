@@ -1,0 +1,73 @@
+{
+  "title": {
+    "base": "Prices Crawler",
+    "products-search": "Pesquisar Produtos",
+    "products-list": "Lista de Produtos",
+    "product-details": "Detalhes do Produto"
+  },
+  "menu": {
+    "home": "Pesquisar",
+    "product-list": "Lista ",
+    "about": "Sobre",
+    "privacy-terms": "Política de Privacidade",
+    "order": {
+      "asc": "Preço ⬆️",
+      "desc": "Preço ⬇️"
+    },
+    "language": "Idioma",
+    "dark-mode": "Modo Escuro"
+  },
+  "general": {
+    "total-price": "Preço Total",
+    "total-price-by-catalog": "Preço Total por Catálogo",
+    "search": "Pesquisar",
+    "search-for-some-product": "Pesquisar por algum produto",
+    "refresh-prices": "Atualizar Preços",
+    "go": "Ir",
+    "price-evolution": "Evolução de Preços",
+    "prices-history": "Histórico de Preços",
+    "date": "Data",
+    "no-data": "Erro ao carregar dados. Recarregue a página ou tente novamente mais tarde."
+  },
+  "pages": {
+    "about": {
+      "contact": "Contacto",
+      "text1": "Este projeto tem como principal objetivo possibilitar a pesquisa de produtos e dos seus preços em diversos catálogos, armazenando essa informação para comparação e análise futura.",
+      "text2": "Os dados dos produtos são obtidos de forma automática, podendo existir erros e inconsistências. Se encontrar algum erro, por favor, reporte-o através do email indicado.",
+      "text3": "O mesmo não tem fins comerciais, filiação empresarial ou organizacional, sendo todos os seus componentes open-source."
+    },
+    "privacy-terms": {
+      "text1": "Este website não recolhe, armazena ou usa dados pessoais dos seus utilizadores.",
+      "text2": "Não utiliza cookies ou mecanismos de rastreio.",
+      "delete-local-data-text": "Eliminar todos os dados locais, incluindo as listas de produtos. Esta ação não pode ser revertida.",
+      "delete-local-data-button": "Eliminar dados"
+    }
+  },
+  "data": {
+    "product-titles": {
+      "product-details": "Detalhes",
+      "price-details": "Preço",
+      "price-indicator": "Indicador",
+      "price-indicator-info": "Verde - Preço mais baixo que o preço médio. Laranja - Preço promocional igual ao médio. Vermelho - Preço mais alto que o preço médio."
+    },
+    "product-fields": {
+      "image": "Imagem",
+      "reference": "Referência",
+      "name": "Nome",
+      "regular-price": "Preço",
+      "sale-price": "Preço Promocional",
+      "price-per-quantity": "Preço por Quantidade",
+      "quantity": "Quantidade",
+      "brand": "Marca",
+      "locale": "Local",
+      "description": "Descrição",
+      "catalog": "Catálogo",
+      "campaign-price": "Preço da Campanha",
+      "history-page": "Histórico",
+      "store-page": "Ver na Loja",
+      "details": "Detalhes",
+      "add-to-list": "Adicionar",
+      "remove-add": "Remover | Adicionar"
+    }
+  }
+}

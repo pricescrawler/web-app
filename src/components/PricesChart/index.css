@@ -1,0 +1,7 @@
+.chart-container {
+    overflow-y: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    background-color: white;
+    color: #282c34;
+}

@@ -1,0 +1,12 @@
+.nav-footer {
+    background-color: #212529;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    color: white;
+}
+
+.nav-footer-link {
+    color: white;
+    text-decoration: none !important;
+}

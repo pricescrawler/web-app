@@ -1,6 +1,6 @@
+import ReactDOM from 'react-dom';
 import React, { Suspense } from 'react';
 import { Provider } from 'react-redux';
-import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './index.css';
@@ -19,10 +19,7 @@ import ProductSearch from './pages/ProductSearch';
 import ProductList from './pages/ProductList';
 import ProductDetails from './pages/ProductDetails';
 
-const container = document.getElementById('app');
-const root = createRoot(container);
-
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Suspense fallback={<Loader />}>
@@ -40,6 +37,7 @@ root.render(
       </Suspense>
     </Provider>
   </React.StrictMode>,
+  document.getElementById('app')
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -67,7 +67,6 @@ const ProductDetails = () => {
                         }
                         <p><strong>{t("data.product-fields.price-per-quantity")}:</strong> {pricePerQuantity}</p>
                         <p>{renderPriceIndicator(product.pricesHistory, price)}</p>
-                        <br />
                     </>
                 );
             }
@@ -117,11 +116,26 @@ const ProductDetails = () => {
                     <p><strong>{t("data.product-fields.quantity")}:</strong> {product.quantity ? product.quantity : "-"}</p>
                     <p><strong>{t("data.product-fields.description")}:</strong> {product.description ? product.description : "-"}</p>
                 </div>
-                <div>
+                <div className="mb-3">
+                    <p><strong>EAN/UPC:</strong> {product.eanUpc ? renderEanUpc(product.eanUpc) : "-"}</p>
+                </div>
+                <div className="mb-3">
                     {renderProductPrices()}
                 </div>
             </>
         );
+    };
+
+    const renderEanUpc = (eanUpc) => {
+        if (eanUpc) {
+            if (eanUpc.length === 1) {
+                return eanUpc[0];
+            } else {
+                return eanUpc.map((eanUpc, index) => {
+                    return (<span key={index}><br />{eanUpc}</span>);
+                });
+            }
+        }
     };
 
     const renderTable = () => {

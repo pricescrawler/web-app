@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import * as productsActions from "../../services/store/products/productsActions";
 
-const ProductCard = ({ locale, catalog, productData }) => {
+const ProductCard = ({ locale, catalog, productData, historyEnabled }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { productList } = useSelector((state) => state.productList);
@@ -21,7 +21,7 @@ const ProductCard = ({ locale, catalog, productData }) => {
             product.quantity = product.quantity + 1;
             dispatch(productsActions.addToProductList(product));
         } else {
-            dispatch(productsActions.addToProductList({ key: locale + catalog + productData.reference, locale, catalog, productData, quantity: 1 }));
+            dispatch(productsActions.addToProductList({key: locale + catalog + productData.reference, locale, catalog, productData, quantity: 1, historyEnabled: historyEnabled }));
         }
     }
 
@@ -62,11 +62,13 @@ const ProductCard = ({ locale, catalog, productData }) => {
                         </button>
                     </a>
                     &nbsp;&nbsp;
-                    <Link to={`/product/${locale}/${catalog}/${productData.reference}`} target="_self">
-                        <button className="product-card-button">
-                            {t("data.product-fields.details")}
-                        </button>
-                    </Link>
+                    {historyEnabled ? (
+                        <Link to={`/product/${locale}/${catalog}/${productData.reference}`} target="_self">
+                            <button className="product-card-button">
+                                {t("data.product-fields.details")}
+                            </button>
+                        </Link>
+                    ) : <></>}
                     &nbsp;&nbsp;
                     <button className="product-card-button" onClick={addToList}>
                         {t("data.product-fields.add-to-list")}

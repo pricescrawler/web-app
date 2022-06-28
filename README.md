@@ -11,3 +11,8 @@ The main goal of this project is to enable [prices-crawler-content-base](https:/
 | 1   | REACT_APP_EMAIL         | String      | Email                   | -       |
 | 2   | REACT_APP_API_URL       | String      | Content API url         | -       |
 | 3   | REACT_APP_CATALOGS_JSON | JSON String | JSON with catalogs data | -       |
+
+### 2.1. Example:
+```
+REACT_APP_CATALOGS_JSON=[{"label":"Demo Catalog","value":"local.demo","selected":true}]
+```

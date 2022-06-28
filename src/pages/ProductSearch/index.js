@@ -16,7 +16,7 @@ const ProductSearch = () => {
     const [searchValue, setSearchValue] = useState("");
     const [catalogs] = useState(JSON.parse(process.env.REACT_APP_CATALOGS_JSON));
 
-    const [selectedCatalogs, setSelectedCatalogs] = useState(catalogs);
+    const [selectedCatalogs, setSelectedCatalogs] = useState(catalogs.filter(catalog => catalog.selected));
     const { products, isLoadingData } = useSelector((state) => state.products);
     var currentProducts = Object.assign([], products);
 
@@ -81,7 +81,6 @@ const ProductSearch = () => {
         };
     }
 
-
     const renderProductSearchResults = () => {
         return (
             <div>
@@ -94,7 +93,7 @@ const ProductSearch = () => {
                             <Accordion.Body>
                                 <div className="catalog-grid">
                                     {productCatalogs.products.map((product) => (
-                                        <ProductCard locale="pt" catalog={productCatalogs.catalog} productData={product} />
+                                        <ProductCard locale="pt" catalog={productCatalogs.catalog} productData={product} historyEnabled={productCatalogs.data.historyEnabled} />
                                     ))}
                                 </div>
                             </Accordion.Body>

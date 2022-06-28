@@ -104,8 +104,9 @@ const ProductList = () => {
     const renderTableData = () => {
         if (productList) {
             return productList.map((prod) => {
-                const { locale, catalog, productData, quantity } = prod;
+                const { locale, catalog, productData, quantity, historyEnabled } = prod;
                 const { reference, name, regularPrice, campaignPrice, pricePerQuantity } = productData;
+
                 return (
                     <tr>
                         <td>
@@ -121,9 +122,11 @@ const ProductList = () => {
                         <td>{pricePerQuantity}</td>
                         <td>{quantity}</td>
                         <td>
-                            <Link to={`/product/${locale}/${catalog}/${reference}`} target="_self">
-                                <Button variant="secondary">{t("general.go")}</Button>
-                            </Link>
+                            {historyEnabled ? (
+                                <Link to={`/product/${locale}/${catalog}/${reference}`} target="_self">
+                                    <Button variant="secondary">{t("general.go")}</Button>
+                                </Link>
+                            ) : <></>}
                         </td>
                         <td>
                             <a href={productData.productUrl} target="_blank" rel="noopener noreferrer">

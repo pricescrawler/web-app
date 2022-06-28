@@ -40,3 +40,8 @@
 .product-img {
     height: 140px;
 }
+
+.table-overflow {
+    overflow-x: auto;
+    overflow-y: hidden;
+}

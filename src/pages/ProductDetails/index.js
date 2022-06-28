@@ -140,20 +140,22 @@ const ProductDetails = () => {
 
     const renderTable = () => {
         return (
-            <table className="BorderLine">
-                <thead>
-                    <tr>
-                        <th>{t("data.product-fields.regular-price")}</th>
-                        <th>{t("data.product-fields.campaign-price")}</th>
-                        <th>{t("data.product-fields.price-per-quantity")}</th>
-                        <th>{t("data.product-fields.quantity")}</th>
-                        <th>{t("general.date")}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {renderTableData(product.pricesHistory)}
-                </tbody>
-            </table>
+            <div className="table-overflow">
+                <table className="BorderLine">
+                    <thead>
+                        <tr>
+                            <th>{t("data.product-fields.regular-price")}</th>
+                            <th>{t("data.product-fields.campaign-price")}</th>
+                            <th>{t("data.product-fields.price-per-quantity")}</th>
+                            <th>{t("data.product-fields.quantity")}</th>
+                            <th>{t("general.date")}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {renderTableData(product.pricesHistory)}
+                    </tbody>
+                </table>
+            </div>
         );
     };
 

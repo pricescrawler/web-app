@@ -21,7 +21,7 @@ const ProductCard = ({ locale, catalog, productData, historyEnabled }) => {
             product.quantity = product.quantity + 1;
             dispatch(productsActions.addToProductList(product));
         } else {
-            dispatch(productsActions.addToProductList({key: locale + catalog + productData.reference, locale, catalog, productData, quantity: 1, historyEnabled: historyEnabled }));
+            dispatch(productsActions.addToProductList({key: locale + "." + catalog + "." + productData.reference, locale, catalog, product: productData, quantity: 1, historyEnabled: historyEnabled }));
         }
     }
 

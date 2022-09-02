@@ -22,7 +22,7 @@ const ProductList = () => {
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
             productList.forEach((prod) => {
-                const productDate = new Date(prod.productData.date);
+                const productDate = new Date(prod.product.date);
                 const productParseDate = new Date(productDate.getFullYear(), productDate.getMonth(), productDate.getDate());
                 return setIsListUpdated(today.getTime() === productParseDate.getTime());
             });
@@ -49,7 +49,7 @@ const ProductList = () => {
     const renderTotalPrice = () => {
         if (productList) {
             return productList.reduce((acc, prod) => {
-                return acc + (utils.getFormattedPrice(prod.productData) * prod.quantity);
+                return acc + (utils.getFormattedPrice(prod.product) * prod.quantity);
             }, 0).toFixed(2);
         }
     };
@@ -65,7 +65,7 @@ const ProductList = () => {
             return catalogs.map((catalog) => {
                 const totalPrice = productList.reduce((acc, prod) => {
                     if (prod.catalog === catalog) {
-                        return acc + (utils.getFormattedPrice(prod.productData) * prod.quantity);
+                        return acc + (utils.getFormattedPrice(prod.product) * prod.quantity);
                     } else {
                         return acc;
                     }
@@ -104,13 +104,13 @@ const ProductList = () => {
     const renderTableData = () => {
         if (productList) {
             return productList.map((prod) => {
-                const { locale, catalog, productData, quantity, historyEnabled } = prod;
-                const { reference, name, regularPrice, campaignPrice, pricePerQuantity } = productData;
+                const { locale, catalog, product, quantity, historyEnabled } = prod;
+                const { reference, name, regularPrice, campaignPrice, pricePerQuantity } = product;
 
                 return (
                     <tr>
                         <td>
-                            <img className="product-list-img" src={productData.imageUrl} alt="" />
+                            <img className="product-list-img" src={product.imageUrl} alt="" />
                         </td>
                         <td>{locale}.{catalog}</td>
                         <td>{reference}</td>
@@ -129,7 +129,7 @@ const ProductList = () => {
                             ) : <></>}
                         </td>
                         <td>
-                            <a href={productData.productUrl} target="_blank" rel="noopener noreferrer">
+                            <a href={product.productUrl} target="_blank" rel="noopener noreferrer">
                                 <Button variant="secondary">{t("general.go")}</Button>
                             </a>
                         </td>

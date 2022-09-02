@@ -24,16 +24,16 @@ const ProductDetails = () => {
     }, [dispatch, locale, catalog, reference]);
 
     const isProductLoaded = () => {
-        return product.pricesHistory ? true : false;
+        return product.prices ? true : false;
     };
 
     const renderStatistics = () => {
-        if (product.pricesHistory) {
-            const maxPrice = Math.max(...product.pricesHistory.map(price => parseFloat(utils.getFormattedPrice(price))));
-            const minPrice = Math.min(...product.pricesHistory.map(price => parseFloat(utils.getFormattedPrice(price))));
+        if (product.prices) {
+            const maxPrice = Math.max(...product.prices.map(price => parseFloat(utils.getFormattedPrice(price))));
+            const minPrice = Math.min(...product.prices.map(price => parseFloat(utils.getFormattedPrice(price))));
 
             return (
-                <p><strong>Min:</strong> {minPrice} | <strong>Max:</strong> {maxPrice} | <strong>Avg:</strong> {getAveragePrice(product.pricesHistory)}</p>
+                <p><strong>Min:</strong> {minPrice} | <strong>Max:</strong> {maxPrice} | <strong>Avg:</strong> {getAveragePrice(product.prices)}</p>
             );
         }
     }
@@ -66,7 +66,7 @@ const ProductDetails = () => {
                             (<p><strong>{t("data.product-fields.regular-price")}:</strong> {regularPrice}</p>)
                         }
                         <p><strong>{t("data.product-fields.price-per-quantity")}:</strong> {pricePerQuantity}</p>
-                        <p>{renderPriceIndicator(product.pricesHistory, price)}</p>
+                        <p>{renderPriceIndicator(product.prices, price)}</p>
                     </>
                 );
             }
@@ -152,15 +152,15 @@ const ProductDetails = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {renderTableData(product.pricesHistory)}
+                        {renderTableData(product.prices)}
                     </tbody>
                 </table>
             </div>
         );
     };
 
-    const renderTableData = (pricesHistory) => {
-        const prices = Object.assign([], pricesHistory);
+    const renderTableData = (pricesData) => {
+        const prices = Object.assign([], pricesData);
 
         if (prices) {
             prices.sort((a, b) => {
@@ -210,12 +210,12 @@ const ProductDetails = () => {
                 return (
                     <Button variant="secondary" onClick={() => {
                         const productData = p[0];
-                        const product = productList.find((prod) => prod.key === locale + catalog + productData.reference);
-                        if (product) {
-                            product.quantity = product.quantity + 1;
-                            dispatch(productsActions.addToProductList(product));
+                        const prodInfo = productList.find((prod) => prod.key === locale + "." + catalog + "." + productData.reference);
+                        if (prodInfo) {
+                            prodInfo.quantity = prodInfo.quantity + 1;
+                            dispatch(productsActions.addToProductList(prodInfo));
                         } else {
-                            dispatch(productsActions.addToProductList({ key: locale + catalog + productData.reference, locale, catalog, productData, quantity: 1 }));
+                            dispatch(productsActions.addToProductList({ key: locale + "." + catalog + "." + productData.reference, locale, catalog, product: productData, quantity: 1 }));
                         }
                     }}>
                         {t("data.product-fields.add-to-list")}
@@ -274,7 +274,7 @@ const ProductDetails = () => {
                                     <br />
                                     <h4><strong>{t("general.price-evolution")}</strong></h4>
                                     {renderStatistics()}
-                                    <PricesChart data={createChartData(product.pricesHistory)} />
+                                    <PricesChart data={createChartData(product.prices)} />
                                 </center>
                             </Col>
                         </Row>

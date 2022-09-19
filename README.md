@@ -58,12 +58,12 @@ Builds the app for production to the build folder.
 
 | #   | Name                    | Type        | Description             | Default |
 | --- | ----------------------- | ----------- | ----------------------- | ------- |
-| 1   | REACT_APP_EMAIL         | String      | Email                   | -       |
-| 2   | REACT_APP_API_URL       | String      | Content API url         | -       |
-| 3   | REACT_APP_CATALOGS_JSON | JSON String | JSON with catalogs data | -       |
+| 1   | VITE_EMAIL         | String      | Email                   | -       |
+| 2   | VITE_API_URL       | String      | Content API url         | -       |
+| 3   | VITE_CATALOGS_JSON | JSON String | JSON with catalogs data | -       |
 
 ### Example:
 
 ```
-REACT_APP_CATALOGS_JSON=[{"label":"Demo Catalog","value":"local.demo","selected":true}]
+VITE_CATALOGS_JSON=[{"label":"Demo Catalog","value":"local.demo","selected":true}]
 ```

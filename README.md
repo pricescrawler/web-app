@@ -40,8 +40,6 @@ yarn
 yarn start
 ```
 
-And then open <http://localhost:3000> to view it in the browser.
-
 <br>
 
 ### Create a production build
@@ -50,7 +48,7 @@ And then open <http://localhost:3000> to view it in the browser.
 yarn build
 ```
 
-Builds the app for production to the build folder.
+Builds the app for production to the dist folder.
 
 <br>
 

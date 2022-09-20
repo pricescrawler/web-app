@@ -40,8 +40,6 @@ yarn
 yarn start
 ```
 
-And then open <http://localhost:3000> to view it in the browser.
-
 <br>
 
 ### Create a production build
@@ -50,14 +48,14 @@ And then open <http://localhost:3000> to view it in the browser.
 yarn build
 ```
 
-Builds the app for production to the build folder.
+Builds the app for production to the dist folder.
 
 <br>
 
 ## Environment Variables
 
-| #   | Name                    | Type        | Description             | Default |
-| --- | ----------------------- | ----------- | ----------------------- | ------- |
+| #   | Name               | Type        | Description             | Default |
+| --- | ------------------ | ----------- | ----------------------- | ------- |
 | 1   | VITE_EMAIL         | String      | Email                   | -       |
 | 2   | VITE_API_URL       | String      | Content API url         | -       |
 | 3   | VITE_CATALOGS_JSON | JSON String | JSON with catalogs data | -       |

@@ -1,298 +1,448 @@
-import "./index.css"
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useSelector, useDispatch } from "react-redux";
+/**
+ * Module dependencies.
+ */
 
-import Loader from "../../components/Loader";
-import PricesChart from "../../components/PricesChart";
-import { Button, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import './index.css';
+import * as productsActions from '@services/store/products/productsActions';
+import * as utils from '@services/utils';
+import { Button, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from '@components/Loader';
+import PricesChart from '@components/PricesChart';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import * as utils from "../../services/utils";
-import * as productsActions from "../../services/store/products/productsActions";
+/**
+ * Function `ProductDetails`.
+ */
 
-const ProductDetails = () => {
-    const { t } = useTranslation();
-    const { locale, catalog, reference } = useParams();
-    const { product, isLoadingData } = useSelector((state) => state.product);
-    const { products } = useSelector((state) => state.products);
-    const { productList } = useSelector((state) => state.productList);
-    const dispatch = useDispatch();
+function ProductDetails() {
+  const { t } = useTranslation();
+  const { catalog, locale, reference } = useParams();
+  const { isLoadingData, product } = useSelector((state) => state.product);
+  const { products } = useSelector((state) => state.products);
+  const { productList } = useSelector((state) => state.productList);
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(productsActions.getProduct({ locale, catalog, reference }));
-    }, [dispatch, locale, catalog, reference]);
+  useEffect(() => {
+    dispatch(productsActions.getProduct({ catalog, locale, reference }));
+  }, [dispatch, locale, catalog, reference]);
 
-    const isProductLoaded = () => {
-        return product.prices ? true : false;
-    };
+  const isProductLoaded = () => !!product.prices;
 
-    const renderStatistics = () => {
-        if (product.prices) {
-            const maxPrice = Math.max(...product.prices.map(price => parseFloat(utils.getFormattedPrice(price))));
-            const minPrice = Math.min(...product.prices.map(price => parseFloat(utils.getFormattedPrice(price))));
+  /**
+   * Get Avarage Price.
+   */
 
-            return (
-                <p><strong>Min:</strong> {minPrice} | <strong>Max:</strong> {maxPrice} | <strong>Avg:</strong> {getAveragePrice(product.prices)}</p>
-            );
-        }
+  const getAveragePrice = (prices) => {
+    let sum = 0;
+
+    // eslint-disable-next-line id-length, no-plusplus
+    for (let i = 0; i < prices.length; i++) {
+      const price = parseFloat(utils.getFormattedPrice(prices[i]));
+
+      sum += price;
     }
 
-    const getAveragePrice = (prices) => {
-        var sum = 0;
+    return (sum / prices.length).toFixed(2);
+  };
 
-        for (var i = 0; i < prices.length; i++) {
-            var price = parseFloat(utils.getFormattedPrice(prices[i]));
-            sum += price;
-        }
+  /**
+   * Render Statistics.
+   */
 
-        return (sum / prices.length).toFixed(2);
+  const renderStatistics = () => {
+    if (product.prices) {
+      const maxPrice = Math.max(
+        ...product.prices.map((price) => parseFloat(utils.getFormattedPrice(price)))
+      );
+      const minPrice = Math.min(
+        ...product.prices.map((price) => parseFloat(utils.getFormattedPrice(price)))
+      );
+
+      return (
+        <p>
+          <strong>Min:</strong>
+          {minPrice}|<strong>Max:</strong>
+          {maxPrice}|<strong>Avg:</strong>
+          {getAveragePrice(product.prices)}
+        </p>
+      );
     }
+  };
 
-    const renderProductPrices = () => {
-        const productFiltered = products.filter(cat => cat.locale === locale && cat.catalog === catalog);
+  /**
+   * Render EanUpc.
+   */
 
-        if (productFiltered.length > 0) {
-            const prod = productFiltered[0];
-            var p = prod.products.filter(prod => prod.reference === reference);
-            if (p.length > 0) {
-                const { regularPrice, campaignPrice, pricePerQuantity } = p[0];
-                const price = campaignPrice ? campaignPrice : regularPrice;
+  const renderEanUpc = (eanUpc) => {
+    if (eanUpc) {
+      if (eanUpc.length === 1) {
+        return eanUpc[0];
+      }
 
-                return (
-                    <>
-                        {campaignPrice ?
-                            (<p><strong>{t("data.product-fields.regular-price")}:</strong> <s>{regularPrice}</s> &nbsp; {campaignPrice}</p>) :
-                            (<p><strong>{t("data.product-fields.regular-price")}:</strong> {regularPrice}</p>)
-                        }
-                        <p><strong>{t("data.product-fields.price-per-quantity")}:</strong> {pricePerQuantity}</p>
-                        <p>{renderPriceIndicator(product.prices, price)}</p>
-                    </>
-                );
-            }
-        }
+      return eanUpc.map((eanUpc, index) => (
+        <span key={index}>
+          <br />
+          {eanUpc}
+        </span>
+      ));
     }
+  };
 
-    const renderPriceIndicator = (prices, currentPrice) => {
-        const averagePrice = prices.reduce((acc, curr) => acc + parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length;
-        const productPrice = parseFloat(utils.convertTextToFloat(currentPrice));
+  /**
+   * Render Price Indicator.
+   */
 
-        if (productPrice === averagePrice) {
-            return (
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t("data.product-titles.price-indicator-info")}</Tooltip>}>
-                    <div>
-                        <strong>{t("data.product-titles.price-indicator")}: </strong><span className="badge-orange">{productPrice}€</span>
-                    </div>
-                </OverlayTrigger>
-            );
-        } else if (productPrice > averagePrice) {
-            return (
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t("data.product-titles.price-indicator-info")}</Tooltip>}>
-                    <div>
-                        <strong>{t("data.product-titles.price-indicator")}: </strong><span className="badge-red">{productPrice}€</span>
-                    </div>
-                </OverlayTrigger>
-            );
-        } else {
-            return (
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t("data.product-titles.price-indicator-info")}</Tooltip>}>
-                    <div>
-                        <strong>{t("data.product-titles.price-indicator")}: </strong><span className="badge-green">{productPrice}€</span>
-                    </div>
-                </OverlayTrigger>
-            );
-        }
-    };
+  const renderPriceIndicator = (prices, currentPrice) => {
+    const averagePrice = prices.reduce(
+      (acc, curr) => acc + (parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length
+    );
+    const productPrice = parseFloat(utils.convertTextToFloat(currentPrice));
 
-    const renderProductData = () => {
-        return (
-            <>
-                <div className="mb-3">
-                    <p><strong>{t("data.product-fields.locale")}:</strong> {product.locale} | <strong>{t("data.product-fields.catalog")}:</strong> {product.catalog} | <strong>{t("data.product-fields.reference")}:</strong> {product.reference}</p>
-                </div>
-                <div className="mb-3">
-                    <p><strong>{t("data.product-fields.name")}:</strong> {product.name ? product.name : "-"}</p>
-                    <p><strong>{t("data.product-fields.brand")}:</strong> {product.brand ? product.brand : "-"}</p>
-                    <p><strong>{t("data.product-fields.quantity")}:</strong> {product.quantity ? product.quantity : "-"}</p>
-                    <p><strong>{t("data.product-fields.description")}:</strong> {product.description ? product.description : "-"}</p>
-                </div>
-                <div className="mb-3">
-                    <p><strong>EAN/UPC:</strong> {product.eanUpc ? renderEanUpc(product.eanUpc) : "-"}</p>
-                </div>
-                <div className="mb-3">
-                    {renderProductPrices()}
-                </div>
-            </>
-        );
-    };
-
-    const renderEanUpc = (eanUpc) => {
-        if (eanUpc) {
-            if (eanUpc.length === 1) {
-                return eanUpc[0];
-            } else {
-                return eanUpc.map((eanUpc, index) => {
-                    return (<span key={index}><br />{eanUpc}</span>);
-                });
-            }
-        }
-    };
-
-    const renderTable = () => {
-        return (
-            <div className="table-overflow">
-                <table className="BorderLine">
-                    <thead>
-                        <tr>
-                            <th>{t("data.product-fields.regular-price")}</th>
-                            <th>{t("data.product-fields.campaign-price")}</th>
-                            <th>{t("data.product-fields.price-per-quantity")}</th>
-                            <th>{t("data.product-fields.quantity")}</th>
-                            <th>{t("general.date")}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {renderTableData(product.prices)}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
-
-    const renderTableData = (pricesData) => {
-        const prices = Object.assign([], pricesData);
-
-        if (prices) {
-            prices.sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                return dateB - dateA;
-            });
-
-            return prices.map((prod) => {
-                const { regularPrice, campaignPrice, pricePerQuantity, quantity, date } = prod;
-                const dateFormatted = date.split(" ")[0];
-                return (
-                    <tr>
-                        <td>{regularPrice}</td>
-                        <td>{campaignPrice}</td>
-                        <td>{pricePerQuantity}</td>
-                        <td>{quantity}</td>
-                        <td>{dateFormatted}</td>
-                    </tr>
-                )
-            })
-        }
-    };
-
-    const createChartData = (prices) => {
-        const chartData = [];
-        if (prices) {
-            prices.forEach((value) => {
-                chartData.push({
-                    price: utils.getFormattedPrice(value),
-                    pricePerQuantity: value.pricePerQuantity,
-                    quantity: value.quantity,
-                    date: utils.getFormattedDate(value.date),
-                });
-            });
-        }
-        return chartData;
-    };
-
-    const renderAddToListButton = () => {
-        const productFiltered = products.filter(cat => cat.locale === locale && cat.catalog === catalog);
-
-        if (productFiltered.length > 0) {
-            const prod = productFiltered[0];
-            var p = prod.products.filter(prod => prod.reference === reference);
-            if (p.length > 0) {
-                return (
-                    <Button variant="secondary" onClick={() => {
-                        const productData = p[0];
-                        const prodInfo = productList.find((prod) => prod.key === locale + "." + catalog + "." + productData.reference);
-                        if (prodInfo) {
-                            prodInfo.quantity = prodInfo.quantity + 1;
-                            dispatch(productsActions.addToProductList(prodInfo));
-                        } else {
-                            dispatch(productsActions.addToProductList({ key: locale + "." + catalog + "." + productData.reference, locale, catalog, product: productData, quantity: 1 }));
-                        }
-                    }}>
-                        {t("data.product-fields.add-to-list")}
-                    </Button>
-                );
-            }
-        }
-    };
+    if (productPrice === averagePrice) {
+      return (
+        <OverlayTrigger
+          overlay={
+            <Tooltip id={'tooltip-disabled'}>
+              {t('data.product-titles.price-indicator-info')}
+            </Tooltip>
+          }
+        >
+          <div>
+            <strong>{t('data.product-titles.price-indicator')}:</strong>
+            <span className={'badge-orange'}>{productPrice}€</span>
+          </div>
+        </OverlayTrigger>
+      );
+    }
+    if (productPrice > averagePrice) {
+      return (
+        <OverlayTrigger
+          overlay={
+            <Tooltip id={'tooltip-disabled'}>
+              {t('data.product-titles.price-indicator-info')}
+            </Tooltip>
+          }
+        >
+          <div>
+            <strong>{t('data.product-titles.price-indicator')}:</strong>
+            <span className={'badge-red'}>{productPrice}€</span>
+          </div>
+        </OverlayTrigger>
+      );
+    }
 
     return (
-        <>
-            {!isLoadingData && !isProductLoaded() ? (
-                <center>
-                    <h2 style={{ color: "red" }}>{t("general.no-data")}</h2>
-                </center>
-            ) : (<></>)
-            }
-            {!isLoadingData && isProductLoaded() ? (
-                <>
-                    <Container>
-                        <Row>
-                            <center>
-                                <h2>
-                                    <strong>{t("title.product-details")}</strong>
-                                </h2>
-                                <br />
-                            </center>
-                        </Row>
-                        <Row className="justify-content-md-center">
-                            <Col md="auto">
-                                <center>
-                                    <img className="product-img" src={product.imageUrl} alt="" />
-                                </center>
-                            </Col>
-                            <Col md="auto">
-                                <center>
-                                    {renderProductData()}
-                                </center>
-                            </Col>
-                        </Row>
-                        <Row className="justify-content-md-center">
-                            <center>
-                                <a href={product.productUrl} target="_blank" rel="noopener noreferrer">
-                                    <Button variant="secondary">
-                                        {t("data.product-fields.store-page")}
-                                    </Button>
-                                </a>
-                                &nbsp;
-                                {renderAddToListButton()}
-                            </center>
-                        </Row>
-                        <br />
-                        <Row className="justify-content-md-center">
-                            <Col md="auto">
-                                <center>
-                                    <br />
-                                    <h4><strong>{t("general.price-evolution")}</strong></h4>
-                                    {renderStatistics()}
-                                    <PricesChart data={createChartData(product.prices)} />
-                                </center>
-                            </Col>
-                        </Row>
-                        <Row className="justify-content-md-center">
-                            <Col md="auto">
-                                <center>
-                                    <br />
-                                    <h4><strong>{t("general.prices-history")}</strong></h4>
-                                    {renderTable()}
-                                </center>
-                            </Col>
-                        </Row>
-                    </Container>
-                </>
-            ) : (<Loader />)
-            }
-        </>
+      <OverlayTrigger
+        overlay={
+          <Tooltip id={'tooltip-disabled'}>{t('data.product-titles.price-indicator-info')}</Tooltip>
+        }
+      >
+        <div>
+          <strong>{t('data.product-titles.price-indicator')}:</strong>
+          <span className={'badge-green'}>{productPrice}€</span>
+        </div>
+      </OverlayTrigger>
     );
+  };
+
+  /**
+   * Render Product Prices.
+   */
+
+  const renderProductPrices = () => {
+    const productFiltered = products.filter(
+      (cat) => cat.locale === locale && cat.catalog === catalog
+    );
+
+    if (productFiltered.length > 0) {
+      const prod = productFiltered[0];
+      // eslint-disable-next-line id-length
+      const p = prod.products.filter((prod) => prod.reference === reference);
+
+      if (p.length > 0) {
+        const { campaignPrice, pricePerQuantity, regularPrice } = p[0];
+        const price = campaignPrice || regularPrice;
+
+        return (
+          <>
+            {campaignPrice ? (
+              <p>
+                <strong>{t('data.product-fields.regular-price')}:</strong>
+                <s>{regularPrice}</s>
+                &nbsp;
+                {campaignPrice}
+              </p>
+            ) : (
+              <p>
+                <strong>{t('data.product-fields.regular-price')}:</strong>
+
+                {regularPrice}
+              </p>
+            )}
+            <p>
+              <strong>{t('data.product-fields.price-per-quantity')}:</strong>
+
+              {pricePerQuantity}
+            </p>
+            <p>{renderPriceIndicator(product.prices, price)}</p>
+          </>
+        );
+      }
+    }
+  };
+
+  /**
+   * Render Product Data.
+   */
+
+  const renderProductData = () => (
+    <>
+      <div className={'mb-3'}>
+        <p>
+          <strong>{t('data.product-fields.locale')}:</strong>
+          {product.locale}|<strong>{t('data.product-fields.catalog')}:</strong>
+          {product.catalog}|<strong>{t('data.product-fields.reference')}:</strong>
+          {product.reference}
+        </p>
+      </div>
+      <div className={'mb-3'}>
+        <p>
+          <strong>{t('data.product-fields.name')}:</strong>
+
+          {product.name ? product.name : '-'}
+        </p>
+        <p>
+          <strong>{t('data.product-fields.brand')}:</strong>
+
+          {product.brand ? product.brand : '-'}
+        </p>
+        <p>
+          <strong>{t('data.product-fields.quantity')}:</strong>
+
+          {product.quantity ? product.quantity : '-'}
+        </p>
+        <p>
+          <strong>{t('data.product-fields.description')}:</strong>
+
+          {product.description ? product.description : '-'}
+        </p>
+      </div>
+      <div className={'mb-3'}>
+        <p>
+          <strong>EAN/UPC:</strong>
+
+          {product.eanUpc ? renderEanUpc(product.eanUpc) : '-'}
+        </p>
+      </div>
+      <div className={'mb-3'}>{renderProductPrices()}</div>
+    </>
+  );
+
+  /**
+   * Render Table Data.
+   */
+
+  const renderTableData = (pricesData) => {
+    const prices = Object.assign([], pricesData);
+
+    if (prices) {
+      // eslint-disable-next-line id-length
+      prices.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+
+        return dateB - dateA;
+      });
+
+      return prices.map((prod, index) => {
+        const { campaignPrice, date, pricePerQuantity, quantity, regularPrice } = prod;
+        const dateFormatted = date.split(' ')[0];
+
+        return (
+          <tr key={index}>
+            <td>{regularPrice}</td>
+            <td>{campaignPrice}</td>
+            <td>{pricePerQuantity}</td>
+            <td>{quantity}</td>
+            <td>{dateFormatted}</td>
+          </tr>
+        );
+      });
+    }
+  };
+
+  /**
+   * Render Table.
+   */
+
+  const renderTable = () => (
+    <div className={'table-overflow'}>
+      <table className={'BorderLine'}>
+        <thead>
+          <tr>
+            <th>{t('data.product-fields.regular-price')}</th>
+            <th>{t('data.product-fields.campaign-price')}</th>
+            <th>{t('data.product-fields.price-per-quantity')}</th>
+            <th>{t('data.product-fields.quantity')}</th>
+            <th>{t('general.date')}</th>
+          </tr>
+        </thead>
+        <tbody>{renderTableData(product.prices)}</tbody>
+      </table>
+    </div>
+  );
+
+  /**
+   * Create Chart Data.
+   */
+
+  const createChartData = (prices) => {
+    const chartData = [];
+
+    if (prices) {
+      prices.forEach((value) => {
+        chartData.push({
+          date: utils.getFormattedDate(value.date),
+          price: utils.getFormattedPrice(value),
+          pricePerQuantity: value.pricePerQuantity,
+          quantity: value.quantity
+        });
+      });
+    }
+
+    return chartData;
+  };
+
+  /**
+   * Render Add to List Button.
+   */
+
+  const renderAddToListButton = () => {
+    const productFiltered = products.filter(
+      (cat) => cat.locale === locale && cat.catalog === catalog
+    );
+
+    if (productFiltered.length > 0) {
+      const prod = productFiltered[0];
+      // eslint-disable-next-line id-length
+      const p = prod.products.filter((prod) => prod.reference === reference);
+
+      if (p.length > 0) {
+        return (
+          <Button
+            onClick={() => {
+              const productData = p[0];
+              const prodInfo = productList.find(
+                (prod) => prod.key === `${locale}.${catalog}.${productData.reference}`
+              );
+
+              if (prodInfo) {
+                prodInfo.quantity += 1;
+                dispatch(productsActions.addToProductList(prodInfo));
+              } else {
+                dispatch(
+                  productsActions.addToProductList({
+                    catalog,
+                    key: `${locale}.${catalog}.${productData.reference}`,
+                    locale,
+                    product: productData,
+                    quantity: 1
+                  })
+                );
+              }
+            }}
+            variant={'secondary'}
+          >
+            {t('data.product-fields.add-to-list')}
+          </Button>
+        );
+      }
+    }
+  };
+
+  return (
+    <>
+      {!isLoadingData && !isProductLoaded() ? (
+        <center>
+          <h2 style={{ color: 'red' }}>{t('general.no-data')}</h2>
+        </center>
+      ) : (
+        <></>
+      )}
+      {!isLoadingData && isProductLoaded() ? (
+        <Container>
+          <Row>
+            <center>
+              <h2>
+                <strong>{t('title.product-details')}</strong>
+              </h2>
+              <br />
+            </center>
+          </Row>
+
+          <Row className={'justify-content-md-center'}>
+            <Col md={'auto'}>
+              <center>
+                <img
+                  alt={''}
+                  className={'product-img'}
+                  src={product.imageUrl}
+                />
+              </center>
+            </Col>
+            <Col md={'auto'}>
+              <center>{renderProductData()}</center>
+            </Col>
+          </Row>
+
+          <Row className={'justify-content-md-center'}>
+            <center>
+              <a
+                href={product.productUrl}
+                rel={'noopener noreferrer'}
+                target={'_blank'}
+              >
+                <Button variant={'secondary'}>{t('data.product-fields.store-page')}</Button>
+              </a>
+              &nbsp;
+              {renderAddToListButton()}
+            </center>
+          </Row>
+
+          <br />
+          <Row className={'justify-content-md-center'}>
+            <Col md={'auto'}>
+              <center>
+                <br />
+                <h4>
+                  <strong>{t('general.price-evolution')}</strong>
+                </h4>
+                {renderStatistics()}
+                <PricesChart data={createChartData(product.prices)} />
+              </center>
+            </Col>
+          </Row>
+
+          <Row className={'justify-content-md-center'}>
+            <Col md={'auto'}>
+              <center>
+                <br />
+                <h4>
+                  <strong>{t('general.prices-history')}</strong>
+                </h4>
+                {renderTable()}
+              </center>
+            </Col>
+          </Row>
+        </Container>
+      ) : (
+        <Loader />
+      )}
+    </>
+  );
 }
 
 export default ProductDetails;

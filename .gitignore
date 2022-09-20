@@ -10,3 +10,9 @@ package-lock.json
 
 # VS Code
 .vscode/
+
+.DS_STORE
+
+# React
+build/
+dist/

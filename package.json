@@ -9,9 +9,19 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
     "bootstrap": "^5.1.3",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-jest": "22.4.1",
+    "eslint-plugin-mocha": "5.3.0",
+    "eslint-plugin-new-with-error": "2.0.0",
+    "eslint-plugin-sort-class-members": "1.4.0",
+    "eslint-plugin-sort-destructure-keys": "1.3.3",
+    "eslint-plugin-sort-imports-es6": "^0.0.3",
+    "eslint-plugin-sql-template": "^2.0.0",
+    "eslint-plugin-switch-case": "^1.1.2",
     "i18next": "^21.6.15",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
+    "prettier": "^2.7.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.2.3",
     "react-dom": "^17.0.2",
@@ -26,7 +36,12 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint src/**/*.{js,jsx}",
+    "lint:fix": "eslint --fix .",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -47,7 +62,28 @@
     ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "@vitejs/plugin-react": "^2.1.0",
+    "eslint": "^8.23.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "husky": ">=6",
+    "lint-staged": ">=10",
     "vite": "3.0.9"
+  },
+  "lint-staged": {
+    "*.{jsx,js}": "yarn lint:check",
+    "*.{js,jsx,css,md,html,json}": "yarn format:write"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }

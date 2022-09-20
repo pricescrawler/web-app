@@ -1,83 +1,162 @@
+/**
+ * Module dependencies.
+ */
+
+import * as actionTypes from './productsActionTypes';
 import api from '../../api';
-import * as actionTypes from "./productsActionTypes";
 
-export const getProductStart = () => {
-  return { type: actionTypes.GET_PRODUCT_START };
-};
+/**
+ * Get Product Start.
+ */
 
-export const getProductSuccess = (product) => {
-  return { type: actionTypes.GET_PRODUCT_SUCCESS, payload: product };
-};
+export const getProductStart = () => ({ type: actionTypes.GET_PRODUCT_START });
 
-export const getProductFail = (error) => {
-  return { type: actionTypes.GET_PRODUCT_FAIL, payload: error };
-};
+/**
+ * Get Product Success.
+ */
 
-export const getProductsStart = () => {
-  return { type: actionTypes.GET_PRODUCTS_START };
-};
+export const getProductSuccess = (product) => ({
+  payload: product,
+  type: actionTypes.GET_PRODUCT_SUCCESS
+});
 
-export const getProductsSuccess = (products) => {
-  return { type: actionTypes.GET_PRODUCTS_SUCCESS, payload: products };
-};
+/**
+ * Get Product Fail.
+ */
 
-export const getProductsFail = (error) => {
-  return { type: actionTypes.GET_PRODUCTS_FAIL, payload: error };
-};
+export const getProductFail = (error) => ({
+  payload: error,
+  type: actionTypes.GET_PRODUCT_FAIL
+});
 
-export const searchProductsStart = () => {
-  return { type: actionTypes.SEARCH_PRODUCTS_START };
-};
+/**
+ * Get Products Start.
+ */
 
-export const searchProductsSuccess = () => {
-  return { type: actionTypes.SEARCH_PRODUCTS_SUCCESS };
-};
+export const getProductsStart = () => ({
+  type: actionTypes.GET_PRODUCTS_START
+});
 
-export const getSearchProducts = (products, searchParam) => {
-  return { type: actionTypes.GET_SEARCHED_PRODUCTS, payload: { products, searchParam } };
-};
+/**
+ * Get Products Success.
+ */
 
-export const addToProductList = (product) => {
-  return { type: actionTypes.ADD_PRODUCT_LIST, payload: product };
-};
+export const getProductsSuccess = (products) => ({
+  payload: products,
+  type: actionTypes.GET_PRODUCTS_SUCCESS
+});
 
-export const updateProductList = (product) => {
-  return { type: actionTypes.UPDATE_PRODUCT_LIST, payload: product };
-};
+/**
+ *Get Products Fail.
+ */
 
-export const removeFromProductList = (product) => {
-  return { type: actionTypes.REMOVE_PRODUCT_LIST, payload: product };
-};
+export const getProductsFail = (error) => ({
+  payload: error,
+  type: actionTypes.GET_PRODUCTS_FAIL
+});
+
+/**
+ * Search Products Start.
+ */
+
+export const searchProductsStart = () => ({
+  type: actionTypes.SEARCH_PRODUCTS_START
+});
+
+/**
+ * Search Products Success.
+ */
+
+export const searchProductsSuccess = () => ({
+  type: actionTypes.SEARCH_PRODUCTS_SUCCESS
+});
+
+/**
+ * Get Search Products.
+ */
+
+export const getSearchProducts = (products, searchParam) => ({
+  payload: { products, searchParam },
+  type: actionTypes.GET_SEARCHED_PRODUCTS
+});
+
+/**
+ * Add to Product List.
+ */
+
+export const addToProductList = (product) => ({
+  payload: product,
+  type: actionTypes.ADD_PRODUCT_LIST
+});
+
+/**
+ * Update Product List.
+ */
+
+export const updateProductList = (product) => ({
+  payload: product,
+  type: actionTypes.UPDATE_PRODUCT_LIST
+});
+
+/**
+ * Remove from Product List.
+ */
+
+export const removeFromProductList = (product) => ({
+  payload: product,
+  type: actionTypes.REMOVE_PRODUCT_LIST
+});
+
+/**
+ * Search.
+ */
 
 export const search = (searchParam) => {
-  const { selectedCatalogs = [], stringValue = "" } = searchParam;
-  const request = { catalogs: selectedCatalogs.map(c => c.value), query: stringValue };
+  const { selectedCatalogs = [], stringValue = '' } = searchParam;
+  const request = {
+    catalogs: selectedCatalogs.map((catalog) => catalog.value),
+    query: stringValue
+  };
+
   return (dispatch) => {
     dispatch(getProductsStart());
-    api.post("/api/v1/products/search", request).then((response) => {
-      dispatch(getSearchProducts(response.data, searchParam));
-    })
+    api
+      .post('/api/v1/products/search', request)
+      .then((response) => {
+        dispatch(getSearchProducts(response.data, searchParam));
+      })
       .catch((error) => dispatch(getProductsFail(error)));
   };
 };
 
-export const getUpdatedProductList = (searchParam) => {
-  return (dispatch) => {
-    dispatch(getProductsStart());
-    api.post("/api/v1/products/list/update", searchParam).then((response) => {
+/**
+ * Get Updated Product List.
+ */
+
+export const getUpdatedProductList = (searchParam) => (dispatch) => {
+  dispatch(getProductsStart());
+  api
+    .post('/api/v1/products/list/update', searchParam)
+    .then((response) => {
       dispatch(updateProductList(response.data));
     })
-      .catch((error) => dispatch(getProductsFail(error)));
-  };
+    .catch((error) => dispatch(getProductsFail(error)));
 };
 
+/**
+ * Get Product.
+ */
+
 export const getProduct = (searchParam) => {
-  const { locale, catalog, reference } = searchParam;
+  const { catalog, locale, reference } = searchParam;
+
   return (dispatch) => {
     dispatch(getProductStart());
-    api.get(`/api/v1/products/history/${locale}/${catalog}/${reference}`).then((response) => {
-      dispatch(getProductSuccess(response.data));
-    })
+    api
+      .get(`/api/v1/products/history/${locale}/${catalog}/${reference}`)
+      .then((response) => {
+        dispatch(getProductSuccess(response.data));
+      })
       .catch((error) => dispatch(getProductsFail(error)));
   };
 };

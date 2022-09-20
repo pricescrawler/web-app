@@ -56,8 +56,8 @@ Builds the app for production to the build folder.
 
 ## Environment Variables
 
-| #   | Name                    | Type        | Description             | Default |
-| --- | ----------------------- | ----------- | ----------------------- | ------- |
+| #   | Name               | Type        | Description             | Default |
+| --- | ------------------ | ----------- | ----------------------- | ------- |
 | 1   | VITE_EMAIL         | String      | Email                   | -       |
 | 2   | VITE_API_URL       | String      | Content API url         | -       |
 | 3   | VITE_CATALOGS_JSON | JSON String | JSON with catalogs data | -       |

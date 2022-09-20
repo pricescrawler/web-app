@@ -1,26 +1,42 @@
-export const getFormattedDate = (date) => {
-    return date.split(" ")[0];
-};
+/**
+ * Get Formatted Date.
+ */
 
-export const getFormattedPrice = (product) => {
-    if (product.campaignPrice) {
-        return convertTextToFloat(product.campaignPrice);
-    } else if (product.regularPrice) {
-        return convertTextToFloat(product.regularPrice);
-    } else {
-        return 0;
-    }
-};
+export const getFormattedDate = (date) => date.split(' ')[0];
+
+/**
+ * Convert Text To Float.
+ */
 
 export const convertTextToFloat = (price) => {
-    const priceDouble = parseFloat(price.replace(",", ".").replace(/[^0-9.]/g, ""));
-    return priceDouble.toFixed(2);
+  const priceDouble = parseFloat(price.replace(',', '.').replace(/[^0-9.]/g, ''));
+
+  return priceDouble.toFixed(2);
 };
 
+/**
+ * Get Formatted Price.
+ */
+
+export const getFormattedPrice = (product) => {
+  if (product.campaignPrice) {
+    return convertTextToFloat(product.campaignPrice);
+  }
+  if (product.regularPrice) {
+    return convertTextToFloat(product.regularPrice);
+  }
+
+  return 0;
+};
+
+/**
+ * Render Catalog Name.
+ */
+
 export const renderCatalogName = (product) => {
-    if (product.data.catalogName) {
-        return product.data.catalogName;
-    } else {
-        return product.catalog;
-    }
-}
+  if (product.data.catalogName) {
+    return product.data.catalogName;
+  }
+
+  return product.catalog;
+};

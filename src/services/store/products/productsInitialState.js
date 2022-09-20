@@ -1,9 +1,17 @@
+/**
+ * `initialState`
+ */
+
 const initialState = {
-  product: {},
-  products: [],
-  productList: [],
   isLoadingData: false,
-  searchQuery: {},
+  product: {},
+  productList: [],
+  products: [],
+  searchQuery: {}
 };
+
+/**
+ * Export `initialState`.
+ */
 
 export default initialState;

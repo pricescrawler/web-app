@@ -4,7 +4,7 @@
  */
 
 import './index.css';
-import * as productsActions from '../../services/store/products/productsActions';
+import * as productsActions from '@services/store/products/productsActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import React from 'react';

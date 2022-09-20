@@ -3,13 +3,13 @@
  */
 
 import './index.css';
-import * as productsActions from '../../services/store/products/productsActions';
-import * as utils from '../../services/utils';
+import * as productsActions from '@services/store/products/productsActions';
+import * as utils from '@services/utils';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Loader from '../../components/Loader';
+import Loader from '@components/Loader';
 import { useTranslation } from 'react-i18next';
 
 /**

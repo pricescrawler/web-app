@@ -3,13 +3,13 @@
  */
 
 import './index.css';
-import * as productsActions from '../../services/store/products/productsActions';
-import * as utils from '../../services/utils';
+import * as productsActions from '@services/store/products/productsActions';
+import * as utils from '@services/utils';
 import { Button, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../../components/Loader';
-import PricesChart from '../../components/PricesChart';
+import Loader from '@components/Loader';
+import PricesChart from '@components/PricesChart';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -96,9 +96,9 @@ function ProductDetails() {
    */
 
   const renderPriceIndicator = (prices, currentPrice) => {
-    const averagePrice =
-      prices.reduce((acc, curr) => acc + parseFloat(utils.getFormattedPrice(curr)), 0) /
-      prices.length;
+    const averagePrice = prices.reduce(
+      (acc, curr) => acc + (parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length
+    );
     const productPrice = parseFloat(utils.convertTextToFloat(currentPrice));
 
     if (productPrice === averagePrice) {

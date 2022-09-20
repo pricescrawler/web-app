@@ -3,14 +3,14 @@
  */
 
 import './index.css';
-import * as productsActions from '../../services/store/products/productsActions';
-import * as utils from '../../services/utils';
+import * as productsActions from '@services/store/products/productsActions';
+import * as utils from '@services/utils';
 import { Accordion, Button, ButtonGroup, Form, FormControl } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../../components/Loader';
+import Loader from '@components/Loader';
 import { MultiSelect } from 'react-multi-select-component';
-import ProductCard from '../../components/ProductCard';
+import ProductCard from '@components/ProductCard';
 import { useTranslation } from 'react-i18next';
 
 /**

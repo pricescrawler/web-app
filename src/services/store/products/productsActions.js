@@ -3,7 +3,7 @@
  */
 
 import * as actionTypes from './productsActionTypes';
-import api from '../../api';
+import api from '@services/api';
 
 /**
  * Get Product Start.

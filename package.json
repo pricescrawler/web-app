@@ -19,17 +19,14 @@
     "react-multi-select-component": "^4.2.4",
     "react-redux": "^7.2.8",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.0",
     "recharts": "^2.1.9",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build"
   },
   "eslintConfig": {
     "extends": [
@@ -48,5 +45,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^2.1.0",
+    "vite": "3.0.9"
   }
 }

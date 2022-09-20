@@ -39,7 +39,7 @@
     "build": "vite build",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "lint:check": "eslint .",
+    "lint:check": "eslint src/**/*.{js,jsx}",
     "lint:fix": "eslint --fix .",
     "prepare": "husky install"
   },
@@ -64,6 +64,8 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "@vitejs/plugin-react": "^2.1.0",
     "eslint": "^8.23.1",
     "eslint-config-airbnb": "^19.0.4",
@@ -78,5 +80,10 @@
   "lint-staged": {
     "*.{jsx,js}": "yarn lint:check",
     "*.{js,jsx,css,md,html,json}": "yarn format:write"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }

@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import './index.css';
+import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import React, { useEffect, useState } from 'react';

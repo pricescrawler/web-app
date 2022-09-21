@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-import './index.css';
+import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';

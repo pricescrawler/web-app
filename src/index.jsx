@@ -4,7 +4,6 @@
 
 import './index.scss';
 import '@services/i18n';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import React, { Suspense } from 'react';
 import About from '@pages/About';

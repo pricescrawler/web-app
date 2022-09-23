@@ -16,7 +16,7 @@ const localStorageproductsList = 'productsList';
  *  `isLoadingData`.
  */
 
-export const isLoadingData = (state = initialState.isLoadingData.valueOf, action) => {
+export const isLoadingData = (state = initialState.isLoadingData, action) => {
   switch (action.type) {
     case actionTypes.GET_PRODUCT_START:
     case actionTypes.GET_PRODUCTS_START:

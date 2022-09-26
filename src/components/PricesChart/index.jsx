@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import './index.css';
+import './index.scss';
 import {
   CartesianGrid,
   Line,

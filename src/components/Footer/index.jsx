@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import './index.css';
+import './index.scss';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

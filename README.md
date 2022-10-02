@@ -1,25 +1,22 @@
-# 🦎Prices Crawler Web App🦎
+# 🦎 Prices Crawler Web App 🦎
 
-![Versio](https://img.shields.io/badge/<version>-<0.0.1>-<blue>)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/prices-crawler/web-app)
+![GitHub issues](https://img.shields.io/github/issues/prices-crawler/web-app)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fprices-crawler-web-app.vercel.app%2F)
 
-[![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)](prices-crawler-web-app.vercel.app/)
-## Current version
-
-0.0.1
-<br>
-
-## Description
+[![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)](https://prices-crawler-web-app.vercel.app/)
+## 💻 Description
 
 The main goal of this project is to enable [prices-crawler-content-base](https://github.com/prices-crawler/content-base) data consumption and visualization.
 <br><br>
 
-## Getting Started
+## 🕹️ Getting Started
 
 1. Download this env file
 2. Change the name of the env file to .env
 These instructions will get you a copy of the project up and running on your local and production machine.
 
-## Requirements
+## 📁 Requirements
 
 You will need node installed globally on your machine.
 
@@ -29,11 +26,11 @@ You will need node installed globally on your machine.
 
 <br>
 
-## Installation and Setup Instructions
+## 📁 Installation and Setup Instructions
 
 ⚠️ Using [Yarn Package Manager](https://yarnpkg.com) is recommended over `npm`.
 
-### Install dependencies
+### ⭐ Install dependencies
 
 ```shell
 yarn
@@ -70,3 +67,7 @@ Builds the app for production to the dist folder.
 ```
 VITE_CATALOGS_JSON=[{"label":"Demo Catalog","value":"local.demo","selected":true}]
 ```
+
+## Authors
+- [Sandro Ferreira](https://github.com/scafer)
+

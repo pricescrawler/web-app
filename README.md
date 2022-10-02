@@ -1,6 +1,6 @@
 # 🦎Prices Crawler Web App
 
-[![Prices Crawler Banner](https://imgur.com/a/V7jEjj4)]
+[![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)]
 
 ## Current version
 

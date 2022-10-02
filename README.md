@@ -13,7 +13,7 @@ The main goal of this project is to enable [prices-crawler-content-base](https:/
 ## 🕹️ Getting Started
 
 1. Download this env file
-2. Change the name of the env file to .env
+2. Change the name of the [env](https://github.com/CarlosJunioor/web-app/blob/main/env) file to .env <br>
 These instructions will get you a copy of the project up and running on your local and production machine.
 
 ## 📁 Requirements
@@ -26,11 +26,11 @@ You will need node installed globally on your machine.
 
 <br>
 
-## 📁 Installation and Setup Instructions
+## Installation and Setup Instructions
 
 ⚠️ Using [Yarn Package Manager](https://yarnpkg.com) is recommended over `npm`.
 
-### ⭐ Install dependencies
+### Install dependencies
 
 ```shell
 yarn
@@ -41,7 +41,6 @@ yarn
 ```shell
 yarn start
 ```
-
 <br>
 
 ### Create a production build

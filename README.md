@@ -1,6 +1,6 @@
-# 🦎Prices Crawler Web App
+# 🦎Prices Crawler Web App🦎
 
-[![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)]
+[![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)(prices-crawler-web-app.vercel.app/)]
 
 ## Current version
 
@@ -14,6 +14,7 @@ The main goal of this project is to enable [prices-crawler-content-base](https:/
 
 ## Getting Started
 
+1. Download this env file.
 These instructions will get you a copy of the project up and running on your local and production machine.
 
 ## Requirements

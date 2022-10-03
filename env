@@ -1,2 +1,0 @@
-VITE_API_URL=https://prices-crawler-content-api.herokuapp.com
-VITE_CATALOGS_JSON=[{"label":"Auchan","value":"pt.auchan","selected":true},{"label":"Continente","value":"pt.continente","selected":true},{"label":"Minipreço","value":"pt.minipreco","selected":true},{"label":"Pingo Doce - Mercadão","value":"pt.pingo-doce","selected":true},{"label":"Apolónia","value":"pt.apolonia","selected":false},{"label":"Spar","value":"pt.spar","selected":false}]

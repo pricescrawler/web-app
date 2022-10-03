@@ -1,4 +1,4 @@
-# 🦎 Prices Crawler Web App 🦎
+# Prices Crawler - Web App 
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/prices-crawler/web-app)
 ![GitHub issues](https://img.shields.io/github/issues/prices-crawler/web-app)
@@ -12,8 +12,13 @@ The main goal of this project is to enable [prices-crawler-content-base](https:/
 
 ## 🕹️ Getting Started
 
-1. Download this env file
-2. Change the name of the [env](https://github.com/CarlosJunioor/web-app/blob/main/env) file to .env <br>
+1. Create a file with the name .env 
+2. Paste the following content of the created file
+ ``` .env
+VITE_API_URL=https://prices-crawler-content-example.herokuapp.com/
+VITE_CATALOGS_JSON=[{"label":"Example","value":"local.example","selected":true}]
+```
+ <br>
 These instructions will get you a copy of the project up and running on your local and production machine.
 
 ## 📁 Requirements

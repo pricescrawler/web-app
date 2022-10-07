@@ -161,7 +161,7 @@ function ProductSearch() {
                     catalog={productCatalogs.catalog}
                     historyEnabled={productCatalogs.data.historyEnabled}
                     key={index}
-                    locale={'pt'}
+                    locale={productCatalogs.locale}
                     productData={product}
                   />
                 ))}

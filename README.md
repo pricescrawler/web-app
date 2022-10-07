@@ -15,7 +15,7 @@ The main goal of this project is to enable [prices-crawler-content-base](https:/
 1. Create a file with the name .env 
 2. Paste the following content of the created file
  ``` .env
-VITE_API_URL=https://prices-crawler-content-example.herokuapp.com/
+VITE_API_URL=https://prices-crawler-content-example.herokuapp.com
 VITE_CATALOGS_JSON=[{"label":"Example","value":"local.example","selected":true}]
 ```
  <br>
@@ -71,7 +71,3 @@ Builds the app for production to the dist folder.
 ```
 VITE_CATALOGS_JSON=[{"label":"Demo Catalog","value":"local.demo","selected":true}]
 ```
-
-## Authors
-- [Sandro Ferreira](https://github.com/scafer)
-

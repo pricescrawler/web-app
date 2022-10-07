@@ -28,7 +28,7 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
   const addToList = (event) => {
     event.preventDefault();
     const product = productList.find(
-      (prod) => prod.key === locale + catalog + productData.reference
+      (prod) => prod.key === `${locale}.${catalog}.${productData.reference}`
     );
 
     if (product) {

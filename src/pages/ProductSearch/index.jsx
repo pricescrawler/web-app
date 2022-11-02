@@ -176,9 +176,9 @@ function ProductSearch() {
   return (
     <>
       <center>
-        <h2>
+        <div className={'h2'}>
           <strong>{t('menu.home')}</strong>
-        </h2>
+        </div>
       </center>
       <br />
       {renderSearchContainer()}

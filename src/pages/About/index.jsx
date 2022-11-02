@@ -15,9 +15,9 @@ function About() {
 
   return (
     <center>
-      <h2>
+      <div className={'h2'}>
         <strong>{t('menu.about')}</strong>
-      </h2>
+      </div>
       <br />
       <p>{t('pages.about.text1')}</p>
       <p>{t('pages.about.text2')}</p>

@@ -29,6 +29,14 @@ export const getFormattedPrice = (product) => {
   return 0;
 };
 
+export const getLastPrice = (product) => {
+  if (product.prices.length > 0) {
+    return getFormattedPrice(product.prices[product.prices.length - 1]);
+  }
+
+  return 0;
+};
+
 /**
  * Render Catalog Name.
  */

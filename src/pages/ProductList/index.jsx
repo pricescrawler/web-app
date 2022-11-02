@@ -215,22 +215,24 @@ function ProductList() {
 
   return (
     <center>
-      <h2>
-        <strong>{t('title.products-list')}</strong>
-      </h2>
+      <center>
+        <div className={'h2'}>
+          <strong>{t('title.products-list')}</strong>
+        </div>
+      </center>
       <br />
       {!isLoadingData ? (
         <>
           {renderTable()}
           <br />
           <div>
-            <h5>
+            <div className={'h5'}>
               <strong>{t('general.total-price')}:</strong> {renderTotalPrice()}€
-            </h5>
+            </div>
             <br />
-            <h6>
+            <div className={'h6'}>
               <strong>{t('general.total-price-by-catalog')}:</strong>
-            </h6>
+            </div>
             <p>{renderTotalPriceByCatalog()}</p>
           </div>
           <br />

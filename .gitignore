@@ -7,10 +7,10 @@ node_modules
 .nvm
 /bots/node_modules/
 package-lock.json
+yarn.lock
 
 # VS Code
 .vscode/
-
 .DS_STORE
 
 # React

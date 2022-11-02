@@ -63,10 +63,11 @@ function ProductDetails() {
 
       return (
         <p>
-          <strong>Min:</strong>
-          {minPrice}|<strong>Max:</strong>
-          {maxPrice}|<strong>Avg:</strong>
-          {getAveragePrice(product.prices)}
+          <strong>{t('data.product-titles.price-min')}</strong>
+          {minPrice}|<strong>{t('data.product-titles.price-max')}</strong>
+          {maxPrice}|<strong>{t('data.product-titles.price-avg')}</strong>
+          {getAveragePrice(product.prices)}|<strong>{t('data.product-titles.price-last')}</strong>
+          {utils.getLastPrice(product)}
         </p>
       );
     }
@@ -346,6 +347,7 @@ function ProductDetails() {
                 dispatch(
                   productsActions.addToProductList({
                     catalog,
+                    historyEnabled: true,
                     key: `${locale}.${catalog}.${productData.reference}`,
                     locale,
                     product: productData,
@@ -376,10 +378,9 @@ function ProductDetails() {
         <Container>
           <Row>
             <center>
-              <h2>
+              <div className={'h2'}>
                 <strong>{t('title.product-details')}</strong>
-              </h2>
-              <br />
+              </div>
             </center>
           </Row>
 
@@ -411,28 +412,25 @@ function ProductDetails() {
               {renderAddToListButton()}
             </center>
           </Row>
-
           <br />
           <Row className={'justify-content-md-center'}>
             <Col md={'auto'}>
               <center>
-                <br />
-                <h4>
+                <div className={'h4'}>
                   <strong>{t('general.price-evolution')}</strong>
-                </h4>
+                </div>
                 {renderStatistics()}
                 <PricesChart data={createChartData(product.prices)} />
               </center>
             </Col>
           </Row>
-
+          <br />
           <Row className={'justify-content-md-center'}>
             <Col md={'auto'}>
               <center>
-                <br />
-                <h4>
+                <div className={'h4'}>
                   <strong>{t('general.prices-history')}</strong>
-                </h4>
+                </div>
                 {renderTable()}
               </center>
             </Col>

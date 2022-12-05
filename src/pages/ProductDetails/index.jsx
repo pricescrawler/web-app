@@ -390,6 +390,7 @@ function ProductDetails() {
                 <img
                   alt={''}
                   className={'product-img'}
+                  referrerPolicy={'no-referrer'}
                   src={product.imageUrl}
                 />
               </center>

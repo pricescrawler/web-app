@@ -54,6 +54,7 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
         <img
           alt={''}
           className={'product-card-image'}
+          referrerPolicy={'no-referrer'}
           src={productData.imageUrl ? productData.imageUrl : '-'}
         />
       </center>

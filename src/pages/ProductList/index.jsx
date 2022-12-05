@@ -125,6 +125,7 @@ function ProductList() {
               <img
                 alt={''}
                 className={'product-list-img'}
+                referrerPolicy={'no-referrer'}
                 src={product.imageUrl}
               />
             </td>

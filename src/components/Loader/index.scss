@@ -1,4 +1,5 @@
-.loader, .loader:after {
+.loader,
+.loader:after {
   border-radius: 50%;
   width: 10em;
   height: 10em;
@@ -12,7 +13,7 @@
   border-top: 1.1em solid #212529;
   border-right: 1.1em solid #212529;
   border-bottom: 1.1em solid #212529;
-  border-left: 1.1em solid #F8F9FA;
+  border-left: 1.1em solid #f8f9fa;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
@@ -21,32 +22,32 @@
 }
 
 .dark .loader {
-  border-top: 1.1em solid #F8F9FA;
-  border-right: 1.1em solid #F8F9FA;
-  border-bottom: 1.1em solid #F8F9FA;
+  border-top: 1.1em solid #f8f9fa;
+  border-right: 1.1em solid #f8f9fa;
+  border-bottom: 1.1em solid #f8f9fa;
   border-left: 1.1em solid black;
 }
 
 @-webkit-keyframes load8 {
   0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
 
   100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes load8 {
   0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
 
   100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }

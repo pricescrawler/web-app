@@ -13,5 +13,13 @@ export default defineConfig({
       '@services': path.resolve('./src/services'),
       '@styles': path.resolve('./src/styles')
     }
+  },
+  server: {
+    host: true,
+    port: 3000,
+    strictPort: true,
+    watch: {
+      usePolling: true
+    }
   }
 });

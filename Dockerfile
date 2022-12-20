@@ -1,15 +1,11 @@
-# pull official base image
-FROM node:17.4.0
+FROM node:18 as build
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY . .
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-
-# install app dependencies
-COPY package.json ./
-RUN npm install --silent
-
-# add app
-COPY . ./
-
-# start app
-CMD ["npm", "start"]
+FROM node:18
+WORKDIR /app
+COPY --from=build /app .
+EXPOSE 3000
+CMD ["npm", "run", "start"]

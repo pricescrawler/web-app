@@ -4,7 +4,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/prices-crawler/web-app)
 ![Website](https://img.shields.io/website?url=https%3A%2F%2Fprices-crawler-web-app.vercel.app%2F)
 
-[![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)](https://prices-crawler-web-app.vercel.app/)
+![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)]
 
 ## 💻 Description
 
@@ -24,7 +24,7 @@ You will need node installed globally on your machine.
 2. Paste the following content of the created file
 
 ```.env
-VITE_API_URL=https://prices-crawler-content-example.herokuapp.com
+VITE_API_URL=https://prices-crawler-content-api-example.onrender.com
 VITE_CATALOGS_JSON=[{"label":"Example","value":"local.example","selected":true}]
 ```
 

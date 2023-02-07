@@ -27,7 +27,9 @@
     "price-evolution": "Price Evolution",
     "prices-history": "Prices History",
     "date": "Date",
-    "no-data": "Error while loading data. Please refresh the page or try again later."
+    "no-data": "Error while loading data. Please refresh the page or try again later.",
+    "copy-to-clipboard": "Copy",
+    "list-upload": "Share"
   },
   "pages": {
     "about": {

@@ -3,6 +3,7 @@
  */
 
 import * as actionTypes from './productsActionTypes';
+import Swal from 'sweetalert2';
 import { combineReducers } from 'redux';
 import initialState from './productsInitialState';
 
@@ -29,6 +30,7 @@ export const isLoadingData = (state = initialState.isLoadingData, action) => {
     case actionTypes.SEARCH_PRODUCTS_SUCCESS:
     case actionTypes.GET_SEARCHED_PRODUCTS:
     case actionTypes.UPDATE_PRODUCT_LIST:
+    case actionTypes.UPLOAD_PRODUCT_LIST:
       return false;
 
     default:
@@ -54,8 +56,11 @@ export const products = (state = initialState.products, action = {}) => {
     }
 
     case actionTypes.GET_PRODUCTS_FAIL: {
-      // eslint-disable-next-line no-alert
-      alert(`${action.payload} - ${action.payload.response.statusText}`);
+      Swal.fire({
+        icon: 'error',
+        text: `${action.payload} - ${action.payload.response.statusText}`,
+        title: `Error`
+      });
 
       return {};
     }
@@ -76,8 +81,11 @@ export const product = (state = initialState.product, action = {}) => {
     }
 
     case actionTypes.GET_PRODUCT_FAIL: {
-      // eslint-disable-next-line no-alert
-      alert(action.payload);
+      Swal.fire({
+        icon: 'error',
+        text: `${action.payload} - ${action.payload.response.statusText}`,
+        title: `Error`
+      });
 
       return {};
     }
@@ -163,6 +171,21 @@ export const productList = (state = initialState.productList, action = {}) => {
 };
 
 /**
+ *  Product List Upload.
+ */
+
+export const productListUpload = (state = initialState.productListId, action = {}) => {
+  switch (action.type) {
+    case actionTypes.UPLOAD_PRODUCT_LIST: {
+      return action.payload;
+    }
+
+    default:
+      return state;
+  }
+};
+
+/**
  *  Search Query.
  */
 
@@ -185,6 +208,7 @@ export default combineReducers({
   isLoadingData,
   product,
   productList,
+  productListUpload,
   products,
   searchQuery
 });

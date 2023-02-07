@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Loader from '@components/Loader';
+import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -19,7 +20,9 @@ import { useTranslation } from 'react-i18next';
 function ProductList() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isLoadingData, productList } = useSelector((state) => state.productList);
+  const { isLoadingData, productList, productListUpload } = useSelector(
+    (state) => state.productList
+  );
   const [isListUpdated, setIsListUpdated] = useState(true);
 
   useEffect(() => {
@@ -39,6 +42,27 @@ function ProductList() {
       });
     }
   }, [productList]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+
+    if (queryParams.has('id')) {
+      const id = queryParams.get('id');
+
+      Swal.fire({
+        cancelButtonText: 'No, cancel!',
+        confirmButtonText: 'Yes, import it!',
+        icon: 'warning',
+        showCancelButton: true,
+        text: 'Are you sure you want to import this product list?',
+        title: `Import product list: ${id}`
+      }).then((result) => {
+        if (result.value) {
+          dispatch(productsActions.retrieveProductList(id));
+        }
+      });
+    }
+  }, [dispatch]);
 
   /**
    *  `removeFromProductList.
@@ -67,6 +91,11 @@ function ProductList() {
   const updateList = (event) => {
     event.preventDefault();
     dispatch(productsActions.getUpdatedProductList(productList));
+  };
+
+  const uploadList = (event) => {
+    event.preventDefault();
+    dispatch(productsActions.saveProductList(productList));
   };
 
   /**
@@ -214,6 +243,34 @@ function ProductList() {
     </div>
   );
 
+  const renderProductListUploadUrl = () => {
+    if (productListUpload.data) {
+      return `${window.location.origin}/product/list?id=${productListUpload.data.id}`;
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(renderProductListUploadUrl());
+  };
+
+  const renderListUpload = () => (
+    <div>
+      <input value={renderProductListUploadUrl()} />
+      <Button
+        onClick={copyToClipboard}
+        variant={'secondary'}
+      >
+        {t('general.copy-to-clipboard')}
+      </Button>
+      <Button
+        onClick={uploadList}
+        variant={'secondary'}
+      >
+        {t('general.list-upload')}
+      </Button>
+    </div>
+  );
+
   return (
     <center>
       <center>
@@ -224,6 +281,7 @@ function ProductList() {
       <br />
       {!isLoadingData ? (
         <>
+          {renderListUpload()}
           {renderTable()}
           <br />
           <div>

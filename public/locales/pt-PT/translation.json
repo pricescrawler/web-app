@@ -27,7 +27,9 @@
     "price-evolution": "Evolução de Preços",
     "prices-history": "Histórico de Preços",
     "date": "Data",
-    "no-data": "Erro ao carregar dados. Recarregue a página ou tente novamente mais tarde."
+    "no-data": "Erro ao carregar dados. Recarregue a página ou tente novamente mais tarde.",
+    "copy-to-clipboard": "Copiar",
+    "list-upload": "Partilhar"
   },
   "pages": {
     "about": {

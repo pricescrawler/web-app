@@ -57,6 +57,7 @@ export const products = (state = initialState.products, action = {}) => {
 
     case actionTypes.GET_PRODUCTS_FAIL: {
       Swal.fire({
+        confirmButtonColor: '#6c757d',
         icon: 'error',
         text: `${action.payload} - ${action.payload.response.statusText}`,
         title: `Error`
@@ -82,6 +83,7 @@ export const product = (state = initialState.product, action = {}) => {
 
     case actionTypes.GET_PRODUCT_FAIL: {
       Swal.fire({
+        confirmButtonColor: '#6c757d',
         icon: 'error',
         text: `${action.payload} - ${action.payload.response.statusText}`,
         title: `Error`

@@ -21,7 +21,7 @@
     "total-price": "Preço Total",
     "total-price-by-catalog": "Preço Total por Catálogo",
     "search": "Pesquisar",
-    "search-for-some-product": "Pesquisar por algum produto",
+    "search-for-some-product": "Pesquisar produtos",
     "refresh-prices": "Atualizar Preços",
     "go": "Ir",
     "price-evolution": "Evolução de Preços",
@@ -29,7 +29,14 @@
     "date": "Data",
     "no-data": "Erro ao carregar dados. Recarregue a página ou tente novamente mais tarde.",
     "copy-to-clipboard": "Copiar",
-    "list-upload": "Partilhar"
+    "list-upload": "Partilhar lista de produtos",
+    "expiration-text-1": "A sua lista será eliminada após a data de validade.",
+    "expiration-text-2": "Data de validade para partilha:",
+    "yes": "Sim",
+    "no": "Não",
+    "product-list-replace": "Tem a certeza de que deseja importar esta lista de produtos? Isto irá substituir a sua lista de produtos atual.",
+    "product-list-replace-title": "Importar lista de produtos:",
+    "error": "Erro"
   },
   "pages": {
     "about": {

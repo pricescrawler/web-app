@@ -29,7 +29,14 @@
     "date": "Date",
     "no-data": "Error while loading data. Please refresh the page or try again later.",
     "copy-to-clipboard": "Copy",
-    "list-upload": "Share"
+    "list-upload": "Share product list",
+    "expiration-text-1": "Your list will be deleted after the expiration date.",
+    "expiration-text-2": "Share expiration date:",
+    "yes": "Yes",
+    "no": "No",
+    "product-list-replace": "Are you sure you want to import this product list? This will replace your current product list.",
+    "general.product-list-replace-title": "Import product list:",
+    "error": "Error"
   },
   "pages": {
     "about": {

@@ -175,11 +175,12 @@ function ProductSearch() {
 
   return (
     <>
-      <center>
-        <div className={'h2'}>
-          <strong>{t('menu.home')}</strong>
-        </div>
-      </center>
+      <div
+        className={'h2'}
+        style={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <strong>{t('menu.home')}</strong>
+      </div>
       <br />
       {renderSearchContainer()}
       {renderFilterOptions()}

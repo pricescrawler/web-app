@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * Module dependencies.
  */
@@ -7,7 +9,7 @@ import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button, Form, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Loader from '@components/Loader';
 import Swal from 'sweetalert2';
@@ -24,6 +26,7 @@ function ProductList() {
     (state) => state.productList
   );
   const [isListUpdated, setIsListUpdated] = useState(true);
+  const [showFormControl, setShowFormControl] = useState(false);
 
   useEffect(() => {
     if (productList && productList.length > 0) {
@@ -50,19 +53,21 @@ function ProductList() {
       const id = queryParams.get('id');
 
       Swal.fire({
-        cancelButtonText: 'No, cancel!',
-        confirmButtonText: 'Yes, import it!',
+        cancelButtonColor: '#6c757d',
+        cancelButtonText: t('general.no'),
+        confirmButtonColor: '#6c757d',
+        confirmButtonText: t('general.yes'),
         icon: 'warning',
         showCancelButton: true,
-        text: 'Are you sure you want to import this product list?',
-        title: `Import product list: ${id}`
+        text: t('general.product-list-replace'),
+        title: `${id}`
       }).then((result) => {
         if (result.value) {
           dispatch(productsActions.retrieveProductList(id));
         }
       });
     }
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   /**
    *  `removeFromProductList.
@@ -93,9 +98,14 @@ function ProductList() {
     dispatch(productsActions.getUpdatedProductList(productList));
   };
 
+  /**
+   *  `uploadList.
+   */
+
   const uploadList = (event) => {
     event.preventDefault();
     dispatch(productsActions.saveProductList(productList));
+    setShowFormControl(!showFormControl);
   };
 
   /**
@@ -249,39 +259,57 @@ function ProductList() {
     }
   };
 
+  const renderProductListExpirationDate = () => {
+    if (productListUpload.data) {
+      return productListUpload.data.expirationDate;
+    }
+  };
   const copyToClipboard = () => {
     navigator.clipboard.writeText(renderProductListUploadUrl());
   };
 
   const renderListUpload = () => (
-    <div>
-      <input value={renderProductListUploadUrl()} />
-      <Button
-        onClick={copyToClipboard}
-        variant={'secondary'}
-      >
-        {t('general.copy-to-clipboard')}
-      </Button>
+    <>
       <Button
         onClick={uploadList}
         variant={'secondary'}
       >
         {t('general.list-upload')}
       </Button>
-    </div>
+      {showFormControl && (
+        <>
+          <InputGroup>
+            <Form.Control
+              placeholder="Link"
+              value={renderProductListUploadUrl()}
+            />
+            <Button
+              variant="outline-secondary"
+              id="button-addon2"
+              onClick={copyToClipboard}
+            >
+              {t('general.copy-to-clipboard')}
+            </Button>
+          </InputGroup>
+          <Form.Text muted>
+            <p>{t('general.expiration-text-1')}</p>
+            <p>
+              {t('general.expiration-text-2')} {renderProductListExpirationDate()}
+            </p>
+          </Form.Text>
+        </>
+      )}
+    </>
   );
 
   return (
     <center>
-      <center>
-        <div className={'h2'}>
-          <strong>{t('title.products-list')}</strong>
-        </div>
-      </center>
+      <div className={'h2'}>
+        <strong>{t('title.products-list')}</strong>
+      </div>
       <br />
       {!isLoadingData ? (
         <>
-          {renderListUpload()}
           {renderTable()}
           <br />
           <div>
@@ -295,16 +323,21 @@ function ProductList() {
             <p>{renderTotalPriceByCatalog()}</p>
           </div>
           <br />
-          {!isListUpdated ? (
-            <Button
-              onClick={updateList}
-              variant={'secondary'}
-            >
-              {t('general.refresh-prices')}
-            </Button>
-          ) : (
-            <> </>
-          )}
+          <center>
+            <div className="product-list-upload d-grid gap-2">
+              {!isListUpdated ? (
+                <Button
+                  onClick={updateList}
+                  variant={'secondary'}
+                >
+                  {t('general.refresh-prices')}
+                </Button>
+              ) : (
+                <> </>
+              )}
+              {renderListUpload()}
+            </div>
+          </center>
         </>
       ) : (
         <Loader />

@@ -35,6 +35,14 @@ tr:hover {
   text-overflow: ellipsis;
 }
 
+.product-list-upload {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 20em;
+}
+
 .product-list-img {
   height: 75px;
 }

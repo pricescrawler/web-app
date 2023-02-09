@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    },
+    {
+      "source": "/about",
+      "destination": "/about"
+    },
+    {
+      "source": "/privacy-terms",
+      "destination": "/privacy-terms"
+    },
+    {
+      "source": "/product/list",
+      "destination": "/product/list"
+    },
+    {
+      "source": "/product/:locale/:catalog/:reference",
+      "destination": "/product"
+    }
+  ]
+}

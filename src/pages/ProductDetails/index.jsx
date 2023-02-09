@@ -23,6 +23,7 @@ function ProductDetails() {
   const { isLoadingData, product } = useSelector((state) => state.product);
   const { products } = useSelector((state) => state.products);
   const { productList } = useSelector((state) => state.productList);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -63,10 +64,11 @@ function ProductDetails() {
 
       return (
         <p>
-          <strong>{t('data.product-titles.price-min')}</strong>
-          {minPrice}|<strong>{t('data.product-titles.price-max')}</strong>
-          {maxPrice}|<strong>{t('data.product-titles.price-avg')}</strong>
-          {getAveragePrice(product.prices)}|<strong>{t('data.product-titles.price-last')}</strong>
+          <strong>{t('data.product-titles.price-min')}</strong>&nbsp;
+          {minPrice}&nbsp;|&nbsp;<strong>{t('data.product-titles.price-max')}</strong>&nbsp;
+          {maxPrice}&nbsp;|&nbsp;<strong>{t('data.product-titles.price-avg')}</strong>&nbsp;
+          {getAveragePrice(product.prices)}&nbsp;|&nbsp;
+          <strong>{t('data.product-titles.price-last')}</strong>&nbsp;
           {utils.getLastPrice(product)}
         </p>
       );
@@ -113,6 +115,7 @@ function ProductDetails() {
         >
           <div>
             <strong>{t('data.product-titles.price-indicator')}:</strong>
+            &nbsp;
             <span className={'badge-orange'}>{productPrice}€</span>
           </div>
         </OverlayTrigger>
@@ -129,6 +132,7 @@ function ProductDetails() {
         >
           <div>
             <strong>{t('data.product-titles.price-indicator')}:</strong>
+            &nbsp;
             <span className={'badge-red'}>{productPrice}€</span>
           </div>
         </OverlayTrigger>
@@ -143,6 +147,7 @@ function ProductDetails() {
       >
         <div>
           <strong>{t('data.product-titles.price-indicator')}:</strong>
+          &nbsp;
           <span className={'badge-green'}>{productPrice}€</span>
         </div>
       </OverlayTrigger>
@@ -179,16 +184,16 @@ function ProductDetails() {
             ) : (
               <p>
                 <strong>{t('data.product-fields.regular-price')}:</strong>
-
+                &nbsp;
                 {regularPrice}
               </p>
             )}
             <p>
               <strong>{t('data.product-fields.price-per-quantity')}:</strong>
-
+              &nbsp;
               {pricePerQuantity}
             </p>
-            <p>{renderPriceIndicator(product.prices, price)}</p>
+            {renderPriceIndicator(product.prices, price)}
           </>
         );
       }
@@ -203,38 +208,38 @@ function ProductDetails() {
     <>
       <div className={'mb-3'}>
         <p>
-          <strong>{t('data.product-fields.locale')}:</strong>
-          {product.locale}|<strong>{t('data.product-fields.catalog')}:</strong>
-          {product.catalog}|<strong>{t('data.product-fields.reference')}:</strong>
+          <strong>{t('data.product-fields.locale')}:</strong>&nbsp;
+          {product.locale}&nbsp;|&nbsp;<strong>{t('data.product-fields.catalog')}:</strong>&nbsp;
+          {product.catalog}&nbsp;|&nbsp;<strong>{t('data.product-fields.reference')}:</strong>&nbsp;
           {product.reference}
         </p>
       </div>
       <div className={'mb-3'}>
         <p>
           <strong>{t('data.product-fields.name')}:</strong>
-
+          &nbsp;
           {product.name ? product.name : '-'}
         </p>
         <p>
           <strong>{t('data.product-fields.brand')}:</strong>
-
+          &nbsp;
           {product.brand ? product.brand : '-'}
         </p>
         <p>
           <strong>{t('data.product-fields.quantity')}:</strong>
-
+          &nbsp;
           {product.quantity ? product.quantity : '-'}
         </p>
         <p>
           <strong>{t('data.product-fields.description')}:</strong>
-
+          &nbsp;
           {product.description ? product.description : '-'}
         </p>
       </div>
       <div className={'mb-3'}>
         <p>
           <strong>EAN/UPC:</strong>
-
+          &nbsp;
           {product.eanUpc ? renderEanUpc(product.eanUpc) : '-'}
         </p>
       </div>
@@ -367,13 +372,6 @@ function ProductDetails() {
 
   return (
     <>
-      {!isLoadingData && !isProductLoaded() ? (
-        <center>
-          <h2 style={{ color: 'red' }}>{t('general.no-data')}</h2>
-        </center>
-      ) : (
-        <></>
-      )}
       {!isLoadingData && isProductLoaded() ? (
         <Container>
           <Row>

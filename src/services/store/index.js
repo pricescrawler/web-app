@@ -14,6 +14,7 @@ import thunk from 'redux-thunk';
 const rootReducer = combineReducers({
   product: productsReducer,
   productList: productsReducer,
+  productListId: productsReducer,
   products: productsReducer
 });
 

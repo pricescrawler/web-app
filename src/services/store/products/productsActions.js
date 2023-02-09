@@ -99,6 +99,15 @@ export const updateProductList = (product) => ({
 });
 
 /**
+ * Upload Product List.
+ */
+
+export const uploadProductList = (product) => ({
+  payload: product,
+  type: actionTypes.UPLOAD_PRODUCT_LIST
+});
+
+/**
  * Remove from Product List.
  */
 
@@ -159,4 +168,24 @@ export const getProduct = (searchParam) => {
       })
       .catch((error) => dispatch(getProductsFail(error)));
   };
+};
+
+export const saveProductList = (searchParam) => (dispatch) => {
+  dispatch(getProductStart());
+  api
+    .post('/api/v1/products/list/store', searchParam)
+    .then((response) => {
+      dispatch(uploadProductList(response));
+    })
+    .catch((error) => dispatch(getProductsFail(error)));
+};
+
+export const retrieveProductList = (searchParam) => (dispatch) => {
+  dispatch(getProductStart());
+  api
+    .get(`/api/v1/products/list?id=${searchParam}`)
+    .then((response) => {
+      dispatch(updateProductList(response.data));
+    })
+    .catch((error) => dispatch(getProductsFail(error)));
 };

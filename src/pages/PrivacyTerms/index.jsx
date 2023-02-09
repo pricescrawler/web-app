@@ -15,11 +15,9 @@ function PrivacyTerms() {
 
   return (
     <center>
-      <center>
-        <div className={'h2'}>
-          <strong>{t('menu.privacy-terms')}</strong>
-        </div>
-      </center>
+      <div className={'h2'}>
+        <strong>{t('menu.privacy-terms')}</strong>
+      </div>
       <br />
       <p>{t('pages.privacy-terms.text1')}</p>
       <p>{t('pages.privacy-terms.text2')}</p>

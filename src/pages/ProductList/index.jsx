@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * Module dependencies.
  */
@@ -7,9 +9,10 @@ import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button, Form, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Loader from '@components/Loader';
+import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -19,8 +22,11 @@ import { useTranslation } from 'react-i18next';
 function ProductList() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isLoadingData, productList } = useSelector((state) => state.productList);
+  const { isLoadingData, productList, productListUpload } = useSelector(
+    (state) => state.productList
+  );
   const [isListUpdated, setIsListUpdated] = useState(true);
+  const [showFormControl, setShowFormControl] = useState(false);
 
   useEffect(() => {
     if (productList && productList.length > 0) {
@@ -39,6 +45,29 @@ function ProductList() {
       });
     }
   }, [productList]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+
+    if (queryParams.has('id')) {
+      const id = queryParams.get('id');
+
+      Swal.fire({
+        cancelButtonColor: '#6c757d',
+        cancelButtonText: t('general.no'),
+        confirmButtonColor: '#6c757d',
+        confirmButtonText: t('general.yes'),
+        icon: 'warning',
+        showCancelButton: true,
+        text: t('general.product-list-replace'),
+        title: `${id}`
+      }).then((result) => {
+        if (result.value) {
+          dispatch(productsActions.retrieveProductList(id));
+        }
+      });
+    }
+  }, [dispatch, t]);
 
   /**
    *  `removeFromProductList.
@@ -67,6 +96,16 @@ function ProductList() {
   const updateList = (event) => {
     event.preventDefault();
     dispatch(productsActions.getUpdatedProductList(productList));
+  };
+
+  /**
+   *  `uploadList.
+   */
+
+  const uploadList = (event) => {
+    event.preventDefault();
+    dispatch(productsActions.saveProductList(productList));
+    setShowFormControl(!showFormControl);
   };
 
   /**
@@ -214,13 +253,60 @@ function ProductList() {
     </div>
   );
 
+  const renderProductListUploadUrl = () => {
+    if (productListUpload.data) {
+      return `${window.location.origin}/product/list?id=${productListUpload.data.id}`;
+    }
+  };
+
+  const renderProductListExpirationDate = () => {
+    if (productListUpload.data) {
+      return productListUpload.data.expirationDate;
+    }
+  };
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(renderProductListUploadUrl());
+  };
+
+  const renderListUpload = () => (
+    <>
+      <Button
+        onClick={uploadList}
+        variant={'secondary'}
+      >
+        {t('general.list-upload')}
+      </Button>
+      {showFormControl && (
+        <>
+          <InputGroup>
+            <Form.Control
+              placeholder="Link"
+              value={renderProductListUploadUrl()}
+            />
+            <Button
+              variant="outline-secondary"
+              id="button-addon2"
+              onClick={copyToClipboard}
+            >
+              {t('general.copy-to-clipboard')}
+            </Button>
+          </InputGroup>
+          <Form.Text muted>
+            <p>{t('general.expiration-text-1')}</p>
+            <p>
+              {t('general.expiration-text-2')} {renderProductListExpirationDate()}
+            </p>
+          </Form.Text>
+        </>
+      )}
+    </>
+  );
+
   return (
     <center>
-      <center>
-        <div className={'h2'}>
-          <strong>{t('title.products-list')}</strong>
-        </div>
-      </center>
+      <div className={'h2'}>
+        <strong>{t('title.products-list')}</strong>
+      </div>
       <br />
       {!isLoadingData ? (
         <>
@@ -237,16 +323,21 @@ function ProductList() {
             <p>{renderTotalPriceByCatalog()}</p>
           </div>
           <br />
-          {!isListUpdated ? (
-            <Button
-              onClick={updateList}
-              variant={'secondary'}
-            >
-              {t('general.refresh-prices')}
-            </Button>
-          ) : (
-            <> </>
-          )}
+          <center>
+            <div className="product-list-upload d-grid gap-2">
+              {!isListUpdated ? (
+                <Button
+                  onClick={updateList}
+                  variant={'secondary'}
+                >
+                  {t('general.refresh-prices')}
+                </Button>
+              ) : (
+                <> </>
+              )}
+              {renderListUpload()}
+            </div>
+          </center>
         </>
       ) : (
         <Loader />

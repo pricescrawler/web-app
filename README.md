@@ -2,9 +2,7 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/prices-crawler/web-app)
 ![GitHub issues](https://img.shields.io/github/issues/prices-crawler/web-app)
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fprices-crawler-web-app.vercel.app%2F)
-
-![Prices Crawler Banner](https://github.com/CarlosJunioor/web-app/blob/main/Prices%20crawler%20web%20app.png?raw=true)]
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fprices-crawler-web-app.vercel.app)
 
 ## 💻 Description
 

@@ -1,12 +1,25 @@
 .nav-footer {
   background-color: #212529;
-  position: fixed;
-  width: 100%;
   bottom: 0;
   color: white;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+}
+
+.nav-footer-container {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  text-align: center;
 }
 
 .nav-footer-link {
   color: white;
+  margin-right: 1.5rem;
   text-decoration: none !important;
+}
+
+.nav-footer-link:last-child {
+  margin-right: 0;
 }

@@ -102,7 +102,7 @@ function ProductDetails() {
     const averagePrice = prices.reduce(
       (acc, curr) => acc + (parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length
     );
-    const productPrice = parseFloat(utils.convertTextToFloat(currentPrice));
+    const productPrice = parseFloat(utils.convertToFloat(currentPrice));
 
     if (productPrice === averagePrice) {
       return (
@@ -311,8 +311,8 @@ function ProductDetails() {
     if (prices) {
       prices.forEach((value) => {
         chartData.push({
-          date: utils.getFormattedDate(value.date),
-          price: utils.getFormattedPrice(value),
+          date: utils.formatDate(value.date),
+          price: utils.formatDate(value),
           pricePerQuantity: value.pricePerQuantity,
           quantity: value.quantity
         });

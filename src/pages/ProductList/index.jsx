@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import Loader from '@components/Loader';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import Maintenance from '@components/Maintenance';
 
 /**
  * Function `ProductList.
@@ -27,6 +28,7 @@ function ProductList() {
   );
   const [isListUpdated, setIsListUpdated] = useState(true);
   const [showFormControl, setShowFormControl] = useState(false);
+  const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
   useEffect(() => {
     if (productList && productList.length > 0) {
@@ -325,17 +327,25 @@ function ProductList() {
           <br />
           <center>
             <div className="product-list-upload d-grid gap-2">
-              {!isListUpdated ? (
-                <Button
-                  onClick={updateList}
-                  variant={'secondary'}
-                >
-                  {t('general.refresh-prices')}
-                </Button>
+              {isMaintenanceMode === 'true' ? (
+                <></>
               ) : (
-                <> </>
+                <>
+                  {!isListUpdated ? (
+                    <>
+                      <Button
+                        onClick={updateList}
+                        variant={'secondary'}
+                      >
+                        {t('general.refresh-prices')}
+                      </Button>
+                      {renderListUpload()}
+                    </>
+                  ) : (
+                    <> </>
+                  )}
+                </>
               )}
-              {renderListUpload()}
             </div>
           </center>
         </>

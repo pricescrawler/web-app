@@ -102,7 +102,7 @@ function ProductDetails() {
     const averagePrice = prices.reduce(
       (acc, curr) => acc + (parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length
     );
-    const productPrice = parseFloat(utils.convertTextToFloat(currentPrice));
+    const productPrice = parseFloat(utils.convertToFloat(currentPrice));
 
     if (productPrice === averagePrice) {
       return (
@@ -264,16 +264,15 @@ function ProductDetails() {
       });
 
       return prices.map((prod, index) => {
-        const { campaignPrice, date, pricePerQuantity, quantity, regularPrice } = prod;
-        const dateFormatted = date.split(' ')[0];
+        const { campaignPrice, date, name, pricePerQuantity, quantity, regularPrice } = prod;
 
         return (
           <tr key={index}>
             <td>{regularPrice}</td>
             <td>{campaignPrice}</td>
             <td>{pricePerQuantity}</td>
-            <td>{quantity}</td>
-            <td>{dateFormatted}</td>
+            <td>{quantity ? quantity : name}</td>
+            <td>{date}</td>
           </tr>
         );
       });
@@ -311,7 +310,7 @@ function ProductDetails() {
     if (prices) {
       prices.forEach((value) => {
         chartData.push({
-          date: utils.getFormattedDate(value.date),
+          date: value.date,
           price: utils.getFormattedPrice(value),
           pricePerQuantity: value.pricePerQuantity,
           quantity: value.quantity

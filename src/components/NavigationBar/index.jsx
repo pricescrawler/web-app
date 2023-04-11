@@ -20,6 +20,8 @@ function NavigationBar() {
   const { productList } = useSelector((state) => state.productList);
 
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
+  const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
+  const logo = '/logo.png';
 
   /**
    * Change Language.
@@ -53,7 +55,14 @@ function NavigationBar() {
     >
       <Container fluid>
         <Navbar.Brand>
-          {/* <img alt="" src={logo} width="40" height="40" className="d-inline-block" /> */}
+          <img
+            alt={''}
+            className={'d-inline-block'}
+            height={'30'}
+            src={logo}
+            width={'30'}
+          />
+          &nbsp;
           <Navbar.Text className={'navbar-text'}>
             <Link to={'/'}>{t('title.base')}</Link>
           </Navbar.Text>
@@ -72,6 +81,22 @@ function NavigationBar() {
                 <Badge bg={'secondary'}>{numberOfProducts()}</Badge>
               </Link>
             </Navbar.Text>
+
+            {mobileAppUrl ? (
+              <>
+                <Navbar.Text className={'me-3'}>
+                  <a
+                    href={mobileAppUrl}
+                    rel={'noopener noreferrer'}
+                    target={'_blank'}
+                  >
+                    {t('menu.mobile-app')}
+                  </a>
+                </Navbar.Text>
+              </>
+            ) : (
+              <> </>
+            )}
 
             <NavDropdown
               className={'me-3'}

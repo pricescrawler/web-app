@@ -3,7 +3,8 @@
     "base": "Prices Crawler",
     "products-search": "Pesquisar Produtos",
     "products-list": "Lista de Produtos",
-    "product-details": "Detalhes do Produto"
+    "product-details": "Detalhes do Produto",
+    "maintenance": "Em Manutenção"
   },
   "menu": {
     "home": "Pesquisar",
@@ -15,7 +16,8 @@
       "desc": "Preço ⬇️"
     },
     "language": "Idioma",
-    "dark-mode": "Modo Escuro"
+    "dark-mode": "Modo Escuro",
+    "mobile-app": "Aplicação Móvel"
   },
   "general": {
     "total-price": "Preço Total",
@@ -34,6 +36,7 @@
     "expiration-text-2": "Data de validade para partilha:",
     "yes": "Sim",
     "no": "Não",
+    "maintenance": "Por favor tente mais tarde. Disponível em:",
     "product-list-replace": "Tem a certeza de que deseja importar esta lista de produtos? Isto irá substituir a sua lista de produtos atual.",
     "product-list-replace-title": "Importar lista de produtos:",
     "error": "Erro"

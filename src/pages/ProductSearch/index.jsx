@@ -9,6 +9,7 @@ import { Accordion, Button, ButtonGroup, Form, FormControl } from 'react-bootstr
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
+import Maintenance from '@components/Maintenance';
 import { MultiSelect } from 'react-multi-select-component';
 import ProductCard from '@components/ProductCard';
 import { useTranslation } from 'react-i18next';
@@ -22,10 +23,12 @@ function ProductSearch() {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
   const [catalogs] = useState(JSON.parse(import.meta.env.VITE_CATALOGS_JSON));
+  const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
   );
+
   const { isLoadingData, products } = useSelector((state) => state.products);
 
   const currentProducts = Object.assign([], products);
@@ -182,9 +185,15 @@ function ProductSearch() {
         <strong>{t('menu.home')}</strong>
       </div>
       <br />
-      {renderSearchContainer()}
-      {renderFilterOptions()}
-      {!isLoadingData ? renderProductSearchResults() : <Loader />}
+      {isMaintenanceMode === 'true' ? (
+        <Maintenance />
+      ) : (
+        <>
+          {renderSearchContainer()}
+          {renderFilterOptions()}
+          {!isLoadingData ? renderProductSearchResults() : <Loader />}
+        </>
+      )}
     </>
   );
 }

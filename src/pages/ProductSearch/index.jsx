@@ -12,6 +12,7 @@ import Loader from '@components/Loader';
 import Maintenance from '@components/Maintenance';
 import { MultiSelect } from 'react-multi-select-component';
 import ProductCard from '@components/ProductCard';
+import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -43,8 +44,12 @@ function ProductSearch() {
     if (searchValue !== '' && selectedCatalogs.length > 0) {
       dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue }));
     } else {
-      // eslint-disable-next-line no-alert
-      return alert('Catalogs or search query missing.');
+      Swal.fire({
+        confirmButtonColor: '#6c757d',
+        icon: 'info',
+        text: 'Catalogs or search query missing.',
+        title: 'Info'
+      });
     }
   };
 
@@ -91,8 +96,7 @@ function ProductSearch() {
     event.preventDefault();
 
     currentProducts.map((element) =>
-      // eslint-disable-next-line id-length
-      element.products.sort((a, b) => utils.getFormattedPrice(a) - utils.getFormattedPrice(b))
+      element.products.sort((a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1))
     );
 
     dispatch(productsActions.getProductsSuccess(currentProducts));
@@ -106,8 +110,41 @@ function ProductSearch() {
     event.preventDefault();
 
     currentProducts.map((element) =>
-      // eslint-disable-next-line id-length
-      element.products.sort((a, b) => utils.getFormattedPrice(b) - utils.getFormattedPrice(a))
+      element.products.sort((a1, b1) => utils.getFormattedPrice(b1) - utils.getFormattedPrice(a1))
+    );
+
+    dispatch(productsActions.getProductsSuccess(currentProducts));
+  };
+
+  /**
+   * `orderByPriceASCPricePerQuantity`.
+   */
+
+  const orderByPriceASCPricePerQuantity = (event) => {
+    event.preventDefault();
+
+    currentProducts.map((element) =>
+      element.products.sort(
+        (a1, b1) =>
+          utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity)
+      )
+    );
+
+    dispatch(productsActions.getProductsSuccess(currentProducts));
+  };
+
+  /**
+   * `orderByPriceDESCPricePerQuantity`.
+   */
+
+  const orderByPriceDESCPricePerQuantity = (event) => {
+    event.preventDefault();
+
+    currentProducts.map((element) =>
+      element.products.sort(
+        (a1, b1) =>
+          utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity)
+      )
     );
 
     dispatch(productsActions.getProductsSuccess(currentProducts));
@@ -120,7 +157,7 @@ function ProductSearch() {
   const renderFilterOptions = () => {
     if (currentProducts.length > 0) {
       return (
-        <div className={'d-flex justify-content-end mt-3 mb-3 me-1'}>
+        <div className={'d-flex justify-content-end mt-3 mb-3 me-1 flex-wrap flex-md-nowrap'}>
           <ButtonGroup>
             <Button
               onClick={orderByPriceASC}
@@ -133,6 +170,20 @@ function ProductSearch() {
               variant={'outline-secondary'}
             >
               {t('menu.order.desc')}
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup className={'ms-1'}>
+            <Button
+              onClick={orderByPriceASCPricePerQuantity}
+              variant={'outline-secondary'}
+            >
+              {t('menu.order.asc-price-per-quantity')}
+            </Button>
+            <Button
+              onClick={orderByPriceDESCPricePerQuantity}
+              variant={'outline-secondary'}
+            >
+              {t('menu.order.desc-price-per-quantity')}
             </Button>
           </ButtonGroup>
         </div>

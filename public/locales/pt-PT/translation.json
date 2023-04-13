@@ -13,7 +13,9 @@
     "privacy-terms": "Política de Privacidade",
     "order": {
       "asc": "Preço ⬆️",
-      "desc": "Preço ⬇️"
+      "desc": "Preço ⬇️",
+      "asc-price-per-quantity": "Preço/Quantidade ⬆️",
+      "desc-price-per-quantity": "Preço/Quantidade ⬇️"
     },
     "language": "Idioma",
     "dark-mode": "Modo Escuro",

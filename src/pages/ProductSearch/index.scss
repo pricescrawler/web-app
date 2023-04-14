@@ -14,6 +14,11 @@
   justify-content: center;
 }
 
+.accordion-button:not(.collapsed) {
+  color: black;
+  background-color: white;
+}
+
 .dark .accordion-item {
   background-color: black !important;
 }

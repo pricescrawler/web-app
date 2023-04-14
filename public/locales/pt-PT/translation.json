@@ -48,7 +48,8 @@
       "contact": "Contacto",
       "text1": "Este projeto tem como principal objetivo possibilitar a pesquisa de produtos e dos seus preços em diversos catálogos, armazenando essa informação para comparação e análise futura.",
       "text2": "Os dados dos produtos são obtidos de forma automática, podendo existir erros e inconsistências. Se encontrar algum erro, por favor, reporte-o através do email indicado.",
-      "text3": "O mesmo não tem fins comerciais, filiação empresarial ou organizacional, sendo todos os seus componentes open-source."
+      "text3": "O mesmo não tem fins comerciais, filiação empresarial ou organizacional, sendo todos os seus componentes open-source.",
+      "version": "Versão"
     },
     "privacy-terms": {
       "text1": "Este website não recolhe, armazena ou usa dados pessoais dos seus utilizadores.",

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 /**
  * Module dependencies.
  */
@@ -7,14 +5,14 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
+import { Button, Form, InputGroup } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Form, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Loader from '@components/Loader';
+import { QRCode } from 'antd';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
-import Maintenance from '@components/Maintenance';
 
 /**
  * Function `ProductList.
@@ -282,17 +280,26 @@ function ProductList() {
         <>
           <InputGroup>
             <Form.Control
-              placeholder="Link"
+              placeholder={'Link'}
               value={renderProductListUploadUrl()}
             />
             <Button
-              variant="outline-secondary"
-              id="button-addon2"
+              id={'button-addon2'}
               onClick={copyToClipboard}
+              variant={'outline-secondary'}
             >
               {t('general.copy-to-clipboard')}
             </Button>
           </InputGroup>
+
+          <center>
+            <QRCode
+              errorLevel={'H'}
+              icon={'/logo.png'}
+              value={renderProductListUploadUrl()}
+            />
+          </center>
+
           <Form.Text muted>
             <p>{t('general.expiration-text-1')}</p>
             <p>
@@ -326,7 +333,7 @@ function ProductList() {
           </div>
           <br />
           <center>
-            <div className="product-list-upload d-grid gap-2">
+            <div className={'product-list-upload d-grid gap-2'}>
               {isMaintenanceMode === 'true' ? (
                 <></>
               ) : (

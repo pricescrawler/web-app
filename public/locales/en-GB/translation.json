@@ -52,8 +52,8 @@
       "version": "Version"
     },
     "privacy-terms": {
-      "text1": "This website does not collect, store, or use any personal data.",
-      "text2": "It does not use cookies or any other tracking technologies.",
+      "text1": "This website only collects anonymized data for analytics purposes.",
+      "text2": "It does not collect, store, or use any personal data, and does not use cookies or any other tracking technologies that can be used to identify its users.",
       "delete-local-data-text": "This will delete all the data stored locally on your device, including product lists. This action cannot be undone.",
       "delete-local-data-button": "Delete Local Data"
     }

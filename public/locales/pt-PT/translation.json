@@ -52,8 +52,8 @@
       "version": "Versão"
     },
     "privacy-terms": {
-      "text1": "Este website não recolhe, armazena ou usa dados pessoais dos seus utilizadores.",
-      "text2": "Não utiliza cookies ou mecanismos de rastreio.",
+      "text1": "Este website apenas recolhe dados anonimizados para fins de análise.",
+      "text2": "Não recolhe, armazena ou utiliza quaisquer dados pessoais e não utiliza cookies ou outras tecnologias de rastreio que possam ser usadas para identificar os seus utilizadores.",
       "delete-local-data-text": "Eliminar todos os dados locais, incluindo as listas de produtos. Esta ação não pode ser revertida.",
       "delete-local-data-button": "Eliminar dados"
     }

@@ -62,9 +62,3 @@ Builds the app for production to the dist folder.
 | 4   | VITE_MAINTENANCE_MODE     | Boolean     | Is Maintenance Mode On  | -       |
 | 5   | VITE_MAINTENANCE_END_DATE | Date Time   | Maintenance Time End    | -       |
 | 3   | VITE_MOBILE_APP_URL       | String      | Mobile App URL          | -       |
-
-### Example:
-
-```
-VITE_CATALOGS_JSON=[{"label":"Demo Catalog","value":"local.demo","selected":true}]
-```

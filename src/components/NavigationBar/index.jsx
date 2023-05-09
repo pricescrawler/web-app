@@ -2,8 +2,11 @@
  * Module dependencies.
  */
 
-import { Badge, Container, FormCheck, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -97,7 +100,6 @@ function NavigationBar() {
             ) : (
               <> </>
             )}
-
             <NavDropdown
               className={'me-3'}
               id={'basic-nav-dropdown'}
@@ -113,14 +115,34 @@ function NavigationBar() {
                 <option value={'pt-PT'}>🇵🇹 - Português</option>
               </select>
             </NavDropdown>
-            <Navbar.Text className={'me-2 text-white'}>{t('menu.dark-mode')}:</Navbar.Text>
           </Nav>
-
-          <FormCheck
-            checked={isDarkMode}
-            onChange={() => setIsDarkMode(!isDarkMode)}
-            type={'switch'}
-          />
+          <IconButton
+            color={'inherit'}
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            size={'small'}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#000000'
+              },
+              backgroundColor: '#495057',
+              ml: 1
+            }}
+            variant={'contained'}
+          >
+            {isDarkMode ? (
+              <Brightness7Icon
+                fontSize={'inherit'}
+                style={{ color: 'white' }}
+                // eslint-disable-next-line react/jsx-closing-bracket-location
+              />
+            ) : (
+              <Brightness4Icon
+                fontSize={'inherit'}
+                style={{ color: 'white' }}
+                // eslint-disable-next-line react/jsx-closing-bracket-location
+              />
+            )}
+          </IconButton>
         </Navbar.Collapse>
       </Container>
     </Navbar>

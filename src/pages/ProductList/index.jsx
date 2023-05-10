@@ -5,7 +5,20 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { Button, Form, InputGroup } from 'react-bootstrap';
+import { Add, Launch, Remove } from '@mui/icons-material';
+import {
+  Button,
+  IconButton,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@mui/material';
+import { Form, InputGroup } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -149,109 +162,211 @@ function ProductList() {
   };
 
   /**
-   *  `renderTableData.
-   */
-
-  const renderTableData = () => {
-    if (productList) {
-      return productList.map((prod, index) => {
-        const { catalog, historyEnabled, locale, product, quantity } = prod;
-        const { campaignPrice, name, pricePerQuantity, reference, regularPrice } = product;
-
-        return (
-          <tr key={index}>
-            <td>
-              <img
-                alt={''}
-                className={'product-list-img'}
-                referrerPolicy={'no-referrer'}
-                src={product.imageUrl}
-              />
-            </td>
-
-            <td>
-              {locale}.{catalog}
-            </td>
-            <td>{reference}</td>
-            <td>{name}</td>
-            {campaignPrice ? (
-              <td>
-                <s>{regularPrice}</s> &nbsp; {campaignPrice}
-              </td>
-            ) : (
-              <td>{regularPrice}</td>
-            )}
-            <td>{pricePerQuantity}</td>
-            <td>{quantity}</td>
-            <td>
-              {historyEnabled ? (
-                <Link
-                  target={'_self'}
-                  to={`/product/${locale}/${catalog}/${reference}`}
-                >
-                  <Button variant={'secondary'}>{t('general.go')}</Button>
-                </Link>
-              ) : (
-                <></>
-              )}
-            </td>
-
-            <td>
-              <a
-                href={product.productUrl}
-                rel={'noopener noreferrer'}
-                target={'_blank'}
-              >
-                <Button variant={'secondary'}>{t('general.go')}</Button>
-              </a>
-            </td>
-
-            <td>
-              <Button
-                onClick={(event) => removeFromProductList(event, prod)}
-                variant={'secondary'}
-              >
-                -
-              </Button>
-              &nbsp;
-              <Button
-                onClick={(event) => addToProductList(event, prod)}
-                variant={'secondary'}
-              >
-                +
-              </Button>
-            </td>
-          </tr>
-        );
-      });
-    }
-  };
-
-  /**
    *  `renderTable.
    */
 
-  const renderTable = () => (
-    <div className={'product-list-table'}>
-      <table>
-        <thead>
-          <tr>
-            <th>{t('data.product-fields.image')}</th>
-            <th>{t('data.product-fields.catalog')}</th>
-            <th>{t('data.product-fields.reference')}</th>
-            <th>{t('data.product-fields.name')}</th>
-            <th>{t('data.product-fields.regular-price')}</th>
-            <th>{t('data.product-fields.price-per-quantity')}</th>
-            <th>{t('data.product-fields.quantity')}</th>
-            <th>{t('data.product-fields.history-page')}</th>
-            <th>{t('data.product-fields.store-page')}</th>
-            <th>{t('data.product-fields.remove-add')}</th>
-          </tr>
-        </thead>
-        <tbody>{renderTableData()}</tbody>
-      </table>
-    </div>
-  );
+  const renderTable = () => {
+    if (productList) {
+      return (
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: 1200, overflowX: 'scroll' }}
+        >
+          <Table size={'small'}>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.image')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.catalog')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.reference')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.name')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.regular-price')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.price-per-quantity')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.quantity')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.history-page')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.store-page')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.remove-add')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {productList.map((prod, index) => {
+                const { catalog, historyEnabled, locale, product, quantity } = prod;
+                const { campaignPrice, name, pricePerQuantity, reference, regularPrice } = product;
+
+                return (
+                  <TableRow key={index}>
+                    <TableCell align={'center'}>
+                      <img
+                        alt={''}
+                        className={'product-list-img'}
+                        referrerPolicy={'no-referrer'}
+                        src={product.imageUrl}
+                      />
+                    </TableCell>
+                    <TableCell align={'center'}>
+                      {locale}.{catalog}
+                    </TableCell>
+                    <TableCell align={'center'}>{reference}</TableCell>
+                    <TableCell align={'center'}>{name}</TableCell>
+                    <TableCell align={'center'}>
+                      {campaignPrice ? (
+                        <div>
+                          <s>{regularPrice}</s> &nbsp; {campaignPrice}
+                        </div>
+                      ) : (
+                        regularPrice
+                      )}
+                    </TableCell>
+                    <TableCell align={'center'}>{pricePerQuantity}</TableCell>
+                    <TableCell align={'center'}>{quantity}</TableCell>
+                    <TableCell align={'center'}>
+                      {historyEnabled ? (
+                        <Link
+                          target={'_self'}
+                          to={`/product/${locale}/${catalog}/${reference}`}
+                        >
+                          <IconButton
+                            size={'small'}
+                            sx={{
+                              '&:hover': {
+                                backgroundColor: '#000000'
+                              },
+                              backgroundColor: '#495057'
+                            }}
+                            variant={'contained'}
+                          >
+                            <Launch
+                              fontSize={'inherit'}
+                              style={{ color: 'white' }}
+                            />
+                          </IconButton>
+                        </Link>
+                      ) : (
+                        <></>
+                      )}
+                    </TableCell>
+                    <TableCell align={'center'}>
+                      <a
+                        href={product.productUrl}
+                        rel={'noopener noreferrer'}
+                        target={'_blank'}
+                      >
+                        <IconButton
+                          size={'small'}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: '#000000'
+                            },
+                            backgroundColor: '#495057'
+                          }}
+                          variant={'contained'}
+                        >
+                          <Launch
+                            fontSize={'inherit'}
+                            style={{ color: 'white' }}
+                          />
+                        </IconButton>
+                      </a>
+                    </TableCell>
+                    <TableCell align={'center'}>
+                      <Stack
+                        alignItems={'center'}
+                        direction={'row'}
+                        justifyContent={'center'}
+                        spacing={1}
+                      >
+                        <IconButton
+                          onClick={(event) => removeFromProductList(event, prod)}
+                          size={'small'}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: '#000000'
+                            },
+                            backgroundColor: '#495057'
+                          }}
+                          variant={'contained'}
+                        >
+                          <Remove
+                            fontSize={'inherit'}
+                            style={{ color: 'white' }}
+                          />
+                        </IconButton>
+                        <IconButton
+                          onClick={(event) => addToProductList(event, prod)}
+                          size={'small'}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: '#000000'
+                            },
+                            backgroundColor: '#495057'
+                          }}
+                          variant={'contained'}
+                        >
+                          <Add
+                            fontSize={'inherit'}
+                            style={{ color: 'white' }}
+                          />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+  };
 
   const renderProductListUploadUrl = () => {
     if (productListUpload.data) {
@@ -272,7 +387,14 @@ function ProductList() {
     <>
       <Button
         onClick={uploadList}
-        variant={'secondary'}
+        size={'small'}
+        sx={{
+          '&:hover': {
+            backgroundColor: '#000000'
+          },
+          backgroundColor: '#495057'
+        }}
+        variant={'contained'}
       >
         {t('general.list-upload')}
       </Button>
@@ -284,9 +406,15 @@ function ProductList() {
               value={renderProductListUploadUrl()}
             />
             <Button
-              id={'button-addon2'}
               onClick={copyToClipboard}
-              variant={'outline-secondary'}
+              size={'small'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: '#000000'
+                },
+                backgroundColor: '#495057'
+              }}
+              variant={'contained'}
             >
               {t('general.copy-to-clipboard')}
             </Button>

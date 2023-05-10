@@ -2,8 +2,10 @@
  * Module dependencies.
  */
 
-import { Badge, Container, FormCheck, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
+import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -97,7 +99,6 @@ function NavigationBar() {
             ) : (
               <> </>
             )}
-
             <NavDropdown
               className={'me-3'}
               id={'basic-nav-dropdown'}
@@ -113,14 +114,34 @@ function NavigationBar() {
                 <option value={'pt-PT'}>🇵🇹 - Português</option>
               </select>
             </NavDropdown>
-            <Navbar.Text className={'me-2 text-white'}>{t('menu.dark-mode')}:</Navbar.Text>
           </Nav>
-
-          <FormCheck
-            checked={isDarkMode}
-            onChange={() => setIsDarkMode(!isDarkMode)}
-            type={'switch'}
-          />
+          <IconButton
+            color={'inherit'}
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            size={'small'}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#000000'
+              },
+              backgroundColor: '#495057',
+              ml: 1
+            }}
+            variant={'contained'}
+          >
+            {isDarkMode ? (
+              <Brightness7
+                fontSize={'inherit'}
+                style={{ color: 'white' }}
+                // eslint-disable-next-line react/jsx-closing-bracket-location
+              />
+            ) : (
+              <Brightness4
+                fontSize={'inherit'}
+                style={{ color: 'white' }}
+                // eslint-disable-next-line react/jsx-closing-bracket-location
+              />
+            )}
+          </IconButton>
         </Navbar.Collapse>
       </Container>
     </Navbar>

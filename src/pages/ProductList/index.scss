@@ -16,16 +16,8 @@ tr:nth-child(even) {
   background-color: #e9ecef;
 }
 
-.dark tr:nth-child(even) {
-  background-color: #212529;
-}
-
 tr:hover {
   background-color: #ced4da;
-}
-
-.dark tr:hover {
-  background-color: #495057;
 }
 
 .product-list-table {

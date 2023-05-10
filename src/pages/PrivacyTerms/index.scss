@@ -1,0 +1,26 @@
+.terms {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem;
+    margin: 0 auto;
+    max-width: 122rem;
+  }
+
+  &__content {
+    text-align: center;
+  }
+
+  &__heading {
+    font-weight: 700;
+    margin-block: 1rem;
+  }
+
+  &__paragraph {
+    &:last-of-type {
+      margin-top: 2rem;
+      font-weight: 700;
+    }
+  }
+}

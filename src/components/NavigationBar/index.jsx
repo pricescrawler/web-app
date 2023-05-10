@@ -3,10 +3,9 @@
  */
 
 import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import IconButton from '@mui/material/IconButton';
+import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -130,13 +129,13 @@ function NavigationBar() {
             variant={'contained'}
           >
             {isDarkMode ? (
-              <Brightness7Icon
+              <Brightness7
                 fontSize={'inherit'}
                 style={{ color: 'white' }}
                 // eslint-disable-next-line react/jsx-closing-bracket-location
               />
             ) : (
-              <Brightness4Icon
+              <Brightness4
                 fontSize={'inherit'}
                 style={{ color: 'white' }}
                 // eslint-disable-next-line react/jsx-closing-bracket-location

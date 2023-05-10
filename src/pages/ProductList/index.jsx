@@ -5,26 +5,26 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
+import { Add, Launch, Remove } from '@mui/icons-material';
+import {
+  Button,
+  IconButton,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@mui/material';
 import { Form, InputGroup } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AddIcon from '@mui/icons-material/Add';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import LaunchIcon from '@mui/icons-material/Launch';
 import { Link } from 'react-router-dom';
 import Loader from '@components/Loader';
-import Paper from '@mui/material/Paper';
 import { QRCode } from 'antd';
-import RemoveIcon from '@mui/icons-material/Remove';
-import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -284,7 +284,7 @@ function ProductList() {
                             }}
                             variant={'contained'}
                           >
-                            <LaunchIcon
+                            <Launch
                               fontSize={'inherit'}
                               style={{ color: 'white' }}
                             />
@@ -310,7 +310,7 @@ function ProductList() {
                           }}
                           variant={'contained'}
                         >
-                          <LaunchIcon
+                          <Launch
                             fontSize={'inherit'}
                             style={{ color: 'white' }}
                           />
@@ -335,7 +335,7 @@ function ProductList() {
                           }}
                           variant={'contained'}
                         >
-                          <RemoveIcon
+                          <Remove
                             fontSize={'inherit'}
                             style={{ color: 'white' }}
                           />
@@ -351,7 +351,7 @@ function ProductList() {
                           }}
                           variant={'contained'}
                         >
-                          <AddIcon
+                          <Add
                             fontSize={'inherit'}
                             style={{ color: 'white' }}
                           />

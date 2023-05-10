@@ -5,24 +5,26 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
 import Loader from '@components/Loader';
-import Paper from '@mui/material/Paper';
 import PricesChart from '@components/PricesChart';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
-import { Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -241,10 +243,7 @@ function ProductDetails() {
           component={Paper}
           sx={{ maxWidth: 1000, overflowX: 'scroll' }}
         >
-          <Table
-            aria-label={'a dense table'}
-            size={'small'}
-          >
+          <Table size={'small'}>
             <TableHead>
               <TableRow>
                 <TableCell
@@ -280,8 +279,8 @@ function ProductDetails() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {prices.map((row) => (
-                <TableRow key={row.date}>
+              {prices.map((row, index) => (
+                <TableRow key={index}>
                   <TableCell align={'center'}>{row.regularPrice}</TableCell>
                   <TableCell align={'center'}>{row.campaignPrice}</TableCell>
                   <TableCell align={'center'}>{row.pricePerQuantity}</TableCell>

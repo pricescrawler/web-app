@@ -6,7 +6,7 @@ import React, { useMemo, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import About from '@pages/About';
-import CssBaseline from '@mui/material/CssBaseline';
+import { CssBaseline } from '@mui/material';
 import Footer from '@components/Footer';
 import NavigationBar from '@components/NavigationBar';
 import PrivacyTerms from '@pages/PrivacyTerms';

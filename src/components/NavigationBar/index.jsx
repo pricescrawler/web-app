@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+import './index.scss';
 import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';

@@ -1,5 +1,6 @@
 .chart-container {
-  overflow-y: auto;
+  display: flex;
+  overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
   background-color: white;

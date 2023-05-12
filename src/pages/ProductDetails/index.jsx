@@ -5,7 +5,22 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { Button, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
@@ -63,14 +78,33 @@ function ProductDetails() {
       );
 
       return (
-        <p>
-          <strong>{t('data.product-titles.price-min')}</strong>&nbsp;
-          {minPrice}&nbsp;|&nbsp;<strong>{t('data.product-titles.price-max')}</strong>&nbsp;
-          {maxPrice}&nbsp;|&nbsp;<strong>{t('data.product-titles.price-avg')}</strong>&nbsp;
-          {getAveragePrice(product.prices)}&nbsp;|&nbsp;
-          <strong>{t('data.product-titles.price-last')}</strong>&nbsp;
-          {utils.getLastPrice(product)}
-        </p>
+        <Stack
+          alignItems={'center'}
+          direction={{ md: 'row', xs: 'column' }}
+          divider={
+            <Divider
+              flexItem
+              orientation={'vertical'}
+            />
+          }
+          justifyContent={'center'}
+          spacing={{ md: 2, xs: 0 }}
+        >
+          <div>
+            <strong>{t('data.product-titles.price-min')}</strong>&nbsp;{minPrice}
+          </div>
+          <div>
+            <strong>{t('data.product-titles.price-max')}</strong>&nbsp;{maxPrice}
+          </div>
+          <div>
+            <strong>{t('data.product-titles.price-avg')}</strong>&nbsp;
+            {getAveragePrice(product.prices)}
+          </div>
+          <div>
+            <strong>{t('data.product-titles.price-last')}</strong>&nbsp;
+            {utils.getLastPrice(product)}
+          </div>
+        </Stack>
       );
     }
   };
@@ -106,51 +140,35 @@ function ProductDetails() {
 
     if (productPrice === averagePrice) {
       return (
-        <OverlayTrigger
-          overlay={
-            <Tooltip id={'tooltip-disabled'}>
-              {t('data.product-titles.price-indicator-info')}
-            </Tooltip>
-          }
-        >
+        <Tooltip title={t('data.product-titles.price-indicator-info')}>
           <div>
             <strong>{t('data.product-titles.price-indicator')}:</strong>
             &nbsp;
             <span className={'badge-orange'}>{productPrice}€</span>
           </div>
-        </OverlayTrigger>
+        </Tooltip>
       );
     }
     if (productPrice > averagePrice) {
       return (
-        <OverlayTrigger
-          overlay={
-            <Tooltip id={'tooltip-disabled'}>
-              {t('data.product-titles.price-indicator-info')}
-            </Tooltip>
-          }
-        >
+        <Tooltip title={t('data.product-titles.price-indicator-info')}>
           <div>
             <strong>{t('data.product-titles.price-indicator')}:</strong>
             &nbsp;
             <span className={'badge-red'}>{productPrice}€</span>
           </div>
-        </OverlayTrigger>
+        </Tooltip>
       );
     }
 
     return (
-      <OverlayTrigger
-        overlay={
-          <Tooltip id={'tooltip-disabled'}>{t('data.product-titles.price-indicator-info')}</Tooltip>
-        }
-      >
+      <Tooltip title={t('data.product-titles.price-indicator-info')}>
         <div>
           <strong>{t('data.product-titles.price-indicator')}:</strong>
           &nbsp;
           <span className={'badge-green'}>{productPrice}€</span>
         </div>
-      </OverlayTrigger>
+      </Tooltip>
     );
   };
 
@@ -174,26 +192,31 @@ function ProductDetails() {
 
         return (
           <>
-            {campaignPrice ? (
-              <p>
-                <strong>{t('data.product-fields.regular-price')}:</strong>
-                <s>{regularPrice}</s>
+            <Stack
+              direction={'column'}
+              spacing={1}
+            >
+              {campaignPrice ? (
+                <div>
+                  <strong>{t('data.product-fields.regular-price')}:</strong>
+                  <s>{regularPrice}</s>
+                  &nbsp;
+                  {campaignPrice}
+                </div>
+              ) : (
+                <div>
+                  <strong>{t('data.product-fields.regular-price')}:</strong>
+                  &nbsp;
+                  {regularPrice}
+                </div>
+              )}
+              <div>
+                <strong>{t('data.product-fields.price-per-quantity')}:</strong>
                 &nbsp;
-                {campaignPrice}
-              </p>
-            ) : (
-              <p>
-                <strong>{t('data.product-fields.regular-price')}:</strong>
-                &nbsp;
-                {regularPrice}
-              </p>
-            )}
-            <p>
-              <strong>{t('data.product-fields.price-per-quantity')}:</strong>
-              &nbsp;
-              {pricePerQuantity}
-            </p>
-            {renderPriceIndicator(product.prices, price)}
+                {pricePerQuantity}
+              </div>
+              {renderPriceIndicator(product.prices, price)}
+            </Stack>
           </>
         );
       }
@@ -201,104 +224,76 @@ function ProductDetails() {
   };
 
   /**
-   * Render Product Data.
-   */
-
-  const renderProductData = () => (
-    <>
-      <div className={'mb-3'}>
-        <p>
-          <strong>{t('data.product-fields.locale')}:</strong>&nbsp;
-          {product.locale}&nbsp;|&nbsp;<strong>{t('data.product-fields.catalog')}:</strong>&nbsp;
-          {product.catalog}&nbsp;|&nbsp;<strong>{t('data.product-fields.reference')}:</strong>&nbsp;
-          {product.reference}
-        </p>
-      </div>
-      <div className={'mb-3'}>
-        <p>
-          <strong>{t('data.product-fields.name')}:</strong>
-          &nbsp;
-          {product.name ? product.name : '-'}
-        </p>
-        <p>
-          <strong>{t('data.product-fields.brand')}:</strong>
-          &nbsp;
-          {product.brand ? product.brand : '-'}
-        </p>
-        <p>
-          <strong>{t('data.product-fields.quantity')}:</strong>
-          &nbsp;
-          {product.quantity ? product.quantity : '-'}
-        </p>
-        <p>
-          <strong>{t('data.product-fields.description')}:</strong>
-          &nbsp;
-          {product.description ? product.description : '-'}
-        </p>
-      </div>
-      <div className={'mb-3'}>
-        <p>
-          <strong>EAN/UPC:</strong>
-          &nbsp;
-          {product.eanUpc ? renderEanUpc(product.eanUpc) : '-'}
-        </p>
-      </div>
-      <div className={'mb-3'}>{renderProductPrices()}</div>
-    </>
-  );
-
-  /**
-   * Render Table Data.
-   */
-
-  const renderTableData = (pricesData) => {
-    const prices = Object.assign([], pricesData);
-
-    if (prices) {
-      // eslint-disable-next-line id-length
-      prices.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-
-        return dateB - dateA;
-      });
-
-      return prices.map((prod, index) => {
-        const { campaignPrice, date, name, pricePerQuantity, quantity, regularPrice } = prod;
-
-        return (
-          <tr key={index}>
-            <td>{regularPrice}</td>
-            <td>{campaignPrice}</td>
-            <td>{pricePerQuantity}</td>
-            <td>{quantity ? quantity : name}</td>
-            <td>{date}</td>
-          </tr>
-        );
-      });
-    }
-  };
-
-  /**
    * Render Table.
    */
 
-  const renderTable = () => (
-    <div className={'table-overflow'}>
-      <table className={'BorderLine'}>
-        <thead>
-          <tr>
-            <th>{t('data.product-fields.regular-price')}</th>
-            <th>{t('data.product-fields.campaign-price')}</th>
-            <th>{t('data.product-fields.price-per-quantity')}</th>
-            <th>{t('data.product-fields.quantity')}</th>
-            <th>{t('general.date')}</th>
-          </tr>
-        </thead>
-        <tbody>{renderTableData(product.prices)}</tbody>
-      </table>
-    </div>
-  );
+  const renderTable = () => {
+    const prices = Object.assign([], product.prices);
+
+    if (prices) {
+      prices.sort((first, second) => {
+        const firstDate = new Date(first.date);
+        const secondDate = new Date(second.date);
+
+        return secondDate - firstDate;
+      });
+
+      return (
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: 1000, overflowX: 'scroll' }}
+        >
+          <Table size={'small'}>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.regular-price')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.campaign-price')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.price-per-quantity')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('data.product-fields.quantity')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
+                  {t('general.date')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {prices.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell align={'center'}>{row.regularPrice}</TableCell>
+                  <TableCell align={'center'}>{row.campaignPrice}</TableCell>
+                  <TableCell align={'center'}>{row.pricePerQuantity}</TableCell>
+                  <TableCell align={'center'}>{row.quantity ? row.quantity : row.name}</TableCell>
+                  <TableCell align={'center'}>{row.date}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+  };
 
   /**
    * Create Chart Data.
@@ -360,7 +355,14 @@ function ProductDetails() {
                 );
               }
             }}
-            variant={'secondary'}
+            size={'small'}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#000000'
+              },
+              backgroundColor: '#495057'
+            }}
+            variant={'contained'}
           >
             {t('data.product-fields.add-to-list')}
           </Button>
@@ -369,71 +371,144 @@ function ProductDetails() {
     }
   };
 
+  const renderProductDataContainer = () => {
+    return (
+      <>
+        <Box justify={'center'}>
+          <Grid
+            alignItems={'center'}
+            container
+            justify={'center'}
+            spacing={{ md: 10, xs: 1 }}
+          >
+            <Grid
+              item
+              md={5}
+              style={{ display: 'flex', justifyContent: 'center' }}
+              xs={12}
+            >
+              <img
+                alt={product.name}
+                className={'product-img'}
+                loading={'lazy'}
+                referrerPolicy={'no-referrer'}
+                src={product.imageUrl}
+              />
+            </Grid>
+            <Grid
+              item
+              md={7}
+              style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}
+              xs={12}
+            >
+              <Stack
+                direction={'column'}
+                spacing={1}
+              >
+                <Stack
+                  direction={{ md: 'row', xs: 'column' }}
+                  divider={
+                    <Divider
+                      flexItem
+                      orientation={'vertical'}
+                    />
+                  }
+                  spacing={{ md: 1, xs: 0.5 }}
+                >
+                  <div>
+                    <strong>{t('data.product-fields.locale')}:</strong>&nbsp;{product.locale}
+                  </div>
+                  <div>
+                    <strong>{t('data.product-fields.catalog')}:</strong>&nbsp;{product.catalog}
+                  </div>
+                  <div>
+                    <strong>{t('data.product-fields.reference')}:</strong>&nbsp;{product.reference}
+                  </div>
+                </Stack>
+                <div>
+                  <strong>{t('data.product-fields.name')}:</strong>
+                  &nbsp;
+                  {product.name ? product.name : '-'}
+                </div>
+                <div>
+                  <strong>{t('data.product-fields.brand')}:</strong>
+                  &nbsp;
+                  {product.brand ? product.brand : '-'}
+                </div>
+                <div>
+                  <strong>{t('data.product-fields.quantity')}:</strong>
+                  &nbsp;
+                  {product.quantity ? product.quantity : '-'}
+                </div>
+                <div>
+                  <strong>{t('data.product-fields.description')}:</strong>
+                  &nbsp;
+                  {product.description ? product.description : '-'}
+                </div>
+                <div>
+                  <strong>EAN/UPC:</strong>
+                  &nbsp;
+                  {product.eanUpc ? renderEanUpc(product.eanUpc) : '-'}
+                </div>
+                <div>{renderProductPrices()}</div>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Stack>
+          <center>
+            <a
+              href={product.productUrl}
+              rel={'noopener noreferrer'}
+              target={'_blank'}
+            >
+              <Button
+                size={'small'}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: '#000000'
+                  },
+                  backgroundColor: '#495057'
+                }}
+                variant={'contained'}
+              >
+                {t('data.product-fields.store-page')}
+              </Button>
+            </a>
+            &nbsp;&nbsp;
+            {renderAddToListButton()}
+          </center>
+        </Stack>
+      </>
+    );
+  };
+
   return (
     <>
       {!isLoadingData && isProductLoaded() ? (
-        <Container>
-          <Row>
-            <center>
-              <div className={'h2'}>
-                <strong>{t('title.product-details')}</strong>
-              </div>
-            </center>
-          </Row>
-
-          <Row className={'justify-content-md-center'}>
-            <Col md={'auto'}>
-              <center>
-                <img
-                  alt={''}
-                  className={'product-img'}
-                  referrerPolicy={'no-referrer'}
-                  src={product.imageUrl}
-                />
-              </center>
-            </Col>
-            <Col md={'auto'}>
-              <center>{renderProductData()}</center>
-            </Col>
-          </Row>
-
-          <Row className={'justify-content-md-center'}>
-            <center>
-              <a
-                href={product.productUrl}
-                rel={'noopener noreferrer'}
-                target={'_blank'}
-              >
-                <Button variant={'secondary'}>{t('data.product-fields.store-page')}</Button>
-              </a>
-              &nbsp;
-              {renderAddToListButton()}
-            </center>
-          </Row>
-          <br />
-          <Row className={'justify-content-md-center'}>
-            <Col md={'auto'}>
-              <center>
-                <div className={'h4'}>
-                  <strong>{t('general.price-evolution')}</strong>
-                </div>
-                {renderStatistics()}
-                <PricesChart data={createChartData(product.prices)} />
-              </center>
-            </Col>
-          </Row>
-          <br />
-          <Row className={'justify-content-md-center'}>
-            <Col md={'auto'}>
-              <center>
-                <div className={'h4'}>
-                  <strong>{t('general.prices-history')}</strong>
-                </div>
-                {renderTable()}
-              </center>
-            </Col>
-          </Row>
-        </Container>
+        <Stack
+          alignItems={'center'}
+          direction={'column'}
+          justify={'center'}
+          spacing={2}
+        >
+          <Typography variant={'h4'}>
+            <strong>{t('title.product-details')}</strong>
+          </Typography>
+          {renderProductDataContainer()}
+          <Typography variant={'h5'}>
+            <strong>{t('general.price-evolution')}</strong>
+          </Typography>
+          <div>
+            {renderStatistics()}
+            <PricesChart data={createChartData(product.prices)} />
+          </div>
+          <Typography variant={'h5'}>
+            <strong>{t('general.prices-history')}</strong>
+          </Typography>
+          {renderTable()}
+        </Stack>
       ) : (
         <Loader />
       )}

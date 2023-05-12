@@ -13,6 +13,7 @@ import {
   YAxis
 } from 'recharts';
 import React from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 /**
  * Function `PriceChart`.
@@ -20,6 +21,19 @@ import React from 'react';
 
 // eslint-disable-next-line react/prop-types
 function PricesChart({ data }) {
+  const isWide = useMediaQuery('(max-width: 1000px)');
+  const isMobile = useMediaQuery('(max-width: 600px)');
+
+  let chartWidth = 1000;
+  let chartHeight = 200;
+
+  if (isMobile) {
+    chartWidth = 350;
+    chartHeight = 150;
+  } else if (isWide) {
+    chartWidth = 600;
+  }
+
   return (
     <ResponsiveContainer
       height={'100%'}
@@ -28,8 +42,8 @@ function PricesChart({ data }) {
       <div className={'chart-container'}>
         <LineChart
           data={data}
-          height={150}
-          width={500}
+          height={chartHeight}
+          width={chartWidth}
         >
           <CartesianGrid strokeDasharray={'3 3'} />
           <XAxis dataKey={'date'} />

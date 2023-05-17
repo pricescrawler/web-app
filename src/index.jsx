@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import './index.scss';
+import './style.scss';
 import '@services/i18n';
 import React, { Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';

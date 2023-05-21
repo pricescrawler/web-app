@@ -5,14 +5,17 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { Accordion, Button, ButtonGroup, Form, FormControl } from 'react-bootstrap';
+import { Accordion, Button, Form, FormControl } from 'react-bootstrap';
+import { InputLabel, MenuItem, FormControl as ReactFormControl, Select } from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
 import Maintenance from '@components/Maintenance';
 import { MultiSelect } from 'react-multi-select-component';
 import ProductCard from '@components/ProductCard';
+
 import Swal from 'sweetalert2';
+
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -23,6 +26,7 @@ function ProductSearch() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
+  const [orderBy, setOrderBy] = useState(t('menu.order.default'));
   const [catalogs] = useState(JSON.parse(import.meta.env.VITE_CATALOGS_JSON));
   const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
@@ -42,6 +46,7 @@ function ProductSearch() {
     event.preventDefault();
 
     if (searchValue !== '' && selectedCatalogs.length > 0) {
+      setOrderBy(t('menu.order.default'));
       dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue }));
     } else {
       Swal.fire({
@@ -89,63 +94,39 @@ function ProductSearch() {
   );
 
   /**
-   * `orderByPriceASC`.
+   * `orderBy functionality.
    */
 
-  const orderByPriceASC = (event) => {
+  const handleSortChanges = (event) => {
     event.preventDefault();
+    setOrderBy(event.target.value);
 
-    currentProducts.map((element) =>
-      element.products.sort((a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1))
-    );
+    let sortingFunction;
 
-    dispatch(productsActions.getProductsSuccess(currentProducts));
-  };
+    switch (event.target.value) {
+      case t('menu.order.asc'):
+        sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
+        break;
 
-  /**
-   * `orderByPriceDESC`.
-   */
+      case t('menu.order.desc'):
+        sortingFunction = (a1, b1) => utils.getFormattedPrice(b1) - utils.getFormattedPrice(a1);
+        break;
 
-  const orderByPriceDESC = (event) => {
-    event.preventDefault();
+      case t('menu.order.asc-price-per-quantity'):
+        sortingFunction = (a1, b1) =>
+          utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity);
+        break;
 
-    currentProducts.map((element) =>
-      element.products.sort((a1, b1) => utils.getFormattedPrice(b1) - utils.getFormattedPrice(a1))
-    );
+      case t('menu.order.desc-price-per-quantity'):
+        sortingFunction = (a1, b1) =>
+          utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
+        break;
 
-    dispatch(productsActions.getProductsSuccess(currentProducts));
-  };
+      default:
+        sortingFunction = (a1, b1) => a1.price - b1.price;
+    }
 
-  /**
-   * `orderByPriceASCPricePerQuantity`.
-   */
-
-  const orderByPriceASCPricePerQuantity = (event) => {
-    event.preventDefault();
-
-    currentProducts.map((element) =>
-      element.products.sort(
-        (a1, b1) =>
-          utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity)
-      )
-    );
-
-    dispatch(productsActions.getProductsSuccess(currentProducts));
-  };
-
-  /**
-   * `orderByPriceDESCPricePerQuantity`.
-   */
-
-  const orderByPriceDESCPricePerQuantity = (event) => {
-    event.preventDefault();
-
-    currentProducts.map((element) =>
-      element.products.sort(
-        (a1, b1) =>
-          utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity)
-      )
-    );
+    currentProducts.map((element) => element.products.sort(sortingFunction));
 
     dispatch(productsActions.getProductsSuccess(currentProducts));
   };
@@ -157,35 +138,34 @@ function ProductSearch() {
   const renderFilterOptions = () => {
     if (currentProducts.length > 0) {
       return (
-        <div className={'d-flex justify-content-end mt-3 mb-3 me-1 flex-wrap flex-md-nowrap'}>
-          <ButtonGroup>
-            <Button
-              onClick={orderByPriceASC}
-              variant={'outline-secondary'}
+        <div className={'sort-by-container'}>
+          <ReactFormControl>
+            <InputLabel id={'sort-by'}>{t('menu.order.default')}</InputLabel>
+            <Select
+              autoWidth
+              id={'sort-by-select'}
+              label={'Sort By'}
+              labelId={'sort-by'}
+              onChange={(ev) => handleSortChanges(ev)}
+              renderValue={(selected) => {
+                if (selected.length === 0) {
+                  return <em>{t('menu.order.default')}</em>;
+                }
+
+                return selected;
+              }}
+              value={orderBy}
             >
-              {t('menu.order.asc')}
-            </Button>
-            <Button
-              onClick={orderByPriceDESC}
-              variant={'outline-secondary'}
-            >
-              {t('menu.order.desc')}
-            </Button>
-          </ButtonGroup>
-          <ButtonGroup className={'ms-1'}>
-            <Button
-              onClick={orderByPriceASCPricePerQuantity}
-              variant={'outline-secondary'}
-            >
-              {t('menu.order.asc-price-per-quantity')}
-            </Button>
-            <Button
-              onClick={orderByPriceDESCPricePerQuantity}
-              variant={'outline-secondary'}
-            >
-              {t('menu.order.desc-price-per-quantity')}
-            </Button>
-          </ButtonGroup>
+              <MenuItem value={t('menu.order.asc')}>{t('menu.order.asc')}</MenuItem>
+              <MenuItem value={t('menu.order.desc')}>{t('menu.order.desc')}</MenuItem>
+              <MenuItem value={t('menu.order.asc-price-per-quantity')}>
+                {t('menu.order.asc-price-per-quantity')}
+              </MenuItem>
+              <MenuItem value={t('menu.order.desc-price-per-quantity')}>
+                {t('menu.order.desc-price-per-quantity')}
+              </MenuItem>
+            </Select>
+          </ReactFormControl>
         </div>
       );
     }

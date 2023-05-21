@@ -123,7 +123,7 @@ function ProductSearch() {
         break;
 
       default:
-        sortingFunction = (a1, b1) => a1.price - b1.price;
+        sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
     }
 
     currentProducts.map((element) => element.products.sort(sortingFunction));

@@ -114,12 +114,12 @@ function ProductSearch() {
 
       case t('menu.order.asc-price-per-quantity'):
         sortingFunction = (a1, b1) =>
-          utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity);
+        utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
         break;
-
-      case t('menu.order.desc-price-per-quantity'):
-        sortingFunction = (a1, b1) =>
-          utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
+        
+        case t('menu.order.desc-price-per-quantity'):
+          sortingFunction = (a1, b1) =>
+          utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity);
         break;
 
       default:

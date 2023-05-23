@@ -12,10 +12,11 @@
     "about": "About",
     "privacy-terms": "Privacy & Terms",
     "order": {
-      "asc": "Price ⬆️",
-      "desc": "Price ⬇️",
-      "asc-price-per-quantity": "Price/Quantity ⬆️",
-      "desc-price-per-quantity": "Price/Quantity ⬇️"
+      "default": "Sort by",
+      "asc": "Price: Low to high",
+      "desc": "Price: High to low",
+      "asc-price-per-quantity": "Price/Quantity: Low to high",
+      "desc-price-per-quantity": "Price/Quantity: High to low"
     },
     "language": "Language",
     "dark-mode": "Dark Mode",

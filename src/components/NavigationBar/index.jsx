@@ -66,7 +66,12 @@ function NavigationBar() {
           />
           &nbsp;
           <Navbar.Text className={'navbar-text'}>
-            <Link to={'/'}>{t('title.base')}</Link>
+            <Link
+              aria-label={'click to return to the homepage'}
+              to={'/'}
+            >
+              {t('title.base')}
+            </Link>
           </Navbar.Text>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls={'basic-navbar-nav'} />

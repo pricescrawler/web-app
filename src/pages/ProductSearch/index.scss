@@ -44,3 +44,20 @@
     width: 90%;
   }
 }
+
+/**homepage styles**/
+
+.homepage {
+  margin: 1rem;
+
+  &__heading {
+    margin-block: 1rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__search {
+    display: flex;
+    justify-content: center;
+  }
+}

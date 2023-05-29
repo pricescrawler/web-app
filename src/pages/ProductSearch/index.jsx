@@ -6,7 +6,16 @@ import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import { Accordion, Button, Form, FormControl } from 'react-bootstrap';
-import { InputLabel, MenuItem, FormControl as ReactFormControl, Select } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  Chip,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  FormControl as ReactFormControl,
+  Select
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
@@ -58,13 +67,41 @@ function ProductSearch() {
     }
   };
 
+  const handleStoreRemoval = (catalogValue) => {
+    const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
+
+    setSelectedCatalogs(updatedCatalogs);
+  };
+
+  const handleCatalog = (ev) => {
+    const selectedCatalog = ev.target.value[ev.target.value.length - 1];
+    const isCatalogSelected = selectedCatalogs.some((catalog) => catalog.label === selectedCatalog);
+
+    if (isCatalogSelected) {
+      const updatedCatalogs = selectedCatalogs.filter(
+        (catalog) => catalog.label !== selectedCatalog
+      );
+
+      setSelectedCatalogs(updatedCatalogs);
+    } else {
+      const catalogToAdd = catalogs.find((catalog) => catalog.label === selectedCatalog);
+
+      if (catalogToAdd) {
+        const updatedCatalogs = [...selectedCatalogs, catalogToAdd];
+
+        setSelectedCatalogs(updatedCatalogs);
+      }
+    }
+  };
+
   /**
    * `renderSearchContainer`.
    */
 
-  const renderSearchContainer = () => (
-    <center>
-      <div className={'search-container'}>
+  // eslint-disable-next-line no-unused-vars
+  const oldContainer = () => (
+    <div className={'homepage__search'}>
+      <div className={'homepage__search-container'}>
         <MultiSelect
           className={'search-text mb-1'}
           labelledBy={'Select'}
@@ -90,7 +127,69 @@ function ProductSearch() {
           </Button>
         </Form>
       </div>
-    </center>
+    </div>
+  );
+
+  const renderSearchContainer = () => (
+    <div className={'homepage__search'}>
+      <div className={'homepage__search-container'}>
+        <ReactFormControl fullWidth>
+          {selectedCatalogs.length === 0 && (
+            <InputLabel id={'search-multi-select-label'}>{t('general.search')}</InputLabel>
+          )}
+          <Select
+            className={'homepage__multi'}
+            labelId={'search-multi-select-label'}
+            multiple
+            onChange={handleCatalog}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((catalog, index) => (
+                  <Chip
+                    key={`chip-${index}`}
+                    label={catalog.label}
+                    onDelete={() => handleStoreRemoval(catalog.value)}
+                    onMouseDown={(event) => {
+                      event.stopPropagation();
+                    }}
+                    size={'small'}
+                    variant={'outlined'}
+                  />
+                ))}
+              </Box>
+            )}
+            value={selectedCatalogs}
+          >
+            {catalogs
+              .sort((a1, b1) => {
+                if (a1.selected && !b1.selected) {
+                  return -1;
+                }
+                if (!a1.selected && b1.selected) {
+                  return 1;
+                }
+
+                return a1.label.localeCompare(b1.label);
+              })
+              .map((catalog, index) => {
+                const isSelected = selectedCatalogs.some(
+                  (selectedCatalog) => selectedCatalog.value === catalog.value
+                );
+
+                return (
+                  <MenuItem
+                    key={`menu-item-${index}`}
+                    value={catalog.label}
+                  >
+                    <Checkbox checked={isSelected} />
+                    <ListItemText primary={catalog.label} />
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </ReactFormControl>
+      </div>
+    </div>
   );
 
   /**
@@ -114,11 +213,11 @@ function ProductSearch() {
 
       case t('menu.order.asc-price-per-quantity'):
         sortingFunction = (a1, b1) =>
-        utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
+          utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
         break;
-        
-        case t('menu.order.desc-price-per-quantity'):
-          sortingFunction = (a1, b1) =>
+
+      case t('menu.order.desc-price-per-quantity'):
+        sortingFunction = (a1, b1) =>
           utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity);
         break;
 
@@ -176,7 +275,7 @@ function ProductSearch() {
    */
 
   const renderProductSearchResults = () => (
-    <div>
+    <div className={'homepage__results'}>
       {currentProducts.map((productCatalogs, index) => (
         <Accordion
           alwaysOpen
@@ -208,15 +307,9 @@ function ProductSearch() {
   );
 
   return (
-    <>
-      <div
-        className={'h2'}
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <strong>{t('menu.home')}</strong>
-      </div>
-      <br />
-      {isMaintenanceMode === 'true' ? (
+    <div className={'homepage'}>
+      <h2 className={'homepage__heading h2'}>{t('menu.home')}</h2>
+      {isMaintenanceMode ? (
         <Maintenance />
       ) : (
         <>
@@ -225,7 +318,7 @@ function ProductSearch() {
           {!isLoadingData ? renderProductSearchResults() : <Loader />}
         </>
       )}
-    </>
+    </div>
   );
 }
 

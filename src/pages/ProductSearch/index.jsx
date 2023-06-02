@@ -5,26 +5,28 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { Accordion, Button, Form, FormControl } from 'react-bootstrap';
 import {
   Box,
+  Button,
   Checkbox,
   Chip,
+  Divider,
+  FormControl,
   InputLabel,
   ListItemText,
   MenuItem,
-  FormControl as ReactFormControl,
-  Select
+  Select,
+  Stack,
+  TextField
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Accordion } from 'react-bootstrap';
 import Loader from '@components/Loader';
 import Maintenance from '@components/Maintenance';
-import { MultiSelect } from 'react-multi-select-component';
 import ProductCard from '@components/ProductCard';
-
+import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
-
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -98,42 +100,13 @@ function ProductSearch() {
    * `renderSearchContainer`.
    */
 
-  // eslint-disable-next-line no-unused-vars
-  const oldContainer = () => (
-    <div className={'homepage__search'}>
-      <div className={'homepage__search-container'}>
-        <MultiSelect
-          className={'search-text mb-1'}
-          labelledBy={'Select'}
-          onChange={setSelectedCatalogs}
-          options={catalogs}
-          value={selectedCatalogs}
-        />
-        <Form
-          className={'d-flex'}
-          onSubmit={handleProductSearch}
-        >
-          <FormControl
-            className={'me-1'}
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder={t('general.search-for-some-product')}
-            type={'search'}
-          />
-          <Button
-            type={'submit'}
-            variant={'secondary'}
-          >
-            {t('general.search')}
-          </Button>
-        </Form>
-      </div>
-    </div>
-  );
-
   const renderSearchContainer = () => (
     <div className={'homepage__search'}>
       <div className={'homepage__search-container'}>
-        <ReactFormControl fullWidth>
+        <FormControl
+          fullWidth
+          sx={{ border: '1px solid #dee2e6' }}
+        >
           {selectedCatalogs.length === 0 && (
             <InputLabel id={'search-multi-select-label'}>{t('general.search')}</InputLabel>
           )}
@@ -181,13 +154,55 @@ function ProductSearch() {
                     key={`menu-item-${index}`}
                     value={catalog.label}
                   >
-                    <Checkbox checked={isSelected} />
+                    <Checkbox
+                      checked={isSelected}
+                      color={'secondary'}
+                    />
                     <ListItemText primary={catalog.label} />
                   </MenuItem>
                 );
               })}
           </Select>
-        </ReactFormControl>
+        </FormControl>
+        <form
+          action={'POST'}
+          className={'homepage__form'}
+          onSubmit={handleProductSearch}
+        >
+          <FormControl fullWidth>
+            <Stack
+              direction={'row'}
+              spacing={0.4}
+            >
+              <TextField
+                autoComplete={'off'}
+                className={'homepage__textfield'}
+                color={'secondary'}
+                fullWidth
+                label={t('general.search-for-some-product')}
+                onChange={(event) => setSearchValue(event.target.value)}
+                variant={'outlined'}
+              />
+              <Divider
+                color={'secondary'}
+                flexItem
+                orientation={'vertical'}
+                spacing={1}
+                variant={'middle'}
+              />
+              <Button
+                className={'homepage__search-button'}
+                color={'secondary'}
+                endIcon={<SendIcon />}
+                sx={{ textTransform: 'capitalize' }}
+                type={'submit'}
+                variant={'contained'}
+              >
+                {t('general.search')}
+              </Button>
+            </Stack>
+          </FormControl>
+        </form>
       </div>
     </div>
   );
@@ -238,7 +253,7 @@ function ProductSearch() {
     if (currentProducts.length > 0) {
       return (
         <div className={'sort-by-container'}>
-          <ReactFormControl>
+          <FormControl>
             <InputLabel id={'sort-by'}>{t('menu.order.default')}</InputLabel>
             <Select
               autoWidth
@@ -264,7 +279,7 @@ function ProductSearch() {
                 {t('menu.order.desc-price-per-quantity')}
               </MenuItem>
             </Select>
-          </ReactFormControl>
+          </FormControl>
         </div>
       );
     }

@@ -8,12 +8,6 @@
   color: black;
 }
 
-.search-container {
-  width: 50%;
-  align-items: center;
-  justify-content: center;
-}
-
 .accordion-button:not(.collapsed) {
   color: black;
   background-color: white;
@@ -37,10 +31,4 @@
   padding: 1.5rem 0.5rem 1rem 0;
   display: flex;
   justify-content: end;
-}
-
-@media only screen and (max-width: 600px) {
-  .search-container {
-    width: 90%;
-  }
 }

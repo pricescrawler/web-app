@@ -392,7 +392,8 @@ function ProductList() {
           '&:hover': {
             backgroundColor: '#000000'
           },
-          backgroundColor: '#495057'
+          backgroundColor: '#495057',
+          color: '#fff'
         }}
         variant={'contained'}
       >

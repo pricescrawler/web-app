@@ -146,7 +146,7 @@ function ProductSearch() {
   return (
     <div className={'homepage'}>
       <h2 className={'homepage__heading h2'}>{t('menu.home')}</h2>
-      {isMaintenanceMode ? (
+      {isMaintenanceMode === 'true' ? (
         <Maintenance />
       ) : (
         <>

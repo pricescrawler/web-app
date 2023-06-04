@@ -5,7 +5,7 @@
 import './index.scss';
 import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -20,6 +20,7 @@ function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
   // eslint-disable-next-line no-unused-vars
   const [lang, setLang] = useState(i18n.language);
+  const [nativeTheme, setNativeTheme] = useState(false);
   const { productList } = useSelector((state) => state.productList);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
@@ -34,12 +35,27 @@ function NavigationBar({ theme }) {
 
   const toggleDarkMode = () => {
     setDarkMode((prevDarkMode) => !prevDarkMode);
+    setNativeTheme((prevNativeTheme) => !prevNativeTheme);
   };
 
   const changeLanguage = (lng) => {
     setLang(lng);
     i18n.changeLanguage(lng);
   };
+
+  useEffect(() => {
+    const json = localStorage.getItem('site-dark-mode');
+    const currentMode = JSON.parse(json);
+
+    currentMode ? setNativeTheme(true) : setNativeTheme(false);
+  }, []);
+
+  useEffect(() => {
+    nativeTheme ? document.body.classList.add('dark') : document.body.classList.remove('dark');
+    const json = JSON.stringify(nativeTheme);
+
+    localStorage.setItem('site-dark-mode', json);
+  }, [nativeTheme]);
 
   return (
     <Navbar

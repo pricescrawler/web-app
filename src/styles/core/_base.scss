@@ -143,6 +143,17 @@ a {
   outline: 3px solid black;
 }
 
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+
+  & > :nth-child(2) {
+    flex: 1;
+  }
+}
+
 .text-white {
   color: white;
 }

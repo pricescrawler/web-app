@@ -150,7 +150,13 @@ a {
   flex-direction: column;
 
   & > :nth-child(2) {
-    flex: 1;
+    &:not(.loader) {
+      flex: 1;
+    }
+  }
+
+  &:has(> .loader) {
+    justify-content: space-between;
   }
 }
 

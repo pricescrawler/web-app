@@ -8,6 +8,7 @@ import { Brightness4, Brightness7 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -15,13 +16,12 @@ import { useTranslation } from 'react-i18next';
  * Function `NavigationBar`.
  */
 
-function NavigationBar() {
+function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
   // eslint-disable-next-line no-unused-vars
   const [lang, setLang] = useState(i18n.language);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [nativeTheme, setNativeTheme] = useState(false);
   const { productList } = useSelector((state) => state.productList);
-
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
   const logo = '/logo.png';
@@ -29,6 +29,14 @@ function NavigationBar() {
   /**
    * Change Language.
    */
+
+  // eslint-disable-next-line react/prop-types
+  const { darkMode, setDarkMode } = theme;
+
+  const toggleDarkMode = () => {
+    setDarkMode((prevDarkMode) => !prevDarkMode);
+    setNativeTheme((prevNativeTheme) => !prevNativeTheme);
+  };
 
   const changeLanguage = (lng) => {
     setLang(lng);
@@ -39,15 +47,15 @@ function NavigationBar() {
     const json = localStorage.getItem('site-dark-mode');
     const currentMode = JSON.parse(json);
 
-    currentMode ? setIsDarkMode(true) : setIsDarkMode(false);
+    currentMode ? setNativeTheme(true) : setNativeTheme(false);
   }, []);
 
   useEffect(() => {
-    isDarkMode ? document.body.classList.add('dark') : document.body.classList.remove('dark');
-    const json = JSON.stringify(isDarkMode);
+    nativeTheme ? document.body.classList.add('dark') : document.body.classList.remove('dark');
+    const json = JSON.stringify(nativeTheme);
 
     localStorage.setItem('site-dark-mode', json);
-  }, [isDarkMode]);
+  }, [nativeTheme]);
 
   return (
     <Navbar
@@ -118,7 +126,7 @@ function NavigationBar() {
           </Nav>
           <IconButton
             color={'inherit'}
-            onClick={() => setIsDarkMode(!isDarkMode)}
+            onClick={toggleDarkMode}
             size={'small'}
             sx={{
               '&:hover': {
@@ -129,7 +137,7 @@ function NavigationBar() {
             }}
             variant={'contained'}
           >
-            {isDarkMode ? (
+            {darkMode ? (
               <Brightness7
                 fontSize={'inherit'}
                 style={{ color: 'white' }}
@@ -148,6 +156,13 @@ function NavigationBar() {
     </Navbar>
   );
 }
+
+NavigationBar.propTypes = {
+  theme: PropTypes.shape({
+    darkMode: PropTypes.bool,
+    setDarkMode: PropTypes.func
+  }).isRequired
+};
 
 /**
  * Export `NavigationBar`.

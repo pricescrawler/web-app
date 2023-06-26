@@ -143,12 +143,29 @@ a {
   outline: 3px solid black;
 }
 
-.dark {
-  background-color: black;
-  color: white;
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+
+  & > :nth-child(2) {
+    &:not(.loader) {
+      flex: 1;
+    }
+  }
+
+  &:has(> .loader) {
+    justify-content: space-between;
+  }
 }
 
 .text-white {
+  color: white;
+}
+
+.dark {
+  background-color: black;
   color: white;
 }
 

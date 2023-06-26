@@ -2,9 +2,9 @@
  * Module dependencies.
  */
 
-import React, { useMemo, useState } from 'react';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import React, { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import About from '@pages/About';
 import { CssBaseline } from '@mui/material';
 import Footer from '@components/Footer';
@@ -15,27 +15,45 @@ import ProductList from '@pages/ProductList';
 import ProductSearch from '@pages/ProductSearch';
 
 /**
+ * `Theme
+ */
+
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#fff'
+    },
+    secondary: {
+      main: '#000'
+    }
+  }
+});
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#000'
+    },
+    secondary: {
+      main: '#fff'
+    }
+  }
+});
+
+/**
  * `App`.
  */
 
 function App() {
-  const [mode] = useState('light');
-
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode
-        }
-      }),
-    [mode]
-  );
+  const [darkMode, setDarkMode] = useState(false);
 
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <Router>
-        <NavigationBar />
+        <NavigationBar theme={{ darkMode, setDarkMode }} />
         <Routes>
           <Route
             element={<ProductSearch />}
@@ -60,7 +78,7 @@ function App() {
         </Routes>
         <Footer />
       </Router>
-    </ThemeProvider>
+    </MuiThemeProvider>
   );
 }
 

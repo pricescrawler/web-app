@@ -230,7 +230,7 @@ function ProductDetails() {
   const renderTable = () => {
     const prices = Object.assign([], product.prices);
 
-    if (prices) {
+    if (prices && !isLoadingData) {
       prices.sort((first, second) => {
         const firstDate = new Date(first.date);
         const secondDate = new Date(second.date);
@@ -241,7 +241,7 @@ function ProductDetails() {
       return (
         <TableContainer
           component={Paper}
-          sx={{ maxWidth: 1000, overflowX: 'scroll' }}
+          sx={{ maxHeight: 500, maxWidth: 1000, overflowX: 'scroll' }}
         >
           <Table size={'small'}>
             <TableHead>
@@ -356,12 +356,7 @@ function ProductDetails() {
               }
             }}
             size={'small'}
-            sx={{
-              '&:hover': {
-                backgroundColor: '#000000'
-              },
-              backgroundColor: '#495057'
-            }}
+            style={{ textTransform: 'capitalize' }}
             variant={'contained'}
           >
             {t('data.product-fields.add-to-list')}
@@ -465,12 +460,7 @@ function ProductDetails() {
             >
               <Button
                 size={'small'}
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#000000'
-                  },
-                  backgroundColor: '#495057'
-                }}
+                style={{ textTransform: 'capitalize' }}
                 variant={'contained'}
               >
                 {t('data.product-fields.store-page')}

@@ -170,7 +170,7 @@ function ProductList() {
       return (
         <TableContainer
           component={Paper}
-          sx={{ maxWidth: 1200, overflowX: 'scroll' }}
+          sx={{ maxHeight: 1000, maxWidth: 1200, overflowX: 'scroll' }}
         >
           <Table size={'small'}>
             <TableHead>
@@ -388,13 +388,7 @@ function ProductList() {
       <Button
         onClick={uploadList}
         size={'small'}
-        sx={{
-          '&:hover': {
-            backgroundColor: '#000000'
-          },
-          backgroundColor: '#495057',
-          color: '#fff'
-        }}
+        style={{ textTransform: 'capitalize' }}
         variant={'contained'}
       >
         {t('general.list-upload')}
@@ -409,12 +403,7 @@ function ProductList() {
             <Button
               onClick={copyToClipboard}
               size={'small'}
-              sx={{
-                '&:hover': {
-                  backgroundColor: '#000000'
-                },
-                backgroundColor: '#495057'
-              }}
+              style={{ textTransform: 'capitalize' }}
               variant={'contained'}
             >
               {t('general.copy-to-clipboard')}
@@ -471,6 +460,7 @@ function ProductList() {
                     <>
                       <Button
                         onClick={updateList}
+                        style={{ textTransform: 'capitalize' }}
                         variant={'secondary'}
                       >
                         {t('general.refresh-prices')}

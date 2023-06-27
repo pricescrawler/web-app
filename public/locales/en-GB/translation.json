@@ -57,6 +57,11 @@
       "text2": "It does not collect, store, or use any personal data, and does not use cookies or any other tracking technologies that can be used to identify its users.",
       "delete-local-data-text": "This will delete all the data stored locally on your device, including product lists. This action cannot be undone.",
       "delete-local-data-button": "Delete Local Data"
+    },
+    "search": {
+      "input-error": "Catalogs or search query missing.",
+      "catalog-error": "Error while loading catalogs.",
+      "select-all": "Select All"
     }
   },
   "data": {

@@ -14,7 +14,7 @@ import {
   Stack,
   TextField
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
@@ -25,15 +25,119 @@ const SearchContainer = ({ setOrder }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
-  const [catalogs] = useState(JSON.parse(import.meta.env.VITE_CATALOGS_JSON));
+  const [catalogs, setCatalogs] = useState([]);
+  const inputErrorT = t('pages.search.input-error');
+  const catalogErrorT = t('pages.search.catalog-error');
+  const url = import.meta.env.VITE_API_URL;
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
   );
 
-  /**
-   * `handleProductSearch`.
-   */
+  useEffect(() => {
+    const cachedData = localStorage.getItem('catalogData');
+    const cachedTimestamp = localStorage.getItem('catalogDataTimestamp');
+
+    if (cachedData && cachedTimestamp) {
+      const currentTime = new Date().getTime();
+      const cacheDuration = 24 * 60 * 60 * 1000;
+
+      if (currentTime - parseInt(cachedTimestamp, 10) < cacheDuration) {
+        const parsedData = JSON.parse(cachedData);
+
+        setCatalogs(parsedData);
+        setSelectedCatalogs(parsedData.filter((catalog) => catalog.selected));
+
+        return;
+      }
+    }
+
+    fetch(`${url}/api/v1/locales`)
+      .then((response) => response.json())
+      .then((data) => {
+        const fetchedCatalogs = [];
+
+        data.forEach((locale) => {
+          locale.categories.forEach((category) => {
+            category.catalogs.forEach((catalog) => {
+              if (catalog.active) {
+                if (catalog.stores.length === 0) {
+                  const catalogData = {
+                    label: catalog.name,
+                    selected: catalog.data.selected,
+                    value: catalog.id
+                  };
+
+                  fetchedCatalogs.push(catalogData);
+                } else {
+                  catalog.stores.forEach((store) => {
+                    const catalogData = {
+                      label: `${catalog.name} - ${store.name}`,
+                      selected: !!store.data.selected,
+                      value: `${catalog.id}#${store.id}`
+                    };
+
+                    fetchedCatalogs.push(catalogData);
+                  });
+                }
+              }
+            });
+          });
+        });
+
+        localStorage.setItem('catalogData', JSON.stringify(fetchedCatalogs));
+        localStorage.setItem('catalogDataTimestamp', new Date().getTime().toString());
+
+        setCatalogs(fetchedCatalogs);
+        setSelectedCatalogs(fetchedCatalogs.filter((catalog) => catalog.selected));
+      })
+      .catch((error) => {
+        Swal.fire({
+          confirmButtonColor: '#6c757d',
+          icon: 'error',
+          text: `${catalogErrorT} - (${error})`,
+          title: 'Error'
+        });
+      });
+  }, [url, catalogErrorT]);
+
+  const handleStoreRemoval = (catalogValue) => {
+    const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
+
+    setSelectedCatalogs(updatedCatalogs);
+  };
+
+  const handleCatalog = (ev) => {
+    const selectedCatalog = ev.target.value[ev.target.value.length - 1];
+
+    if (selectedCatalog === 'select-all') {
+      if (selectedCatalogs.length !== catalogs.length) {
+        setSelectedCatalogs([...catalogs]);
+      } else {
+        setSelectedCatalogs([]);
+      }
+    } else {
+      const isCatalogSelected = selectedCatalogs.some(
+        (catalog) => catalog.label === selectedCatalog
+      );
+
+      if (isCatalogSelected) {
+        const updatedCatalogs = selectedCatalogs.filter(
+          (catalog) => catalog.label !== selectedCatalog
+        );
+
+        setSelectedCatalogs(updatedCatalogs);
+      } else {
+        const catalogToAdd = catalogs.find((catalog) => catalog.label === selectedCatalog);
+
+        if (catalogToAdd) {
+          const updatedCatalogs = [...selectedCatalogs, catalogToAdd];
+
+          setSelectedCatalogs(updatedCatalogs);
+        }
+      }
+    }
+  };
 
   const handleProductSearch = (event) => {
     event.preventDefault();
@@ -45,36 +149,9 @@ const SearchContainer = ({ setOrder }) => {
       Swal.fire({
         confirmButtonColor: '#6c757d',
         icon: 'info',
-        text: 'Catalogs or search query missing.',
+        text: inputErrorT,
         title: 'Info'
       });
-    }
-  };
-
-  const handleStoreRemoval = (catalogValue) => {
-    const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
-
-    setSelectedCatalogs(updatedCatalogs);
-  };
-
-  const handleCatalog = (ev) => {
-    const selectedCatalog = ev.target.value[ev.target.value.length - 1];
-    const isCatalogSelected = selectedCatalogs.some((catalog) => catalog.label === selectedCatalog);
-
-    if (isCatalogSelected) {
-      const updatedCatalogs = selectedCatalogs.filter(
-        (catalog) => catalog.label !== selectedCatalog
-      );
-
-      setSelectedCatalogs(updatedCatalogs);
-    } else {
-      const catalogToAdd = catalogs.find((catalog) => catalog.label === selectedCatalog);
-
-      if (catalogToAdd) {
-        const updatedCatalogs = [...selectedCatalogs, catalogToAdd];
-
-        setSelectedCatalogs(updatedCatalogs);
-      }
     }
   };
 
@@ -111,6 +188,13 @@ const SearchContainer = ({ setOrder }) => {
             )}
             value={selectedCatalogs}
           >
+            <MenuItem value={'select-all'}>
+              <Checkbox
+                checked={selectedCatalogs.length === catalogs.length}
+                color={'secondary'}
+              />
+              <ListItemText primary={t('pages.search.select-all')} />
+            </MenuItem>
             {catalogs
               .sort((a1, b1) => {
                 if (a1.selected && !b1.selected) {

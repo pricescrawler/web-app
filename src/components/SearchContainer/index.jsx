@@ -19,6 +19,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
+import api from '@services/api';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -30,7 +31,6 @@ const SearchContainer = ({ setOrder }) => {
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
-  const url = import.meta.env.VITE_API_URL;
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
@@ -57,8 +57,9 @@ const SearchContainer = ({ setOrder }) => {
 
     setIsLoadingCatalogs(true);
 
-    fetch(`${url}/api/v1/locales`)
-      .then((response) => response.json())
+    api
+      .get('/api/v1/locales')
+      .then((response) => response.data)
       .then((data) => {
         const fetchedCatalogs = [];
 
@@ -106,7 +107,7 @@ const SearchContainer = ({ setOrder }) => {
         });
         setIsLoadingCatalogs(false);
       });
-  }, [url, catalogErrorT]);
+  }, [catalogErrorT]);
 
   const handleStoreRemoval = (catalogValue) => {
     const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
@@ -165,10 +166,7 @@ const SearchContainer = ({ setOrder }) => {
   return (
     <div className={'homepage__search'}>
       <div className={'homepage__search-container'}>
-        <FormControl
-          fullWidth
-          sx={{ border: '1px solid #dee2e6' }}
-        >
+        <FormControl fullWidth>
           {isLoadingCatalogs ? (
             <Box
               sx={{
@@ -183,7 +181,12 @@ const SearchContainer = ({ setOrder }) => {
           ) : (
             <>
               {selectedCatalogs.length === 0 && (
-                <InputLabel id={'search-multi-select-label'}>{t('general.search')}</InputLabel>
+                <InputLabel
+                  id={'search-multi-select-label'}
+                  shrink={false}
+                >
+                  {t('pages.search.select-catalog')}
+                </InputLabel>
               )}
               <Select
                 className={'homepage__multi'}

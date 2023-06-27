@@ -61,7 +61,8 @@
     "search": {
       "input-error": "Catálogos or termo de pesquisa em falta.",
       "catalog-error": "Erro ao carregar os catálogos.",
-      "select-all": "Selecionar todos"
+      "select-all": "Selecionar todos",
+      "select-catalog": "Selecionar catálogos"
     }
   },
   "data": {

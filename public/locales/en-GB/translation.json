@@ -59,9 +59,10 @@
       "delete-local-data-button": "Delete Local Data"
     },
     "search": {
-      "input-error": "Catalogs or search query missing.",
-      "catalog-error": "Error while loading catalogs.",
-      "select-all": "Select All"
+      "input-error": "Catalogues or search query missing.",
+      "catalog-error": "Error while loading catalogues.",
+      "select-all": "Select All",
+      "select-catalog": "Select catalogues"
     }
   },
   "data": {

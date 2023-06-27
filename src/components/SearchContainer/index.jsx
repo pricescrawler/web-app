@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Chip,
+  CircularProgress,
   Divider,
   FormControl,
   InputLabel,
@@ -26,6 +27,7 @@ const SearchContainer = ({ setOrder }) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
   const [catalogs, setCatalogs] = useState([]);
+  const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
   const url = import.meta.env.VITE_API_URL;
@@ -47,10 +49,13 @@ const SearchContainer = ({ setOrder }) => {
 
         setCatalogs(parsedData);
         setSelectedCatalogs(parsedData.filter((catalog) => catalog.selected));
+        setIsLoadingCatalogs(false);
 
         return;
       }
     }
+
+    setIsLoadingCatalogs(true);
 
     fetch(`${url}/api/v1/locales`)
       .then((response) => response.json())
@@ -90,6 +95,7 @@ const SearchContainer = ({ setOrder }) => {
 
         setCatalogs(fetchedCatalogs);
         setSelectedCatalogs(fetchedCatalogs.filter((catalog) => catalog.selected));
+        setIsLoadingCatalogs(false);
       })
       .catch((error) => {
         Swal.fire({
@@ -98,6 +104,7 @@ const SearchContainer = ({ setOrder }) => {
           text: `${catalogErrorT} - (${error})`,
           title: 'Error'
         });
+        setIsLoadingCatalogs(false);
       });
   }, [url, catalogErrorT]);
 
@@ -162,69 +169,84 @@ const SearchContainer = ({ setOrder }) => {
           fullWidth
           sx={{ border: '1px solid #dee2e6' }}
         >
-          {selectedCatalogs.length === 0 && (
-            <InputLabel id={'search-multi-select-label'}>{t('general.search')}</InputLabel>
-          )}
-          <Select
-            className={'homepage__multi'}
-            labelId={'search-multi-select-label'}
-            multiple
-            onChange={handleCatalog}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((catalog, index) => (
-                  <Chip
-                    key={`chip-${index}`}
-                    label={catalog.label}
-                    onDelete={() => handleStoreRemoval(catalog.value)}
-                    onMouseDown={(event) => {
-                      event.stopPropagation();
-                    }}
-                    size={'small'}
-                    variant={'outlined'}
+          {isLoadingCatalogs ? (
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                minHeight: 56
+              }}
+            >
+              <CircularProgress size={24} />
+            </Box>
+          ) : (
+            <>
+              {selectedCatalogs.length === 0 && (
+                <InputLabel id={'search-multi-select-label'}>{t('general.search')}</InputLabel>
+              )}
+              <Select
+                className={'homepage__multi'}
+                labelId={'search-multi-select-label'}
+                multiple
+                onChange={handleCatalog}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((catalog, index) => (
+                      <Chip
+                        key={`chip-${index}`}
+                        label={catalog.label}
+                        onDelete={() => handleStoreRemoval(catalog.value)}
+                        onMouseDown={(event) => {
+                          event.stopPropagation();
+                        }}
+                        size={'small'}
+                        variant={'outlined'}
+                      />
+                    ))}
+                  </Box>
+                )}
+                value={selectedCatalogs}
+              >
+                <MenuItem value={'select-all'}>
+                  <Checkbox
+                    checked={selectedCatalogs.length === catalogs.length}
+                    color={'secondary'}
                   />
-                ))}
-              </Box>
-            )}
-            value={selectedCatalogs}
-          >
-            <MenuItem value={'select-all'}>
-              <Checkbox
-                checked={selectedCatalogs.length === catalogs.length}
-                color={'secondary'}
-              />
-              <ListItemText primary={t('pages.search.select-all')} />
-            </MenuItem>
-            {catalogs
-              .sort((a1, b1) => {
-                if (a1.selected && !b1.selected) {
-                  return -1;
-                }
-                if (!a1.selected && b1.selected) {
-                  return 1;
-                }
+                  <ListItemText primary={t('pages.search.select-all')} />
+                </MenuItem>
+                {catalogs
+                  .sort((a1, b1) => {
+                    if (a1.selected && !b1.selected) {
+                      return -1;
+                    }
+                    if (!a1.selected && b1.selected) {
+                      return 1;
+                    }
 
-                return a1.label.localeCompare(b1.label);
-              })
-              .map((catalog, index) => {
-                const isSelected = selectedCatalogs.some(
-                  (selectedCatalog) => selectedCatalog.value === catalog.value
-                );
+                    return a1.label.localeCompare(b1.label);
+                  })
+                  .map((catalog, index) => {
+                    const isSelected = selectedCatalogs.some(
+                      (selectedCatalog) => selectedCatalog.value === catalog.value
+                    );
 
-                return (
-                  <MenuItem
-                    key={`menu-item-${index}`}
-                    value={catalog.label}
-                  >
-                    <Checkbox
-                      checked={isSelected}
-                      color={'secondary'}
-                    />
-                    <ListItemText primary={catalog.label} />
-                  </MenuItem>
-                );
-              })}
-          </Select>
+                    return (
+                      <MenuItem
+                        key={`menu-item-${index}`}
+                        value={catalog.label}
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          color={'secondary'}
+                        />
+                        <ListItemText primary={catalog.label} />
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </>
+          )}
         </FormControl>
         <form
           action={'POST'}

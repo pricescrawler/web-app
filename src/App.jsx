@@ -47,7 +47,12 @@ const darkTheme = createTheme({
  */
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const json = localStorage.getItem('site-dark-mode');
+    const savedDarkMode = JSON.parse(json);
+
+    return savedDarkMode ?? false;
+  });
 
   return (
     <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>

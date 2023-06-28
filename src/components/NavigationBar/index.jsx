@@ -20,22 +20,15 @@ function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
   // eslint-disable-next-line no-unused-vars
   const [lang, setLang] = useState(i18n.language);
-  const [nativeTheme, setNativeTheme] = useState(false);
   const { productList } = useSelector((state) => state.productList);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
   const logo = '/logo.png';
 
-  /**
-   * Change Language.
-   */
-
-  // eslint-disable-next-line react/prop-types
   const { darkMode, setDarkMode } = theme;
 
   const toggleDarkMode = () => {
     setDarkMode((prevDarkMode) => !prevDarkMode);
-    setNativeTheme((prevNativeTheme) => !prevNativeTheme);
   };
 
   const changeLanguage = (lng) => {
@@ -44,18 +37,9 @@ function NavigationBar({ theme }) {
   };
 
   useEffect(() => {
-    const json = localStorage.getItem('site-dark-mode');
-    const currentMode = JSON.parse(json);
-
-    currentMode ? setNativeTheme(true) : setNativeTheme(false);
-  }, []);
-
-  useEffect(() => {
-    nativeTheme ? document.body.classList.add('dark') : document.body.classList.remove('dark');
-    const json = JSON.stringify(nativeTheme);
-
-    localStorage.setItem('site-dark-mode', json);
-  }, [nativeTheme]);
+    darkMode ? document.body.classList.add('dark') : document.body.classList.remove('dark');
+    localStorage.setItem('site-dark-mode', JSON.stringify(darkMode));
+  }, [darkMode]);
 
   return (
     <Navbar

@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+import { Button } from '@mui/material';
 import { QRCode } from 'antd';
 import React from 'react';
 import packageJson from '../../../package.json';
@@ -14,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 function About() {
   const { t } = useTranslation();
   const email = `mailto:${import.meta.env.VITE_EMAIL}`;
+  const donateUrl = import.meta.env.VITE_DONATE_URL;
   const mobileAppUrl = import.meta.env.VITE_MOBILE_APP_URL;
 
   return (
@@ -55,6 +57,26 @@ function About() {
               value={mobileAppUrl}
             />
           </p>
+        </>
+      ) : (
+        <></>
+      )}
+      {donateUrl ? (
+        <>
+          <br />
+          <a
+            href={donateUrl}
+            rel={'noopener noreferrer'}
+            target={'_blank'}
+          >
+            <Button
+              color={'warning'}
+              style={{ textTransform: 'capitalize' }}
+              variant={'contained'}
+            >
+              {t('general.donate')}
+            </Button>
+          </a>
         </>
       ) : (
         <></>

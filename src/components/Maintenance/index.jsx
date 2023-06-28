@@ -1,5 +1,5 @@
+import { Container, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 const Maintenance = () => {
@@ -38,7 +38,7 @@ const Maintenance = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTimeRemaining(getTimeRemaining());
-    }, 1000);
+    }, 10);
 
     return () => clearInterval(intervalId);
   }, [getTimeRemaining]);
@@ -46,8 +46,8 @@ const Maintenance = () => {
   return (
     <Container>
       <center>
-        <h1>{t('title.maintenance')}</h1>
-        <p>{t('general.maintenance')}</p>
+        <Typography variant={'h1'}>{t('title.maintenance')}</Typography>
+        <Typography variant={'body1'}>{t('general.maintenance')}</Typography>
 
         <div>
           {timeRemaining.days > 0 && (

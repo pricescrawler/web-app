@@ -57,6 +57,12 @@
       "text2": "Não recolhe, armazena ou utiliza quaisquer dados pessoais e não utiliza cookies ou outras tecnologias de rastreio que possam ser usadas para identificar os seus utilizadores.",
       "delete-local-data-text": "Eliminar todos os dados locais, incluindo as listas de produtos. Esta ação não pode ser revertida.",
       "delete-local-data-button": "Eliminar dados"
+    },
+    "search": {
+      "input-error": "Catálogos or termo de pesquisa em falta.",
+      "catalog-error": "Erro ao carregar os catálogos.",
+      "select-all": "Selecionar todos",
+      "select-catalog": "Selecionar catálogos"
     }
   },
   "data": {

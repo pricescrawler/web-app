@@ -15,7 +15,7 @@ import ProductList from '@pages/ProductList';
 import ProductSearch from '@pages/ProductSearch';
 
 /**
- * `Theme
+ * `Theme`.
  */
 
 const lightTheme = createTheme({

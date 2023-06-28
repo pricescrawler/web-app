@@ -5,10 +5,21 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Accordion } from 'react-bootstrap';
+import { ExpandMore } from '@mui/icons-material';
 import Loader from '@components/Loader';
 import Maintenance from '@components/Maintenance';
 import ProductCard from '@components/ProductCard';
@@ -112,35 +123,37 @@ function ProductSearch() {
    */
 
   const renderProductSearchResults = () => (
-    <div className={'homepage__results'}>
+    <Box className={'homepage__results'}>
       {currentProducts.map((productCatalogs, index) => (
         <Accordion
-          alwaysOpen
-          className={'m-1'}
-          defaultActiveKey={['0']}
+          defaultExpanded
           key={index}
+          sx={{
+            marginBottom: '5px'
+          }}
         >
-          <Accordion.Item eventKey={'0'}>
-            <Accordion.Header>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography>
               <strong>{utils.renderCatalogName(productCatalogs)}</strong>
-            </Accordion.Header>
-            <Accordion.Body>
-              <div className={'catalog-grid'}>
-                {productCatalogs.products.map((product, index) => (
-                  <ProductCard
-                    catalog={productCatalogs.catalog}
-                    historyEnabled={productCatalogs.data.historyEnabled}
-                    key={index}
-                    locale={productCatalogs.locale}
-                    productData={product}
-                  />
-                ))}
-              </div>
-            </Accordion.Body>
-          </Accordion.Item>
+            </Typography>
+          </AccordionSummary>
+          <Divider sx={{ borderTop: '1px solid' }} />
+          <AccordionDetails>
+            <Box className={'catalog-grid'}>
+              {productCatalogs.products.map((product, index) => (
+                <ProductCard
+                  catalog={productCatalogs.catalog}
+                  historyEnabled={productCatalogs.data.historyEnabled}
+                  key={index}
+                  locale={productCatalogs.locale}
+                  productData={product}
+                />
+              ))}
+            </Box>
+          </AccordionDetails>
         </Accordion>
       ))}
-    </div>
+    </Box>
   );
 
   return (

@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const url = import.meta.env.VITE_API_URL;
+const urlEnv = import.meta.env.VITE_API_URL;
+const timeoutEnv = import.meta.env.VITE_API_TIMEOUT || 30000;
 
 const api = axios.create({
-  baseURL: url
+  baseURL: urlEnv,
+  timeout: timeoutEnv
 });
 
 export default api;

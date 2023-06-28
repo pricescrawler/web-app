@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Chip,
+  CircularProgress,
   Divider,
   FormControl,
   InputLabel,
@@ -14,10 +15,11 @@ import {
   Stack,
   TextField
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
+import api from '@services/api';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -25,15 +27,125 @@ const SearchContainer = ({ setOrder }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
-  const [catalogs] = useState(JSON.parse(import.meta.env.VITE_CATALOGS_JSON));
+  const [catalogs, setCatalogs] = useState([]);
+  const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
+  const inputErrorT = t('pages.search.input-error');
+  const catalogErrorT = t('pages.search.catalog-error');
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
   );
 
-  /**
-   * `handleProductSearch`.
-   */
+  useEffect(() => {
+    const cachedData = localStorage.getItem('catalogData');
+    const cachedTimestamp = localStorage.getItem('catalogDataTimestamp');
+
+    if (cachedData && cachedTimestamp) {
+      const currentTime = new Date().getTime();
+      const cacheDuration = 24 * 60 * 60 * 1000;
+
+      if (currentTime - parseInt(cachedTimestamp, 10) < cacheDuration) {
+        const parsedData = JSON.parse(cachedData);
+
+        setCatalogs(parsedData);
+        setSelectedCatalogs(parsedData.filter((catalog) => catalog.selected));
+        setIsLoadingCatalogs(false);
+
+        return;
+      }
+    }
+
+    setIsLoadingCatalogs(true);
+
+    api
+      .get('/api/v1/locales')
+      .then((response) => response.data)
+      .then((data) => {
+        const fetchedCatalogs = [];
+
+        data.forEach((locale) => {
+          locale.categories.forEach((category) => {
+            category.catalogs.forEach((catalog) => {
+              if (catalog.active) {
+                if (catalog.stores.length === 0) {
+                  const catalogData = {
+                    label: catalog.name,
+                    selected: catalog.data.selected,
+                    value: catalog.id
+                  };
+
+                  fetchedCatalogs.push(catalogData);
+                } else {
+                  catalog.stores.forEach((store) => {
+                    const catalogData = {
+                      label: `${catalog.name} - ${store.name}`,
+                      selected: !!store.data.selected,
+                      value: `${catalog.id}#${store.id}`
+                    };
+
+                    fetchedCatalogs.push(catalogData);
+                  });
+                }
+              }
+            });
+          });
+        });
+
+        localStorage.setItem('catalogData', JSON.stringify(fetchedCatalogs));
+        localStorage.setItem('catalogDataTimestamp', new Date().getTime().toString());
+
+        setCatalogs(fetchedCatalogs);
+        setSelectedCatalogs(fetchedCatalogs.filter((catalog) => catalog.selected));
+        setIsLoadingCatalogs(false);
+      })
+      .catch((error) => {
+        Swal.fire({
+          confirmButtonColor: '#6c757d',
+          icon: 'error',
+          text: `${catalogErrorT} - (${error})`,
+          title: 'Error'
+        });
+        setIsLoadingCatalogs(false);
+      });
+  }, [catalogErrorT]);
+
+  const handleStoreRemoval = (catalogValue) => {
+    const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
+
+    setSelectedCatalogs(updatedCatalogs);
+  };
+
+  const handleCatalog = (ev) => {
+    const selectedCatalog = ev.target.value[ev.target.value.length - 1];
+
+    if (selectedCatalog === 'select-all') {
+      if (selectedCatalogs.length !== catalogs.length) {
+        setSelectedCatalogs([...catalogs]);
+      } else {
+        setSelectedCatalogs([]);
+      }
+    } else {
+      const isCatalogSelected = selectedCatalogs.some(
+        (catalog) => catalog.label === selectedCatalog
+      );
+
+      if (isCatalogSelected) {
+        const updatedCatalogs = selectedCatalogs.filter(
+          (catalog) => catalog.label !== selectedCatalog
+        );
+
+        setSelectedCatalogs(updatedCatalogs);
+      } else {
+        const catalogToAdd = catalogs.find((catalog) => catalog.label === selectedCatalog);
+
+        if (catalogToAdd) {
+          const updatedCatalogs = [...selectedCatalogs, catalogToAdd];
+
+          setSelectedCatalogs(updatedCatalogs);
+        }
+      }
+    }
+  };
 
   const handleProductSearch = (event) => {
     event.preventDefault();
@@ -45,102 +157,99 @@ const SearchContainer = ({ setOrder }) => {
       Swal.fire({
         confirmButtonColor: '#6c757d',
         icon: 'info',
-        text: 'Catalogs or search query missing.',
+        text: inputErrorT,
         title: 'Info'
       });
-    }
-  };
-
-  const handleStoreRemoval = (catalogValue) => {
-    const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
-
-    setSelectedCatalogs(updatedCatalogs);
-  };
-
-  const handleCatalog = (ev) => {
-    const selectedCatalog = ev.target.value[ev.target.value.length - 1];
-    const isCatalogSelected = selectedCatalogs.some((catalog) => catalog.label === selectedCatalog);
-
-    if (isCatalogSelected) {
-      const updatedCatalogs = selectedCatalogs.filter(
-        (catalog) => catalog.label !== selectedCatalog
-      );
-
-      setSelectedCatalogs(updatedCatalogs);
-    } else {
-      const catalogToAdd = catalogs.find((catalog) => catalog.label === selectedCatalog);
-
-      if (catalogToAdd) {
-        const updatedCatalogs = [...selectedCatalogs, catalogToAdd];
-
-        setSelectedCatalogs(updatedCatalogs);
-      }
     }
   };
 
   return (
     <div className={'homepage__search'}>
       <div className={'homepage__search-container'}>
-        <FormControl
-          fullWidth
-          sx={{ border: '1px solid #dee2e6' }}
-        >
-          {selectedCatalogs.length === 0 && (
-            <InputLabel id={'search-multi-select-label'}>{t('general.search')}</InputLabel>
-          )}
-          <Select
-            className={'homepage__multi'}
-            labelId={'search-multi-select-label'}
-            multiple
-            onChange={handleCatalog}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((catalog, index) => (
-                  <Chip
-                    key={`chip-${index}`}
-                    label={catalog.label}
-                    onDelete={() => handleStoreRemoval(catalog.value)}
-                    onMouseDown={(event) => {
-                      event.stopPropagation();
-                    }}
-                    size={'small'}
-                    variant={'outlined'}
+        <FormControl fullWidth>
+          {isLoadingCatalogs ? (
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                minHeight: 56
+              }}
+            >
+              <CircularProgress size={24} />
+            </Box>
+          ) : (
+            <>
+              {selectedCatalogs.length === 0 && (
+                <InputLabel
+                  id={'search-multi-select-label'}
+                  shrink={false}
+                >
+                  {t('pages.search.select-catalog')}
+                </InputLabel>
+              )}
+              <Select
+                className={'homepage__multi'}
+                labelId={'search-multi-select-label'}
+                multiple
+                onChange={handleCatalog}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((catalog, index) => (
+                      <Chip
+                        key={`chip-${index}`}
+                        label={catalog.label}
+                        onDelete={() => handleStoreRemoval(catalog.value)}
+                        onMouseDown={(event) => {
+                          event.stopPropagation();
+                        }}
+                        size={'small'}
+                        variant={'outlined'}
+                      />
+                    ))}
+                  </Box>
+                )}
+                value={selectedCatalogs}
+              >
+                <MenuItem value={'select-all'}>
+                  <Checkbox
+                    checked={selectedCatalogs.length === catalogs.length}
+                    color={'secondary'}
                   />
-                ))}
-              </Box>
-            )}
-            value={selectedCatalogs}
-          >
-            {catalogs
-              .sort((a1, b1) => {
-                if (a1.selected && !b1.selected) {
-                  return -1;
-                }
-                if (!a1.selected && b1.selected) {
-                  return 1;
-                }
+                  <ListItemText primary={t('pages.search.select-all')} />
+                </MenuItem>
+                {catalogs
+                  .sort((a1, b1) => {
+                    if (a1.selected && !b1.selected) {
+                      return -1;
+                    }
+                    if (!a1.selected && b1.selected) {
+                      return 1;
+                    }
 
-                return a1.label.localeCompare(b1.label);
-              })
-              .map((catalog, index) => {
-                const isSelected = selectedCatalogs.some(
-                  (selectedCatalog) => selectedCatalog.value === catalog.value
-                );
+                    return a1.label.localeCompare(b1.label);
+                  })
+                  .map((catalog, index) => {
+                    const isSelected = selectedCatalogs.some(
+                      (selectedCatalog) => selectedCatalog.value === catalog.value
+                    );
 
-                return (
-                  <MenuItem
-                    key={`menu-item-${index}`}
-                    value={catalog.label}
-                  >
-                    <Checkbox
-                      checked={isSelected}
-                      color={'secondary'}
-                    />
-                    <ListItemText primary={catalog.label} />
-                  </MenuItem>
-                );
-              })}
-          </Select>
+                    return (
+                      <MenuItem
+                        key={`menu-item-${index}`}
+                        value={catalog.label}
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          color={'secondary'}
+                        />
+                        <ListItemText primary={catalog.label} />
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </>
+          )}
         </FormControl>
         <form
           action={'POST'}

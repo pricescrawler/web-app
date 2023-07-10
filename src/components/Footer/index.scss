@@ -3,7 +3,8 @@
   color: white;
   display: flex;
   justify-content: center;
-  padding-block: 0.8rem;
+  padding: 0.8rem;
+  gap: 2.5rem;
 }
 
 .nav-footer-container {
@@ -14,10 +15,4 @@
 
 .nav-footer-link {
   color: white;
-  margin-right: 1.5rem;
-  text-decoration: none !important;
-}
-
-.nav-footer-link:last-child {
-  margin-right: 0;
 }

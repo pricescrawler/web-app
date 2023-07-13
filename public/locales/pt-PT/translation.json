@@ -63,6 +63,12 @@
       "catalog-error": "Erro ao carregar os catálogos.",
       "select-all": "Selecionar todos",
       "select-catalog": "Selecionar catálogos"
+    },
+    "product-list": {
+      "options": {
+        "tooltip": "Opções ▼",
+        "redorder": "Reordenar"
+      }
     }
   },
   "data": {
@@ -93,7 +99,8 @@
       "store-page": "Ver na Loja",
       "details": "Detalhes",
       "add-to-list": "Adicionar",
-      "remove-add": "Remover | Adicionar"
+      "remove-add": "Remover | Adicionar",
+      "move": "Cima | Baixo"
     }
   }
 }

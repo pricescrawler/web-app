@@ -6,12 +6,9 @@ import {
   Box,
   Container,
   Divider,
-  Drawer,
   Hidden,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
+  Menu,
   MenuItem,
   Select,
   Toolbar,
@@ -28,7 +25,6 @@ function NavigationBar({ theme }) {
   const [lang, setLang] = useState(i18n.language);
   const { productList } = useSelector((state) => state.productList);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
-  const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
   const logo = '/logo.png';
 
   const { darkMode, setDarkMode } = theme;
@@ -47,14 +43,14 @@ function NavigationBar({ theme }) {
     localStorage.setItem('site-dark-mode', JSON.stringify(darkMode));
   }, [darkMode]);
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -121,19 +117,6 @@ function NavigationBar({ theme }) {
                   color={'error'}
                 />
               </Typography>
-              {mobileAppUrl && (
-                <Typography
-                  component={'a'}
-                  href={mobileAppUrl}
-                  noWrap
-                  sx={{
-                    color: 'inherit',
-                    mr: 1
-                  }}
-                >
-                  {t('menu.mobile-app')}
-                </Typography>
-              )}
               <Select
                 id={'language'}
                 onChange={(event) => changeLanguage(event.target.value)}
@@ -162,7 +145,10 @@ function NavigationBar({ theme }) {
                 color={'inherit'}
                 onClick={toggleDarkMode}
                 size={'small'}
-                sx={{ '&:hover': { backgroundColor: '#000000' }, backgroundColor: '#495057' }}
+                sx={{
+                  '&:hover': { backgroundColor: '#000000' },
+                  backgroundColor: '#495057'
+                }}
               >
                 {darkMode ? (
                   <Brightness7
@@ -183,7 +169,7 @@ function NavigationBar({ theme }) {
                 aria-label={'menu'}
                 color={'inherit'}
                 edge={'end'}
-                onClick={handleDrawerOpen}
+                onClick={handleMenuOpen}
               >
                 <MenuIcon />
               </IconButton>
@@ -191,96 +177,76 @@ function NavigationBar({ theme }) {
           </Toolbar>
         </Container>
       </AppBar>
-      <Drawer
-        anchor={'right'}
-        onClose={handleDrawerClose}
-        open={drawerOpen}
+      <Menu
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+        open={Boolean(anchorEl)}
+        sx={{ textAlign: 'center' }}
       >
-        <List sx={{ width: 250 }}>
-          <ListItem
-            button
-            component={Link}
-            to={'/'}
-          >
-            <ListItemText primary={t('menu.home')} />
-          </ListItem>
-          <ListItem
-            button
-            component={Link}
-            to={'/product/list'}
-          >
-            <ListItemText
-              primary={t('menu.product-list')}
-              secondary={
-                <Badge
-                  badgeContent={numberOfProducts()}
-                  color={'error'}
-                />
+        <MenuItem
+          button
+          component={Link}
+          onClick={handleMenuClose}
+          to={'/'}
+        >
+          {t('menu.home')}
+        </MenuItem>
+        <MenuItem
+          button
+          component={Link}
+          onClick={handleMenuClose}
+          to={'/product/list'}
+        >
+          {t('menu.product-list')} &nbsp;&nbsp;
+          <Badge
+            badgeContent={numberOfProducts()}
+            color={'error'}
+          />
+        </MenuItem>
+        <Divider />
+        <MenuItem disableGutters>
+          <Select
+            id={'language'}
+            onChange={(event) => changeLanguage(event.target.value)}
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: 'none'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                border: 'none'
               }
-            />
-          </ListItem>
-          {mobileAppUrl && (
-            <ListItem
-              button
-              component={'a'}
-              href={mobileAppUrl}
-              rel={'noopener noreferrer'}
-              target={'_blank'}
-            >
-              <ListItemText primary={t('menu.mobile-app')} />
-            </ListItem>
-          )}
-          <Divider />
-          <ListItem disableGutters>
-            <ListItemText primary={t('menu.language')} />
-            <Select
-              id={'language'}
-              onChange={(event) => changeLanguage(event.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-notchedOutline': {
-                  border: 'none'
-                },
-                '& .MuiSelect-icon': {
-                  color: 'common.white'
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  border: 'none'
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  border: 'none'
-                },
-                color: 'common.white'
-              }}
-              value={i18n.language}
-            >
-              <MenuItem value={'pt-PT'}>🇵🇹 PT</MenuItem>
-              <MenuItem value={'en-GB'}>🇬🇧 EN</MenuItem>
-            </Select>
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary={t('menu.dark-mode')} />
-            <IconButton
-              color={'inherit'}
-              onClick={toggleDarkMode}
-              size={'small'}
-              sx={{ '&:hover': { backgroundColor: '#000000' }, backgroundColor: '#495057' }}
-            >
-              {darkMode ? (
-                <Brightness7
-                  fontSize={'inherit'}
-                  sx={{ color: 'common.white' }}
-                />
-              ) : (
-                <Brightness4
-                  fontSize={'inherit'}
-                  sx={{ color: 'common.white' }}
-                />
-              )}
-            </IconButton>
-          </ListItem>
-        </List>
-      </Drawer>
+            }}
+            value={i18n.language}
+          >
+            <MenuItem value={'pt-PT'}>🇵🇹 PT</MenuItem>
+            <MenuItem value={'en-GB'}>🇬🇧 EN</MenuItem>
+          </Select>
+        </MenuItem>
+        <Divider />
+        <MenuItem>
+          <IconButton
+            color={'inherit'}
+            onClick={toggleDarkMode}
+            size={'small'}
+            sx={{
+              '&:hover': { backgroundColor: '#000000' },
+              backgroundColor: '#495057'
+            }}
+          >
+            {darkMode ? (
+              <Brightness7
+                fontSize={'inherit'}
+                sx={{ color: 'common.white' }}
+              />
+            ) : (
+              <Brightness4
+                fontSize={'inherit'}
+                sx={{ color: 'common.white' }}
+              />
+            )}
+          </IconButton>
+        </MenuItem>
+      </Menu>
     </>
   );
 }

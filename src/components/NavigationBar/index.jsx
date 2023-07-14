@@ -116,7 +116,9 @@ function NavigationBar({ theme }) {
               <Typography
                 component={Link}
                 sx={{
+                  alignItems: 'center',
                   color: 'inherit',
+                  display: 'flex',
                   mr: 3
                 }}
                 to={'/product/list'}
@@ -132,7 +134,8 @@ function NavigationBar({ theme }) {
                 onChange={(event) => changeLanguage(event.target.value)}
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {
-                    border: 'none'
+                    border: 'none',
+                    paddingBlock: '6px'
                   },
                   '& .MuiSelect-icon': {
                     color: 'common.white'
@@ -201,6 +204,7 @@ function NavigationBar({ theme }) {
         >
           {t('menu.home')}
         </MenuItem>
+        <Divider />
         <MenuItem
           button
           component={Link}
@@ -221,6 +225,9 @@ function NavigationBar({ theme }) {
             sx={{
               '& .MuiOutlinedInput-notchedOutline': {
                 border: 'none'
+              },
+              '& .MuiSelect-select': {
+                paddingBlock: '0.6rem'
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
                 border: 'none'

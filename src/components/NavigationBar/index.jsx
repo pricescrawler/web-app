@@ -1,29 +1,41 @@
-/**
- * Module dependencies.
- */
-
-import './index.scss';
-import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
-import { Brightness4, Brightness7 } from '@mui/icons-material';
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import {
+  AppBar,
+  Badge,
+  Box,
+  Container,
+  Divider,
+  Hidden,
+  IconButton,
+  Menu,
+  MenuItem,
+  Select,
+  Toolbar,
+  Typography
+} from '@mui/material';
+import { Brightness4, Brightness7, Menu as MenuIcon } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
-import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-/**
- * Function `NavigationBar`.
- */
-
 function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
-  // eslint-disable-next-line no-unused-vars
   const [lang, setLang] = useState(i18n.language);
   const { productList } = useSelector((state) => state.productList);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
-  const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
   const logo = '/logo.png';
+
+  const selectedLanguage = () => {
+    if (lang !== 'pt-PT' && lang !== 'en-GB') {
+      setLang('en-GB');
+
+      return 'en-GB';
+    }
+
+    return lang;
+  };
 
   const { darkMode, setDarkMode } = theme;
 
@@ -41,115 +53,212 @@ function NavigationBar({ theme }) {
     localStorage.setItem('site-dark-mode', JSON.stringify(darkMode));
   }, [darkMode]);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <Navbar
-      bg={'dark'}
-      expand={'lg'}
-      sticky={'top'}
-      variant={'dark'}
-    >
-      <Container fluid>
-        <Navbar.Brand>
-          <img
-            alt={''}
-            className={'d-inline-block'}
-            height={'30'}
-            src={logo}
-            width={'30'}
-          />
-          &nbsp;
-          <Navbar.Text className={'navbar-text'}>
-            <Link to={'/'}>{t('title.base')}</Link>
-          </Navbar.Text>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls={'basic-navbar-nav'} />
-        <Navbar.Collapse id={'basic-navbar-nav'}>
-          <Nav className={'me-auto'} />
-          <Nav>
-            <Navbar.Text className={'me-3'}>
-              <Link to={'/'}>{t('menu.home')}</Link>
-            </Navbar.Text>
-
-            <Navbar.Text className={'me-3'}>
-              <Link to={'/product/list'}>
-                {t('menu.product-list')} &nbsp;
-                <Badge bg={'secondary'}>{numberOfProducts()}</Badge>
-              </Link>
-            </Navbar.Text>
-
-            {mobileAppUrl ? (
-              <>
-                <Navbar.Text className={'me-3'}>
-                  <a
-                    href={mobileAppUrl}
-                    rel={'noopener noreferrer'}
-                    target={'_blank'}
-                  >
-                    {t('menu.mobile-app')}
-                  </a>
-                </Navbar.Text>
-              </>
-            ) : (
-              <> </>
-            )}
-            <NavDropdown
-              className={'me-3'}
-              id={'basic-nav-dropdown'}
-              title={t('menu.language')}
+    <>
+      <AppBar
+        position={'static'}
+        sx={{ backgroundColor: '#212529' }}
+      >
+        <Container
+          maxWidth={false}
+          sx={{ maxWidth: '100%' }}
+        >
+          <Toolbar
+            disableGutters
+            sx={{ marginLeft: 'auto' }}
+          >
+            <img
+              alt={''}
+              className={'d-inline-block'}
+              height={40}
+              src={logo}
+              width={40}
+            />
+            <Typography
+              component={Link}
+              noWrap
+              sx={{
+                color: 'inherit',
+                display: { md: 'flex' },
+                fontWeight: 700,
+                ml: 1
+              }}
+              to={'/'}
+              variant={'h6'}
             >
-              <select
-                id={'language'}
-                name={'language'}
-                onChange={(event) => changeLanguage(event.target.value)}
-                value={i18n.language}
+              {t('title.base')}
+            </Typography>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Hidden mdDown>
+              <Typography
+                component={Link}
+                noWrap
+                sx={{
+                  color: 'inherit',
+                  mr: 3
+                }}
+                to={'/'}
               >
-                <option value={'en-GB'}>🇬🇧 -English</option>
-                <option value={'pt-PT'}>🇵🇹 - Português</option>
-              </select>
-            </NavDropdown>
-          </Nav>
+                {t('menu.home')}
+              </Typography>
+              <Typography
+                component={Link}
+                sx={{
+                  color: 'inherit',
+                  mr: 3
+                }}
+                to={'/product/list'}
+              >
+                {t('menu.product-list')} &nbsp;&nbsp;
+                <Badge
+                  badgeContent={numberOfProducts().toString()}
+                  color={'error'}
+                />
+              </Typography>
+              <Select
+                id={'language'}
+                onChange={(event) => changeLanguage(event.target.value)}
+                sx={{
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '& .MuiSelect-icon': {
+                    color: 'common.white'
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  color: 'common.white'
+                }}
+                value={selectedLanguage()}
+              >
+                <MenuItem value={'pt-PT'}>🇵🇹 PT</MenuItem>
+                <MenuItem value={'en-GB'}>🇬🇧 EN</MenuItem>
+              </Select>
+
+              <IconButton
+                color={'inherit'}
+                onClick={toggleDarkMode}
+                size={'small'}
+                sx={{
+                  '&:hover': { backgroundColor: '#000000' },
+                  backgroundColor: '#495057'
+                }}
+              >
+                {darkMode ? (
+                  <Brightness7
+                    fontSize={'inherit'}
+                    sx={{ color: 'common.white' }}
+                  />
+                ) : (
+                  <Brightness4
+                    fontSize={'inherit'}
+                    sx={{ color: 'common.white' }}
+                  />
+                )}
+              </IconButton>
+            </Hidden>
+
+            <Hidden mdUp>
+              <IconButton
+                aria-label={'menu'}
+                color={'inherit'}
+                edge={'end'}
+                onClick={handleMenuOpen}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Hidden>
+          </Toolbar>
+        </Container>
+      </AppBar>
+      <Menu
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+        open={Boolean(anchorEl)}
+        sx={{ textAlign: 'center' }}
+      >
+        <MenuItem
+          button
+          component={Link}
+          onClick={handleMenuClose}
+          to={'/'}
+        >
+          {t('menu.home')}
+        </MenuItem>
+        <MenuItem
+          button
+          component={Link}
+          onClick={handleMenuClose}
+          to={'/product/list'}
+        >
+          {t('menu.product-list')} &nbsp;&nbsp;
+          <Badge
+            badgeContent={numberOfProducts().toString()}
+            color={'error'}
+          />
+        </MenuItem>
+        <Divider />
+        <MenuItem disableGutters>
+          <Select
+            id={'language'}
+            onChange={(event) => changeLanguage(event.target.value)}
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: 'none'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                border: 'none'
+              }
+            }}
+            value={selectedLanguage()}
+          >
+            <MenuItem value={'pt-PT'}>🇵🇹 PT</MenuItem>
+            <MenuItem value={'en-GB'}>🇬🇧 EN</MenuItem>
+          </Select>
+        </MenuItem>
+        <Divider />
+        <MenuItem>
           <IconButton
             color={'inherit'}
             onClick={toggleDarkMode}
             size={'small'}
             sx={{
-              '&:hover': {
-                backgroundColor: '#000000'
-              },
-              backgroundColor: '#495057',
-              ml: 1
+              '&:hover': { backgroundColor: '#000000' },
+              backgroundColor: '#495057'
             }}
-            variant={'contained'}
           >
             {darkMode ? (
               <Brightness7
                 fontSize={'inherit'}
-                style={{ color: 'white' }}
-                // eslint-disable-next-line react/jsx-closing-bracket-location
+                sx={{ color: 'common.white' }}
               />
             ) : (
               <Brightness4
                 fontSize={'inherit'}
-                style={{ color: 'white' }}
-                // eslint-disable-next-line react/jsx-closing-bracket-location
+                sx={{ color: 'common.white' }}
               />
             )}
           </IconButton>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
-
-NavigationBar.propTypes = {
-  theme: PropTypes.shape({
-    darkMode: PropTypes.bool,
-    setDarkMode: PropTypes.func
-  }).isRequired
-};
-
-/**
- * Export `NavigationBar`.
- */
 
 export default NavigationBar;

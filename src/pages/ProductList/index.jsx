@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * Module dependencies.
  */
@@ -5,10 +6,13 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { Add, Launch, Remove } from '@mui/icons-material';
+import { Add, ArrowDownward, ArrowUpward, Launch, Remove } from '@mui/icons-material';
 import {
   Button,
+  ButtonGroup,
   IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Stack,
   Table,
@@ -37,8 +41,10 @@ function ProductList() {
   const { isLoadingData, productList, productListUpload } = useSelector(
     (state) => state.productList
   );
+  const [anchorEl, setAnchorEl] = useState(null);
   const [isListUpdated, setIsListUpdated] = useState(true);
   const [showFormControl, setShowFormControl] = useState(false);
+  const [showReorderControl, setShowReorderControl] = useState(false);
   const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
   useEffect(() => {
@@ -82,6 +88,19 @@ function ProductList() {
     }
   }, [dispatch, t]);
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleReorder = () => {
+    setShowReorderControl(!showReorderControl);
+    handleClose();
+  };
+
   /**
    *  `removeFromProductList.
    */
@@ -119,6 +138,36 @@ function ProductList() {
     event.preventDefault();
     dispatch(productsActions.saveProductList(productList));
     setShowFormControl(!showFormControl);
+  };
+
+  /**
+   *  `moveItemUp.
+   */
+
+  const moveItemUp = (index) => {
+    if (index > 0) {
+      const updatedList = [...productList];
+      const temp = updatedList[index];
+
+      updatedList[index] = updatedList[index - 1];
+      updatedList[index - 1] = temp;
+      dispatch(productsActions.updateProductList(updatedList));
+    }
+  };
+
+  /**
+   *  `moveItemDown.
+   */
+
+  const moveItemDown = (index) => {
+    if (index < productList.length - 1) {
+      const updatedList = [...productList];
+      const temp = updatedList[index];
+
+      updatedList[index] = updatedList[index + 1];
+      updatedList[index + 1] = temp;
+      dispatch(productsActions.updateProductList(updatedList));
+    }
   };
 
   /**
@@ -170,7 +219,7 @@ function ProductList() {
       return (
         <TableContainer
           component={Paper}
-          sx={{ maxHeight: 1000, maxWidth: 1200, overflowX: 'scroll' }}
+          sx={{ maxWidth: 1200, overflowX: 'scroll' }}
         >
           <Table size={'small'}>
             <TableHead>
@@ -235,6 +284,14 @@ function ProductList() {
                 >
                   {t('data.product-fields.remove-add')}
                 </TableCell>
+                {showReorderControl && (
+                  <TableCell
+                    align={'center'}
+                    style={{ color: 'white' }}
+                  >
+                    {t('data.product-fields.move')}
+                  </TableCell>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -358,6 +415,51 @@ function ProductList() {
                         </IconButton>
                       </Stack>
                     </TableCell>
+                    {showReorderControl && (
+                      <TableCell align={'center'}>
+                        <Stack
+                          alignItems={'center'}
+                          direction={'row'}
+                          justifyContent={'center'}
+                          spacing={1}
+                        >
+                          <IconButton
+                            disabled={index === 0}
+                            onClick={() => moveItemUp(index)}
+                            size={'small'}
+                            sx={{
+                              '&:hover': {
+                                backgroundColor: '#000000'
+                              },
+                              backgroundColor: '#495057'
+                            }}
+                            variant={'contained'}
+                          >
+                            <ArrowUpward
+                              fontSize={'inherit'}
+                              style={{ color: 'white' }}
+                            />
+                          </IconButton>
+                          <IconButton
+                            disabled={index === productList.length - 1}
+                            onClick={() => moveItemDown(index)}
+                            size={'small'}
+                            sx={{
+                              '&:hover': {
+                                backgroundColor: '#000000'
+                              },
+                              backgroundColor: '#495057'
+                            }}
+                            variant={'contained'}
+                          >
+                            <ArrowDownward
+                              fontSize={'inherit'}
+                              style={{ color: 'white' }}
+                            />
+                          </IconButton>
+                        </Stack>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}
@@ -388,7 +490,13 @@ function ProductList() {
       <Button
         onClick={uploadList}
         size={'small'}
-        style={{ textTransform: 'capitalize' }}
+        sx={{
+          '&:hover': {
+            backgroundColor: '#000000'
+          },
+          backgroundColor: '#495057',
+          color: '#fff'
+        }}
         variant={'contained'}
       >
         {t('general.list-upload')}
@@ -403,7 +511,12 @@ function ProductList() {
             <Button
               onClick={copyToClipboard}
               size={'small'}
-              style={{ textTransform: 'capitalize' }}
+              sx={{
+                '&:hover': {
+                  backgroundColor: '#000000'
+                },
+                backgroundColor: '#495057'
+              }}
               variant={'contained'}
             >
               {t('general.copy-to-clipboard')}
@@ -437,6 +550,33 @@ function ProductList() {
       <br />
       {!isLoadingData ? (
         <>
+          <div className={'options-container'}>
+            <ButtonGroup
+              aria-label={'options dropdown'}
+              onClick={handleClick}
+              variant={'contained'}
+            >
+              <Button>{t('pages.product-list.options.tooltip')}</Button>
+            </ButtonGroup>
+            <Menu
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                horizontal: 'left',
+                vertical: 'bottom'
+              }}
+              id={'options-menu'}
+              onClose={handleClose}
+              open={Boolean(anchorEl)}
+              transformOrigin={{
+                horizontal: 'left',
+                vertical: 'top'
+              }}
+            >
+              <MenuItem onClick={handleReorder}>
+                {t('pages.product-list.options.redorder')}
+              </MenuItem>
+            </Menu>
+          </div>
           {renderTable()}
           <br />
           <div>
@@ -460,7 +600,6 @@ function ProductList() {
                     <>
                       <Button
                         onClick={updateList}
-                        style={{ textTransform: 'capitalize' }}
                         variant={'secondary'}
                       >
                         {t('general.refresh-prices')}

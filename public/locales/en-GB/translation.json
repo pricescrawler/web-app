@@ -63,6 +63,12 @@
       "catalog-error": "Error while loading catalogues.",
       "select-all": "Select All",
       "select-catalog": "Select catalogues"
+    },
+    "product-list": {
+      "options": {
+        "tooltip": "Options ▼",
+        "redorder": "Reorder"
+      }
     }
   },
   "data": {
@@ -93,7 +99,8 @@
       "store-page": "Store Page",
       "details": "Details",
       "add-to-list": "Add to List",
-      "remove-add": "Remove | Add"
+      "remove-add": "Remove | Add",
+      "move": "Up | Down"
     }
   }
 }

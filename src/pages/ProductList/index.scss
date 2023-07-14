@@ -18,6 +18,12 @@ th {
   height: 75px;
 }
 
+.options-container {
+  padding: 1.5rem 0.5rem 1rem 0;
+  display: flex;
+  justify-content: end;
+}
+
 @media only screen and (max-width: 1800px) {
   .product-list-img {
     height: 50px;

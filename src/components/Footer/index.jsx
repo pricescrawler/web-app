@@ -30,14 +30,16 @@ function Footer() {
         >
           {t('menu.privacy-terms')}
         </Link>
-        <Link
-          className={'nav-footer-link'}
-          rel={'noopener noreferrer'}
-          target={'_blank'}
-          to={mobileAppUrl}
-        >
-          {t('menu.mobile-app')}
-        </Link>
+        {mobileAppUrl && (
+          <Link
+            className={'nav-footer-link'}
+            rel={'noopener noreferrer'}
+            target={'_blank'}
+            to={mobileAppUrl}
+          >
+            {t('menu.mobile-app')}
+          </Link>
+        )}
       </div>
     </div>
   );

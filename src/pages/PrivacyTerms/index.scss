@@ -4,7 +4,7 @@
     flex-direction: column;
     align-items: center;
     padding: 0 2rem;
-    margin: 0 auto;
+    margin: 1rem auto;
     max-width: 122rem;
   }
 
@@ -13,8 +13,7 @@
   }
 
   &__heading {
-    font-weight: 700;
-    margin-block: 1rem;
+    @include headings-style;
   }
 
   &__paragraph {

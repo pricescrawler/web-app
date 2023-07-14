@@ -6,6 +6,10 @@ th {
   color: white;
 }
 
+.product-list__heading {
+  @include headings-style;
+}
+
 .product-list-upload {
   overflow-x: hidden;
   overflow-y: hidden;

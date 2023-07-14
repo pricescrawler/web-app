@@ -1,0 +1,5 @@
+.about {
+  &__heading {
+    @include headings-style;
+  }
+}

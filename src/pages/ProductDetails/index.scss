@@ -37,6 +37,12 @@
   white-space: nowrap;
 }
 
+.product {
+  &__heading {
+    @include headings-style;
+  }
+}
+
 .product-img {
   height: 150px;
 }

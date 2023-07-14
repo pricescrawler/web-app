@@ -483,9 +483,7 @@ function ProductDetails() {
           justify={'center'}
           spacing={2}
         >
-          <Typography variant={'h4'}>
-            <strong>{t('title.product-details')}</strong>
-          </Typography>
+          <h2 className={'h2 product__heading'}>{t('title.product-details')}</h2>
           {renderProductDataContainer()}
           <Typography variant={'h5'}>
             <strong>{t('general.price-evolution')}</strong>

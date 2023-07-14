@@ -544,9 +544,7 @@ function ProductList() {
 
   return (
     <center>
-      <div className={'h2'}>
-        <strong>{t('title.products-list')}</strong>
-      </div>
+      <h2 className={'h2 product-list__heading'}>{t('title.products-list')}</h2>
       <br />
       {!isLoadingData ? (
         <>

@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+import './index.scss';
 import { Button } from '@mui/material';
 import { QRCode } from 'antd';
 import React from 'react';
@@ -20,9 +21,7 @@ function About() {
 
   return (
     <center>
-      <div className={'h2'}>
-        <strong>{t('menu.about')}</strong>
-      </div>
+      <h2 className={'h2 about__heading'}>{t('menu.about')}</h2>
       <br />
       <p>{t('pages.about.text1')}</p>
       <p>{t('pages.about.text2')}</p>

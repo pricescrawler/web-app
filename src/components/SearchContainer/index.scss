@@ -2,9 +2,7 @@
   margin: 1rem;
 
   &__heading {
-    margin-block: 1rem;
-    font-weight: 700;
-    text-align: center;
+    @include headings-style;
   }
 
   &__search {

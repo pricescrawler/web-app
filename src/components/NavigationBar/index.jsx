@@ -27,6 +27,16 @@ function NavigationBar({ theme }) {
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const logo = '/logo.png';
 
+  const selectedLanguage = () => {
+    if (lang !== 'pt-PT' && lang !== 'en-GB') {
+      setLang('en-GB');
+
+      return 'en-GB';
+    }
+
+    return lang;
+  };
+
   const { darkMode, setDarkMode } = theme;
 
   const toggleDarkMode = () => {
@@ -113,7 +123,7 @@ function NavigationBar({ theme }) {
               >
                 {t('menu.product-list')} &nbsp;&nbsp;
                 <Badge
-                  badgeContent={numberOfProducts()}
+                  badgeContent={numberOfProducts().toString()}
                   color={'error'}
                 />
               </Typography>
@@ -135,7 +145,7 @@ function NavigationBar({ theme }) {
                   },
                   color: 'common.white'
                 }}
-                value={i18n.language}
+                value={selectedLanguage()}
               >
                 <MenuItem value={'pt-PT'}>🇵🇹 PT</MenuItem>
                 <MenuItem value={'en-GB'}>🇬🇧 EN</MenuItem>
@@ -199,7 +209,7 @@ function NavigationBar({ theme }) {
         >
           {t('menu.product-list')} &nbsp;&nbsp;
           <Badge
-            badgeContent={numberOfProducts()}
+            badgeContent={numberOfProducts().toString()}
             color={'error'}
           />
         </MenuItem>
@@ -216,7 +226,7 @@ function NavigationBar({ theme }) {
                 border: 'none'
               }
             }}
-            value={i18n.language}
+            value={selectedLanguage()}
           >
             <MenuItem value={'pt-PT'}>🇵🇹 PT</MenuItem>
             <MenuItem value={'en-GB'}>🇬🇧 EN</MenuItem>

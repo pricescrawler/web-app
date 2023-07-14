@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /**
  * Module dependencies.
  */
@@ -6,13 +5,15 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
-import { Add, ArrowDownward, ArrowUpward, Launch, Remove } from '@mui/icons-material';
+import { Add, ArrowDownward, ArrowUpward, FileCopy, Launch, Remove } from '@mui/icons-material';
 import {
   Button,
   ButtonGroup,
   IconButton,
+  InputAdornment,
   Menu,
   MenuItem,
+  OutlinedInput,
   Paper,
   Stack,
   Table,
@@ -20,9 +21,9 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from '@mui/material';
-import { Form, InputGroup } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -503,26 +504,27 @@ function ProductList() {
       </Button>
       {showFormControl && (
         <>
-          <InputGroup>
-            <Form.Control
-              placeholder={'Link'}
-              value={renderProductListUploadUrl()}
-            />
-            <Button
-              onClick={copyToClipboard}
-              size={'small'}
-              sx={{
-                '&:hover': {
-                  backgroundColor: '#000000'
-                },
-                backgroundColor: '#495057'
-              }}
-              variant={'contained'}
-            >
-              {t('general.copy-to-clipboard')}
-            </Button>
-          </InputGroup>
-
+          <br />
+          <OutlinedInput
+            endAdornment={
+              <InputAdornment position={'end'}>
+                <IconButton
+                  onClick={copyToClipboard}
+                  size={'small'}
+                  style={{ color: 'white' }}
+                  sx={{
+                    '&:hover': { backgroundColor: '#000000' },
+                    backgroundColor: '#495057'
+                  }}
+                >
+                  <FileCopy />
+                </IconButton>
+              </InputAdornment>
+            }
+            placeholder={'Link'}
+            value={renderProductListUploadUrl()}
+          />
+          <br />
           <center>
             <QRCode
               errorLevel={'H'}
@@ -531,12 +533,15 @@ function ProductList() {
             />
           </center>
 
-          <Form.Text muted>
+          <Typography
+            color={'textSecondary'}
+            variant={'body2'}
+          >
             <p>{t('general.expiration-text-1')}</p>
             <p>
               {t('general.expiration-text-2')} {renderProductListExpirationDate()}
             </p>
-          </Form.Text>
+          </Typography>
         </>
       )}
     </>

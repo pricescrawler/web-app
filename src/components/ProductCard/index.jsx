@@ -61,7 +61,9 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
 
       <div className={'product-card-info'}>
         <span className={'product-card-span'}>{t('data.product-fields.name')}</span>
-        <p className={'product-card-text'}>{renderText(productData.name)}</p>
+        <p className={'product-card-text'}>
+          {renderText(productData.name ? productData.name : '-')}
+        </p>
       </div>
 
       <div className={'product-card-info'}>
@@ -72,7 +74,9 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
             <s>{productData.regularPrice}</s> &nbsp; {productData.campaignPrice}
           </p>
         ) : (
-          <p className={'product-card-text'}>{productData.regularPrice}</p>
+          <p className={'product-card-text'}>
+            {productData.regularPrice ? productData.regularPrice : '-'}
+          </p>
         )}
       </div>
 

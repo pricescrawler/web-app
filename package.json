@@ -87,7 +87,7 @@
     "lint-staged": "^13.2.2",
     "prop-types": "^15.8.1",
     "sass": "^1.55.0",
-    "vite": "4.4.3"
+    "vite": "4.4.8"
   },
   "lint-staged": {
     "*.{jsx,js}": "yarn lint:check",

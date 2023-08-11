@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 /**
  * Module dependencies.
  */
@@ -48,23 +49,6 @@ function ProductDetails() {
   const isProductLoaded = () => !!product.prices;
 
   /**
-   * Get Avarage Price.
-   */
-
-  const getAveragePrice = (prices) => {
-    let sum = 0;
-
-    // eslint-disable-next-line id-length, no-plusplus
-    for (let i = 0; i < prices.length; i++) {
-      const price = parseFloat(utils.getFormattedPrice(prices[i]));
-
-      sum += price;
-    }
-
-    return (sum / prices.length).toFixed(2);
-  };
-
-  /**
    * Render Statistics.
    */
 
@@ -97,8 +81,8 @@ function ProductDetails() {
             <strong>{t('data.product-titles.price-max')}</strong>&nbsp;{maxPrice}
           </div>
           <div>
-            <strong>{t('data.product-titles.price-avg')}</strong>&nbsp;
-            {getAveragePrice(product.prices)}
+            <strong>{t('data.product-titles.price-avg')}:</strong>&nbsp;
+            {utils.getAveragePrice(product.prices)}
           </div>
           <div>
             <strong>{t('data.product-titles.price-last')}</strong>&nbsp;
@@ -296,27 +280,6 @@ function ProductDetails() {
   };
 
   /**
-   * Create Chart Data.
-   */
-
-  const createChartData = (prices) => {
-    const chartData = [];
-
-    if (prices) {
-      prices.forEach((value) => {
-        chartData.push({
-          date: value.date,
-          price: utils.getFormattedPrice(value),
-          pricePerQuantity: value.pricePerQuantity,
-          quantity: value.quantity
-        });
-      });
-    }
-
-    return chartData;
-  };
-
-  /**
    * Render Add to List Button.
    */
 
@@ -490,7 +453,7 @@ function ProductDetails() {
           </Typography>
           <div>
             {renderStatistics()}
-            <PricesChart data={createChartData(product.prices)} />
+            <PricesChart data={product.prices} />
           </div>
           <Typography variant={'h5'}>
             <strong>{t('general.prices-history')}</strong>

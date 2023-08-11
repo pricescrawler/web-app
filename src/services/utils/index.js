@@ -41,6 +41,22 @@ export const getLastPrice = (product) => {
 };
 
 /**
+ * Get Avarage Price.
+ */
+
+export const getAveragePrice = (prices) => {
+  let sum = 0;
+
+  for (let it = 0; it < prices.length; it++) {
+    const price = parseFloat(getFormattedPrice(prices[it]));
+
+    sum += price;
+  }
+
+  return (sum / prices.length).toFixed(2);
+};
+
+/**
  * Renders the catalog name of a product.
  * @param {object} product - The product object.
  * @returns {string} The catalog name of the product.

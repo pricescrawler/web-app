@@ -1,19 +1,13 @@
+/* eslint-disable capitalized-comments */
 /**
  * Module dependencies.
  */
 
-import './index.scss';
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
+import * as utils from '@services/utils';
+import { Chart } from 'react-google-charts';
 import React from 'react';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Function `PriceChart`.
@@ -21,45 +15,65 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // eslint-disable-next-line react/prop-types
 function PricesChart({ data }) {
-  const isWide = useMediaQuery('(max-width: 1000px)');
-  const isMobile = useMediaQuery('(max-width: 600px)');
+  const { t } = useTranslation();
+  const isDarkMode = useTheme().palette.mode === 'dark';
 
-  let chartWidth = 1000;
-  let chartHeight = 200;
+  const [dimensions] = React.useState({
+    width: Math.min(window.innerWidth, 1000)
+  });
 
-  if (isMobile) {
-    chartWidth = 350;
-    chartHeight = 150;
-  } else if (isWide) {
-    chartWidth = 600;
-  }
+  const options = {
+    backgroundColor: isDarkMode ? 'black' : 'white',
+    hAxis: {
+      textStyle: { color: isDarkMode ? 'white' : 'black' }
+    },
+    legend: {
+      position: 'bottom',
+      textStyle: { color: isDarkMode ? 'white' : 'black' }
+    },
+    vAxis: {
+      textStyle: { color: isDarkMode ? 'white' : 'black' }
+    },
+    width: dimensions.width
+  };
+
+  /**
+   * Create Chart Data.
+   */
+
+  const createChartData = (prices) => {
+    const chartData = [
+      [
+        t('data.product-fields.date'),
+        t('data.product-fields.regular-price'),
+        // t('data.product-fields.price-per-quantity'),
+        t('data.product-titles.price-avg')
+      ]
+    ];
+    const average = parseFloat(utils.getAveragePrice(prices));
+
+    if (prices) {
+      prices.forEach((value) => {
+        const date = new Date(value.date);
+
+        chartData.push([
+          date,
+          parseFloat(utils.getFormattedPrice(value)),
+          // .parseFloat(utils.convertToFloat(value.pricePerQuantity)),
+          average
+        ]);
+      });
+    }
+
+    return chartData;
+  };
 
   return (
-    <ResponsiveContainer
-      height={'100%'}
-      width={'100%'}
-    >
-      <div className={'chart-container'}>
-        <LineChart
-          data={data}
-          height={chartHeight}
-          width={chartWidth}
-        >
-          <CartesianGrid strokeDasharray={'3 3'} />
-          <XAxis dataKey={'date'} />
-          <YAxis />
-          <Tooltip />
-          <Line
-            // eslint-disable-next-line id-length
-            activeDot={{ r: 8 }}
-            dataKey={'price'}
-            stroke={'#2b2b2b'}
-            strokeWidth={2}
-            type={'monotone'}
-          />
-        </LineChart>
-      </div>
-    </ResponsiveContainer>
+    <Chart
+      chartType={'LineChart'}
+      data={createChartData(data)}
+      options={options}
+    />
   );
 }
 

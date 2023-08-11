@@ -5,6 +5,7 @@
 import './index.scss';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -14,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 function Footer() {
   const { t } = useTranslation();
   const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   return (
     <div className={'nav-footer-container'}>
@@ -30,7 +32,7 @@ function Footer() {
         >
           {t('menu.privacy-terms')}
         </Link>
-        {mobileAppUrl && (
+        {!isMobile && mobileAppUrl && (
           <Link
             className={'nav-footer-link'}
             rel={'noopener noreferrer'}

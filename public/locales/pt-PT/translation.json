@@ -79,7 +79,7 @@
       "price-indicator-info": "Verde - Preço mais baixo que o preço médio. Laranja - Preço promocional igual ao médio. Vermelho - Preço mais alto que o preço médio.",
       "price-min": "Mínimo:",
       "price-max": "Máximo:",
-      "price-avg": "Média:",
+      "price-avg": "Média",
       "price-last": "Último:"
     },
     "product-fields": {

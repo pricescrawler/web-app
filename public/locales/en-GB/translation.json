@@ -79,7 +79,7 @@
       "price-indicator-info": "Green - Price lower than the average price. Orange - Price equal to the average price. Red - Price higher than the average price.",
       "price-min": "Min:",
       "price-max": "Max:",
-      "price-avg": "Avg:",
+      "price-avg": "Avg",
       "price-last": "Last:"
     },
     "product-fields": {

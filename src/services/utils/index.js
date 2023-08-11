@@ -27,7 +27,7 @@ export const getFormattedPrice = (product) => {
 };
 
 /**
- *  Gets the last price of a product from its list of prices.
+ * Gets the last price of a product from its list of prices.
  * @param {object} product - The product object.
  * @returns {number} The last price of the product as a float number.
  * */
@@ -41,17 +41,15 @@ export const getLastPrice = (product) => {
 };
 
 /**
- * Get Avarage Price.
- */
+ * Get Average Price.
+ * @param {Array} prices - Array of prices.
+ * @returns {string} - Average price rounded to two decimal places.
+ * */
 
 export const getAveragePrice = (prices) => {
-  let sum = 0;
-
-  for (let it = 0; it < prices.length; it++) {
-    const price = parseFloat(getFormattedPrice(prices[it]));
-
-    sum += price;
-  }
+  const sum = prices
+    .map((price) => parseFloat(getFormattedPrice(price)))
+    .reduce((acc, val) => acc + val, 0);
 
   return (sum / prices.length).toFixed(2);
 };

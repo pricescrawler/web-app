@@ -1,4 +1,3 @@
-/* eslint-disable capitalized-comments */
 /**
  * Module dependencies.
  */
@@ -46,7 +45,6 @@ function PricesChart({ data }) {
       [
         t('data.product-fields.date'),
         t('data.product-fields.regular-price'),
-        // t('data.product-fields.price-per-quantity'),
         t('data.product-titles.price-avg')
       ]
     ];
@@ -56,12 +54,7 @@ function PricesChart({ data }) {
       prices.forEach((value) => {
         const date = new Date(value.date);
 
-        chartData.push([
-          date,
-          parseFloat(utils.getFormattedPrice(value)),
-          // .parseFloat(utils.convertToFloat(value.pricePerQuantity)),
-          average
-        ]);
+        chartData.push([date, parseFloat(utils.getFormattedPrice(value)), average]);
       });
     }
 

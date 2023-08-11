@@ -253,6 +253,7 @@ module.exports = {
     'react/prefer-stateless-function': 'error',
     'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'error',
+    'react/prop-types': 'off',
     'react/sort-comp': [
       'error',
       {

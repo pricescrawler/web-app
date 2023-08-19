@@ -14,6 +14,12 @@ import initialState from './productsInitialState';
 const localStorageproductsList = 'productsList';
 
 /**
+ *  Maximum number of lists a user is able to create
+ */
+
+const MAX_LISTS = 5;
+
+/**
  *  `isLoadingData`.
  */
 
@@ -103,55 +109,84 @@ export const product = (state = initialState.product, action = {}) => {
 
 export const productList = (state = initialState.productList, action = {}) => {
   switch (action.type) {
-    case actionTypes.ADD_PRODUCT_LIST: {
-      if (state.some((item) => item.key === action.payload.key)) {
-        const prods = state.map((item) => {
-          if (item.key === action.payload.key) {
-            item.quantity = action.payload.quantity;
-          }
-
-          return item;
-        });
-
-        localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
-
-        return prods;
+    case actionTypes.CREATE_NEW_LIST: {
+      if (state.length === MAX_LISTS) {
+        return state;
       }
+      const newList = {
+        name: `List ${state.length + 1}`,
+        products: []
+      };
 
-      const prods = [...state, action.payload];
-
-      localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
-
-      return prods;
+      return [...state, newList];
     }
 
-    case actionTypes.UPDATE_PRODUCT_LIST: {
-      localStorage.setItem(localStorageproductsList, JSON.stringify(action.payload));
+    case actionTypes.ADD_PRODUCT_TO_LIST: {
+      // Find the list by its name
+      const updatedState = state.map((list) => {
+        if (list.name === action.payload.listName) {
+          if (list.products.some((product) => product.key === action.payload.product.key)) {
+            list.products = list.products.map((product) => {
+              if (product.key === action.payload.product.key) {
+                product.quantity = action.payload.product.quantity;
+              }
 
-      return action.payload;
+              return product;
+            });
+          } else {
+            list.products.push(action.payload.product);
+          }
+        }
+
+        return list;
+      });
+
+      localStorage.setItem(localStorageproductsList, JSON.stringify(updatedState));
+
+      return updatedState;
     }
 
-    case actionTypes.REMOVE_PRODUCT_LIST: {
-      if (action.payload.quantity === 0) {
-        const prods = state.filter((item) => item.key !== action.payload.key);
+    case actionTypes.UPDATE_LIST_NAME: {
+      const updatedState = state.map((list) => {
+        if (list.name === action.payload.oldListName) {
+          return {
+            ...list,
+            name: action.payload.newListName
+          };
+        }
 
-        localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
+        return list;
+      });
 
-        return prods;
-        // eslint-disable-next-line no-else-return
-      } else {
-        const prods = state.map((item) => {
-          if (item.key === action.payload.key) {
-            item.quantity = action.payload.quantity;
+      localStorage.setItem(localStorageproductsList, JSON.stringify(updatedState));
+
+      return updatedState;
+    }
+
+    case actionTypes.REMOVE_PRODUCT_FROM_LIST: {
+      const updatedState = state.map((list) => {
+        if (list.name === action.payload.listName) {
+          if (action.payload.quantity === 0) {
+            list.products = list.products.filter(
+              (product) => product.key !== action.payload.productKey
+            );
+          } else {
+            list.products = list.products.map((product) => {
+              if (product.key === action.payload.productKey) {
+                product.quantity = action.payload.quantity;
+              }
+
+              return product;
+            });
           }
+        }
 
-          return item;
-        });
+        return list;
+      });
 
-        localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
+      localStorage.setItem(localStorageproductsList, JSON.stringify(updatedState));
 
-        return prods;
-      }
+      return updatedState;
     }
 
     default: {

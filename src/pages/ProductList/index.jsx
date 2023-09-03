@@ -53,15 +53,17 @@ function ProductList() {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      productList.forEach((prod) => {
-        const productDate = new Date(prod.product.date);
-        const productParseDate = new Date(
-          productDate.getFullYear(),
-          productDate.getMonth(),
-          productDate.getDate()
-        );
+      productList.forEach((list) => {
+        list.products?.forEach((prod) => {
+          const productDate = new Date(prod.product.date);
+          const productParseDate = new Date(
+            productDate.getFullYear(),
+            productDate.getMonth(),
+            productDate.getDate()
+          );
 
-        return setIsListUpdated(today.getTime() === productParseDate.getTime());
+          return setIsListUpdated(today.getTime() === productParseDate.getTime());
+        });
       });
     }
   }, [productList]);
@@ -177,10 +179,18 @@ function ProductList() {
 
   const renderTotalPrice = () => {
     if (productList) {
-      return productList
-        .reduce((acc, prod) => acc + utils.getFormattedPrice(prod.product) * prod.quantity, 0)
-        .toFixed(2);
+      let totalPrice = 0;
+
+      for (const list of productList) {
+        for (const product of list.products) {
+          totalPrice += utils.getFormattedPrice(product.product) * product.quantity;
+        }
+      }
+
+      return totalPrice.toFixed(2);
     }
+
+    return '0.00';
   };
 
   /**
@@ -189,22 +199,26 @@ function ProductList() {
 
   const renderTotalPriceByCatalog = () => {
     if (productList) {
-      const catalogs = productList.reduce((acc, prod) => {
-        if (!acc.includes(prod.catalog)) {
-          acc.push(prod.catalog);
-        }
+      const catalogTotals = {};
 
-        return acc;
-      }, []);
+      for (const list of productList) {
+        for (const product of list.products) {
+          if (product && product.product) {
+            const { catalog } = product;
+            const price = utils.getFormattedPrice(product.product) * product.quantity;
 
-      return catalogs.map((catalog) => {
-        const totalPrice = productList.reduce((acc, prod) => {
-          if (prod.catalog === catalog) {
-            return acc + utils.getFormattedPrice(prod.product) * prod.quantity;
+            // eslint-disable-next-line max-depth
+            if (!catalogTotals[catalog]) {
+              catalogTotals[catalog] = 0;
+            }
+
+            catalogTotals[catalog] += price;
           }
+        }
+      }
 
-          return acc;
-        }, 0);
+      return Object.keys(catalogTotals).map((catalog) => {
+        const totalPrice = catalogTotals[catalog];
 
         return `${catalog}: ${totalPrice.toFixed(2)}€; `;
       });
@@ -265,6 +279,12 @@ function ProductList() {
                   align={'center'}
                   style={{ color: 'white' }}
                 >
+                  {t('data.product-fields.list')}
+                </TableCell>
+                <TableCell
+                  align={'center'}
+                  style={{ color: 'white' }}
+                >
                   {t('data.product-fields.quantity')}
                 </TableCell>
                 <TableCell
@@ -296,41 +316,73 @@ function ProductList() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {productList.map((prod, index) => {
-                const { catalog, historyEnabled, locale, product, quantity } = prod;
-                const { campaignPrice, name, pricePerQuantity, reference, regularPrice } = product;
+              {productList.map((list) => {
+                const { name: listName } = list;
 
-                return (
-                  <TableRow key={index}>
-                    <TableCell align={'center'}>
-                      <img
-                        alt={''}
-                        className={'product-list-img'}
-                        referrerPolicy={'no-referrer'}
-                        src={product.imageUrl}
-                      />
-                    </TableCell>
-                    <TableCell align={'center'}>
-                      {locale}.{catalog}
-                    </TableCell>
-                    <TableCell align={'center'}>{reference}</TableCell>
-                    <TableCell align={'center'}>{name}</TableCell>
-                    <TableCell align={'center'}>
-                      {campaignPrice ? (
-                        <div>
-                          <s>{regularPrice}</s> &nbsp; {campaignPrice}
-                        </div>
-                      ) : (
-                        regularPrice
-                      )}
-                    </TableCell>
-                    <TableCell align={'center'}>{pricePerQuantity}</TableCell>
-                    <TableCell align={'center'}>{quantity}</TableCell>
-                    <TableCell align={'center'}>
-                      {historyEnabled ? (
-                        <Link
-                          target={'_self'}
-                          to={`/product/${locale}/${catalog}/${reference}`}
+                return list.products.map((prod, index) => {
+                  const { catalog, historyEnabled, locale, product, quantity } = prod;
+                  // eslint-disable-next-line operator-linebreak
+                  const { campaignPrice, name, pricePerQuantity, reference, regularPrice } =
+                    product;
+
+                  return (
+                    <TableRow key={index}>
+                      <TableCell align={'center'}>
+                        <img
+                          alt={''}
+                          className={'product-list-img'}
+                          referrerPolicy={'no-referrer'}
+                          src={product.imageUrl}
+                        />
+                      </TableCell>
+                      <TableCell align={'center'}>
+                        {locale}.{catalog}
+                      </TableCell>
+                      <TableCell align={'center'}>{reference}</TableCell>
+                      <TableCell align={'center'}>{name}</TableCell>
+                      <TableCell align={'center'}>
+                        {campaignPrice ? (
+                          <div>
+                            <s>{regularPrice}</s> &nbsp; {campaignPrice}
+                          </div>
+                        ) : (
+                          regularPrice
+                        )}
+                      </TableCell>
+                      <TableCell align={'center'}>{pricePerQuantity}</TableCell>
+                      <TableCell align={'center'}>{listName}</TableCell>
+                      <TableCell align={'center'}>{quantity}</TableCell>
+                      <TableCell align={'center'}>
+                        {historyEnabled ? (
+                          <Link
+                            target={'_self'}
+                            to={`/product/${locale}/${catalog}/${reference}`}
+                          >
+                            <IconButton
+                              size={'small'}
+                              sx={{
+                                '&:hover': {
+                                  backgroundColor: '#000000'
+                                },
+                                backgroundColor: '#495057'
+                              }}
+                              variant={'contained'}
+                            >
+                              <Launch
+                                fontSize={'inherit'}
+                                style={{ color: 'white' }}
+                              />
+                            </IconButton>
+                          </Link>
+                        ) : (
+                          <></>
+                        )}
+                      </TableCell>
+                      <TableCell align={'center'}>
+                        <a
+                          href={product.productUrl}
+                          rel={'noopener noreferrer'}
+                          target={'_blank'}
                         >
                           <IconButton
                             size={'small'}
@@ -347,76 +399,8 @@ function ProductList() {
                               style={{ color: 'white' }}
                             />
                           </IconButton>
-                        </Link>
-                      ) : (
-                        <></>
-                      )}
-                    </TableCell>
-                    <TableCell align={'center'}>
-                      <a
-                        href={product.productUrl}
-                        rel={'noopener noreferrer'}
-                        target={'_blank'}
-                      >
-                        <IconButton
-                          size={'small'}
-                          sx={{
-                            '&:hover': {
-                              backgroundColor: '#000000'
-                            },
-                            backgroundColor: '#495057'
-                          }}
-                          variant={'contained'}
-                        >
-                          <Launch
-                            fontSize={'inherit'}
-                            style={{ color: 'white' }}
-                          />
-                        </IconButton>
-                      </a>
-                    </TableCell>
-                    <TableCell align={'center'}>
-                      <Stack
-                        alignItems={'center'}
-                        direction={'row'}
-                        justifyContent={'center'}
-                        spacing={1}
-                      >
-                        <IconButton
-                          onClick={(event) => removeFromProductList(event, prod)}
-                          size={'small'}
-                          sx={{
-                            '&:hover': {
-                              backgroundColor: '#000000'
-                            },
-                            backgroundColor: '#495057'
-                          }}
-                          variant={'contained'}
-                        >
-                          <Remove
-                            fontSize={'inherit'}
-                            style={{ color: 'white' }}
-                          />
-                        </IconButton>
-                        <IconButton
-                          onClick={(event) => addToProductList(event, prod)}
-                          size={'small'}
-                          sx={{
-                            '&:hover': {
-                              backgroundColor: '#000000'
-                            },
-                            backgroundColor: '#495057'
-                          }}
-                          variant={'contained'}
-                        >
-                          <Add
-                            fontSize={'inherit'}
-                            style={{ color: 'white' }}
-                          />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                    {showReorderControl && (
+                        </a>
+                      </TableCell>
                       <TableCell align={'center'}>
                         <Stack
                           alignItems={'center'}
@@ -425,8 +409,7 @@ function ProductList() {
                           spacing={1}
                         >
                           <IconButton
-                            disabled={index === 0}
-                            onClick={() => moveItemUp(index)}
+                            onClick={(event) => removeFromProductList(event, prod)}
                             size={'small'}
                             sx={{
                               '&:hover': {
@@ -436,14 +419,13 @@ function ProductList() {
                             }}
                             variant={'contained'}
                           >
-                            <ArrowUpward
+                            <Remove
                               fontSize={'inherit'}
                               style={{ color: 'white' }}
                             />
                           </IconButton>
                           <IconButton
-                            disabled={index === productList.length - 1}
-                            onClick={() => moveItemDown(index)}
+                            onClick={(event) => addToProductList(event, prod)}
                             size={'small'}
                             sx={{
                               '&:hover': {
@@ -453,16 +435,61 @@ function ProductList() {
                             }}
                             variant={'contained'}
                           >
-                            <ArrowDownward
+                            <Add
                               fontSize={'inherit'}
                               style={{ color: 'white' }}
                             />
                           </IconButton>
                         </Stack>
                       </TableCell>
-                    )}
-                  </TableRow>
-                );
+                      {showReorderControl && (
+                        <TableCell align={'center'}>
+                          <Stack
+                            alignItems={'center'}
+                            direction={'row'}
+                            justifyContent={'center'}
+                            spacing={1}
+                          >
+                            <IconButton
+                              disabled={index === 0}
+                              onClick={() => moveItemUp(index)}
+                              size={'small'}
+                              sx={{
+                                '&:hover': {
+                                  backgroundColor: '#000000'
+                                },
+                                backgroundColor: '#495057'
+                              }}
+                              variant={'contained'}
+                            >
+                              <ArrowUpward
+                                fontSize={'inherit'}
+                                style={{ color: 'white' }}
+                              />
+                            </IconButton>
+                            <IconButton
+                              disabled={index === productList.length - 1}
+                              onClick={() => moveItemDown(index)}
+                              size={'small'}
+                              sx={{
+                                '&:hover': {
+                                  backgroundColor: '#000000'
+                                },
+                                backgroundColor: '#495057'
+                              }}
+                              variant={'contained'}
+                            >
+                              <ArrowDownward
+                                fontSize={'inherit'}
+                                style={{ color: 'white' }}
+                              />
+                            </IconButton>
+                          </Stack>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                });
               })}
             </TableBody>
           </Table>

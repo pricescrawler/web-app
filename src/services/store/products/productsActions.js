@@ -81,12 +81,21 @@ export const getSearchProducts = (products, searchParam) => ({
 });
 
 /**
+ * Create new List.
+ */
+
+export const createNewList = (newList) => ({
+  payload: newList,
+  type: actionTypes.CREATE_NEW_LIST
+});
+
+/**
  * Add to Product List.
  */
 
-export const addToProductList = (product) => ({
-  payload: product,
-  type: actionTypes.ADD_PRODUCT_LIST
+export const addToProductList = (newProduct, listName) => ({
+  payload: { listName, newProduct },
+  type: actionTypes.ADD_PRODUCT_TO_LIST
 });
 
 /**
@@ -113,7 +122,7 @@ export const uploadProductList = (product) => ({
 
 export const removeFromProductList = (product) => ({
   payload: product,
-  type: actionTypes.REMOVE_PRODUCT_LIST
+  type: actionTypes.REMOVE_PRODUCT_FROM_LIST
 });
 
 /**

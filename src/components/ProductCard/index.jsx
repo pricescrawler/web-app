@@ -5,9 +5,12 @@
 
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
+import { Menu, MenuItem } from '@mui/material';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import { MAX_LISTS } from '../../services/store/products/productsReducer';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -15,6 +18,7 @@ import { useTranslation } from 'react-i18next';
  */
 
 function ProductCard({ catalog, historyEnabled, locale, productData }) {
+  const [menuAnchor, setMenuAnchor] = useState(null);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { productList } = useSelector((state) => state.productList);
@@ -25,27 +29,62 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
    * Add to List.
    */
 
-  const addToList = (event) => {
-    event.preventDefault();
-    const product = productList.find(
-      (prod) => prod.key === `${locale}.${catalog}.${productData.reference}`
+  const addToList = (listName = t('menu.product-list')) => {
+    const productKey = `${locale}.${catalog}.${productData.reference}`;
+
+    const product = productList.find((prod) =>
+      prod.products.some((product) => product.key === productKey)
     );
 
     if (product) {
-      product.quantity += 1;
-      dispatch(productsActions.addToProductList(product));
+      const updatedProductList = productList.map((list) => {
+        if (list.products.some((product) => product.key === productKey)) {
+          return {
+            ...list,
+            products: list.products.map((product) => {
+              if (product.key === productKey) {
+                return { ...product, quantity: product.quantity + 1 };
+              }
+
+              return product;
+            })
+          };
+        }
+
+        return list;
+      });
+
+      dispatch(productsActions.updateProductList(updatedProductList));
     } else {
-      dispatch(
-        productsActions.addToProductList({
-          catalog,
-          historyEnabled,
-          key: `${locale}.${catalog}.${productData.reference}`,
-          locale,
-          product: productData,
-          quantity: 1
-        })
-      );
+      const newProduct = {
+        catalog,
+        historyEnabled,
+        key: productKey,
+        locale,
+        product: productData,
+        quantity: 1
+      };
+
+      dispatch(productsActions.addToProductList(newProduct, listName));
+      setMenuAnchor(null);
     }
+  };
+
+  /**
+   * Create new List.
+   */
+
+  const handleCreateNewList = () => {
+    if (productList.length >= MAX_LISTS) {
+      return;
+    }
+
+    const newList = {
+      name: `List ${productList.length + 1}`,
+      products: []
+    };
+
+    dispatch(productsActions.createNewList(newList));
   };
 
   return (
@@ -130,10 +169,33 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
         &nbsp;&nbsp;
         <button
           className={'product-card-button'}
-          onClick={addToList}
+          onClick={(event) => setMenuAnchor(event.currentTarget)}
         >
           {t('data.product-fields.add-to-list')}
         </button>
+        <Menu
+          anchorEl={menuAnchor}
+          onClose={() => setMenuAnchor(null)}
+          open={Boolean(menuAnchor)}
+        >
+          {/* Render existing lists */}
+          {productList.map((list) => (
+            <MenuItem
+              key={list.name}
+              onClick={() => addToList(list.name)}
+            >
+              {list.name}
+            </MenuItem>
+          ))}
+
+          {/* Create new list button */}
+          {productList.length < MAX_LISTS && (
+            <MenuItem onClick={handleCreateNewList}>
+              {t('general.new-list')}
+              <AddIcon sx={{ fontSize: '1.4rem', marginInlineStart: '0.3rem' }} />
+            </MenuItem>
+          )}
+        </Menu>
       </center>
 
       {productData.campaignPrice ? (

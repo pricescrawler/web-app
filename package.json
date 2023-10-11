@@ -19,7 +19,7 @@
     "commitizen": "^4.2.5",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-jest": "27.4.2",
-    "eslint-plugin-mocha": "10.1.0",
+    "eslint-plugin-mocha": "10.2.0",
     "eslint-plugin-new-with-error": "4.0.0",
     "eslint-plugin-sort-class-members": "1.18.0",
     "eslint-plugin-sort-destructure-keys": "1.5.0",

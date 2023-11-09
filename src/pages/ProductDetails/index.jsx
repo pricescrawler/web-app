@@ -1,4 +1,4 @@
-/* eslint-disable sort-keys */
+/* eslint-disable operator-linebreak */
 /**
  * Module dependencies.
  */
@@ -7,6 +7,7 @@ import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import {
+  Alert,
   Box,
   Button,
   Divider,
@@ -437,6 +438,23 @@ function ProductDetails() {
     );
   };
 
+  const renderProductOutdatedAlert = () => {
+    if (product.prices.length > 0) {
+      const lastPrice = product.prices[product.prices.length - 1];
+
+      const now = new Date();
+      const lastPriceDate = new Date(lastPrice.date);
+
+      if (
+        now.getFullYear() !== lastPriceDate.getFullYear() ||
+        now.getMonth() !== lastPriceDate.getMonth() ||
+        now.getDate() !== lastPriceDate.getDate()
+      ) {
+        return <Alert severity={'warning'}>{t('data.error.product-outdated')}</Alert>;
+      }
+    }
+  };
+
   return (
     <>
       {!isLoadingData && isProductLoaded() ? (
@@ -451,6 +469,7 @@ function ProductDetails() {
           <Typography variant={'h5'}>
             <strong>{t('general.price-evolution')}</strong>
           </Typography>
+          {renderProductOutdatedAlert()}
           <div>
             {renderStatistics()}
             <PricesChart data={product.prices} />

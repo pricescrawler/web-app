@@ -1,3 +1,7 @@
+/**
+ * Module dependencies.
+ */
+
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import {
@@ -22,6 +26,10 @@ import Swal from 'sweetalert2';
 import api from '@services/api';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+
+/**
+ * `SearchContainer`.
+ */
 
 const SearchContainer = ({ setOrder }) => {
   const { t } = useTranslation();

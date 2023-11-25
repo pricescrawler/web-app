@@ -53,7 +53,7 @@ function ProductList() {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      productList.forEach((prod) => {
+      const isAnyProductOutdated = productList.some((prod) => {
         const productDate = new Date(prod.product.date);
         const productParseDate = new Date(
           productDate.getFullYear(),
@@ -61,8 +61,10 @@ function ProductList() {
           productDate.getDate()
         );
 
-        return setIsListUpdated(today.getTime() === productParseDate.getTime());
+        return productParseDate < today;
       });
+
+      setIsListUpdated(!isAnyProductOutdated);
     }
   }, [productList]);
 
@@ -490,18 +492,12 @@ function ProductList() {
     <>
       <Button
         onClick={uploadList}
-        size={'small'}
-        sx={{
-          '&:hover': {
-            backgroundColor: '#000000'
-          },
-          backgroundColor: '#495057',
-          color: '#fff'
-        }}
+        sx={{ textTransform: 'capitalize' }}
         variant={'contained'}
       >
         {t('general.list-upload')}
       </Button>
+      <br />
       {showFormControl && (
         <>
           <br />
@@ -559,7 +555,9 @@ function ProductList() {
               onClick={handleClick}
               variant={'contained'}
             >
-              <Button>{t('pages.product-list.options.tooltip')}</Button>
+              <Button sx={{ textTransform: 'capitalize' }}>
+                {t('pages.product-list.options.tooltip')}
+              </Button>
             </ButtonGroup>
             <Menu
               anchorEl={anchorEl}
@@ -603,7 +601,8 @@ function ProductList() {
                     <>
                       <Button
                         onClick={updateList}
-                        variant={'secondary'}
+                        sx={{ textTransform: 'capitalize' }}
+                        variant={'contained'}
                       >
                         {t('general.refresh-prices')}
                       </Button>
@@ -611,7 +610,7 @@ function ProductList() {
                   ) : (
                     <> </>
                   )}
-                  {renderListUpload()}
+                  <div>{renderListUpload()}</div>
                 </>
               )}
             </div>

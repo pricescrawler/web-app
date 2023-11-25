@@ -1,5 +1,11 @@
+/* eslint-disable no-unused-vars */
+/**
+ * Module dependencies.
+ */
+
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
+import * as scanner from '@components/Scanner';
 import {
   Box,
   Button,
@@ -8,6 +14,7 @@ import {
   CircularProgress,
   Divider,
   FormControl,
+  IconButton,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -15,8 +22,9 @@ import {
   Stack,
   TextField
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { QrCodeScanner } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
 import api from '@services/api';
@@ -31,10 +39,26 @@ const SearchContainer = ({ setOrder }) => {
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
+  const videoRef = useRef(null);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
   );
+
+  const handleError = (error) => {
+    // eslint-disable-next-line no-alert
+    return alert(error);
+  };
+
+  const handleScan = (result) => {
+    setSearchValue(result.getText());
+    dispatch(productsActions.search({ selectedCatalogs, stringValue: result.getText() }));
+  };
+
+  const startScanner = () => {
+    setSearchValue('');
+    scanner.barcode(videoRef.current, handleScan, handleError);
+  };
 
   useEffect(() => {
     const cachedData = localStorage.getItem('catalogData');
@@ -268,6 +292,7 @@ const SearchContainer = ({ setOrder }) => {
                 fullWidth
                 label={t('general.search-for-some-product')}
                 onChange={(event) => setSearchValue(event.target.value)}
+                value={searchValue}
                 variant={'outlined'}
               />
               <Divider
@@ -287,7 +312,24 @@ const SearchContainer = ({ setOrder }) => {
               >
                 {t('general.search')}
               </Button>
+              <IconButton
+                onClick={startScanner}
+                variant={'contained'}
+              >
+                <QrCodeScanner style={{ color: 'black' }} />
+              </IconButton>
             </Stack>
+            <div>
+              <br />
+              {!searchValue && (
+                <center>
+                  <video
+                    ref={videoRef}
+                    style={{ height: 'auto', width: '50%' }}
+                  />
+                </center>
+              )}
+            </div>
           </FormControl>
         </form>
       </div>

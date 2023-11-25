@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /**
  * Module dependencies.
  */
@@ -30,6 +29,10 @@ import Swal from 'sweetalert2';
 import api from '@services/api';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+
+/**
+ * `SearchContainer`.
+ */
 
 const SearchContainer = ({ setOrder }) => {
   const { t } = useTranslation();

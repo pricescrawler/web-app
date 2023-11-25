@@ -1,3 +1,6 @@
+/* eslint-disable no-alert */
+/* eslint-disable operator-linebreak */
+/* eslint-disable sql-template/no-unsafe-query */
 import { BrowserMultiFormatReader } from '@zxing/library';
 
 /**
@@ -17,7 +20,10 @@ export function barcode(videoElement, onScan, onError) {
     .then((videoInputDevices) => {
       if (videoInputDevices.length > 0) {
         codeReader
-          .decodeOnceFromVideoDevice(videoInputDevices[0].deviceId, videoElement)
+          .decodeOnceFromVideoDevice(
+            videoInputDevices[videoInputDevices.length - 1].deviceId,
+            videoElement
+          )
           .then(onScan)
           .catch(onError);
       } else {

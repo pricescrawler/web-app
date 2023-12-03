@@ -1,7 +1,6 @@
-/* eslint-disable no-alert */
-/* eslint-disable operator-linebreak */
-/* eslint-disable sql-template/no-unsafe-query */
 import { BrowserMultiFormatReader } from '@zxing/library';
+
+let codeReaderInstance = null;
 
 /**
  * Scans for barcodes in a video stream from the user's camera.
@@ -13,13 +12,13 @@ import { BrowserMultiFormatReader } from '@zxing/library';
  */
 
 export function barcode(videoElement, onScan, onError) {
-  const codeReader = new BrowserMultiFormatReader();
+  codeReaderInstance = new BrowserMultiFormatReader();
 
-  codeReader
+  codeReaderInstance
     .listVideoInputDevices()
     .then((videoInputDevices) => {
       if (videoInputDevices.length > 0) {
-        codeReader
+        codeReaderInstance
           .decodeOnceFromVideoDevice(
             videoInputDevices[videoInputDevices.length - 1].deviceId,
             videoElement
@@ -31,4 +30,15 @@ export function barcode(videoElement, onScan, onError) {
       }
     })
     .catch(onError);
+}
+
+/**
+ * Stops the barcode scanning process.
+ */
+
+export function stop() {
+  if (codeReaderInstance) {
+    codeReaderInstance.reset();
+    codeReaderInstance = null;
+  }
 }

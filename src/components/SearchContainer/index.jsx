@@ -39,10 +39,11 @@ const SearchContainer = ({ setOrder }) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
   const [catalogs, setCatalogs] = useState([]);
-  const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
+  const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(false);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
   const videoRef = useRef(null);
+  const [experimentalFeatures, setExperimentalFeatures] = useState(false);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
@@ -56,12 +57,21 @@ const SearchContainer = ({ setOrder }) => {
   const handleScan = (result) => {
     setSearchValue(result.getText());
     dispatch(productsActions.search({ selectedCatalogs, stringValue: result.getText() }));
+    scanner.stop();
   };
 
   const startScanner = () => {
     setSearchValue('');
     scanner.barcode(videoRef.current, handleScan, handleError);
   };
+
+  useEffect(() => {
+    const experimentalEnabledLS = localStorage.getItem('experimentalEnabled');
+
+    if (experimentalEnabledLS !== null) {
+      setExperimentalFeatures(JSON.parse(experimentalEnabledLS));
+    }
+  }, []);
 
   useEffect(() => {
     const cachedData = localStorage.getItem('catalogData');
@@ -315,12 +325,18 @@ const SearchContainer = ({ setOrder }) => {
               >
                 {t('general.search')}
               </Button>
-              <IconButton
-                onClick={startScanner}
-                variant={'contained'}
-              >
-                <QrCodeScanner style={{ color: 'black' }} />
-              </IconButton>
+              {experimentalFeatures ? (
+                <>
+                  <IconButton
+                    onClick={startScanner}
+                    variant={'contained'}
+                  >
+                    <QrCodeScanner style={{ color: 'black' }} />
+                  </IconButton>
+                </>
+              ) : (
+                <></>
+              )}
             </Stack>
             <div>
               <br />
@@ -328,7 +344,7 @@ const SearchContainer = ({ setOrder }) => {
                 <center>
                   <video
                     ref={videoRef}
-                    style={{ height: 'auto', width: '50%' }}
+                    style={{ height: 'auto', width: '75%' }}
                   />
                 </center>
               )}

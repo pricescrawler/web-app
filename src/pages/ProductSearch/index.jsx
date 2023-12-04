@@ -37,7 +37,6 @@ function ProductSearch() {
   const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
   const { isLoadingData, products } = useSelector((state) => state.products);
-
   const currentProducts = Object.assign([], products);
 
   /**

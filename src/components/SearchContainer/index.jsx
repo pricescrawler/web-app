@@ -338,17 +338,21 @@ const SearchContainer = ({ setOrder }) => {
                 <></>
               )}
             </Stack>
-            <div>
-              <br />
-              {!searchValue && (
-                <center>
-                  <video
-                    ref={videoRef}
-                    style={{ height: 'auto', width: '75%' }}
-                  />
-                </center>
-              )}
-            </div>
+            {experimentalFeatures ? (
+              <>
+                <br />
+                {!searchValue && (
+                  <center>
+                    <video
+                      ref={videoRef}
+                      style={{ height: 'auto', width: '75%' }}
+                    />
+                  </center>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
           </FormControl>
         </form>
       </div>

@@ -1,17 +1,8 @@
-/**
- * Module dependencies.
- */
-
-import './index.scss';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Switch, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { QRCode } from 'antd';
-import React from 'react';
 import packageJson from '../../../package.json';
 import { useTranslation } from 'react-i18next';
-
-/**
- * Function `About`.
- */
 
 function About() {
   const { t } = useTranslation();
@@ -19,13 +10,47 @@ function About() {
   const donateUrl = import.meta.env.VITE_DONATE_URL;
   const mobileAppUrl = import.meta.env.VITE_MOBILE_APP_URL;
 
+  const [experimentalEnabled, setExperimentalEnabled] = useState(false);
+
+  useEffect(() => {
+    const experimentalEnabledLS = localStorage.getItem('experimentalEnabled');
+
+    if (experimentalEnabledLS !== null) {
+      setExperimentalEnabled(JSON.parse(experimentalEnabledLS));
+    }
+  }, []);
+
+  const handleExperimentalToggle = () => {
+    const newValue = !experimentalEnabled;
+
+    setExperimentalEnabled(newValue);
+    localStorage.setItem('experimentalEnabled', JSON.stringify(newValue));
+  };
+
   return (
     <center>
-      <h2 className={'h2 about__heading'}>{t('menu.about')}</h2>
+      <Typography
+        className={'about__heading'}
+        variant={'h2'}
+      >
+        {t('menu.about')}
+      </Typography>
       <br />
       <p>{t('pages.about.text1')}</p>
       <p>{t('pages.about.text2')}</p>
       <p>{t('pages.about.text3')}</p>
+      <br />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={experimentalEnabled}
+            color={'primary'}
+            onChange={handleExperimentalToggle}
+          />
+        }
+        label={t('pages.about.experimental-features')}
+      />
+      <br />
       <br />
       <p>
         <strong>{t('pages.about.version')}:</strong>

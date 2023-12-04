@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Switch, Typography } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { QRCode } from 'antd';
 import packageJson from '../../../package.json';
@@ -29,12 +29,7 @@ function About() {
 
   return (
     <center>
-      <Typography
-        className={'about__heading'}
-        variant={'h2'}
-      >
-        {t('menu.about')}
-      </Typography>
+      <h2 className={'h2 about__heading'}>{t('menu.about')}</h2>
       <br />
       <p>{t('pages.about.text1')}</p>
       <p>{t('pages.about.text2')}</p>
@@ -75,7 +70,10 @@ function About() {
             <strong>{t('menu.mobile-app')}:</strong>
             <br />
             <a href={mobileAppUrl}>Google Play</a>
+            <br />
+            <br />
             <QRCode
+              bgColor={'#FFFFFF'}
               errorLevel={'H'}
               icon={'/logo.png'}
               value={mobileAppUrl}

@@ -44,6 +44,7 @@ const SearchContainer = ({ setOrder }) => {
   const catalogErrorT = t('pages.search.catalog-error');
   const videoRef = useRef(null);
   const [experimentalFeatures, setExperimentalFeatures] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
@@ -70,6 +71,12 @@ const SearchContainer = ({ setOrder }) => {
 
     if (experimentalEnabledLS !== null) {
       setExperimentalFeatures(JSON.parse(experimentalEnabledLS));
+    }
+
+    const darkModeLS = localStorage.getItem('site-dark-mode');
+
+    if (darkModeLS !== null) {
+      setIsDarkMode(JSON.parse(darkModeLS));
     }
   }, []);
 
@@ -331,7 +338,7 @@ const SearchContainer = ({ setOrder }) => {
                     onClick={startScanner}
                     variant={'contained'}
                   >
-                    <QrCodeScanner style={{ color: 'black' }} />
+                    <QrCodeScanner style={{ color: isDarkMode ? 'white' : 'black' }} />
                   </IconButton>
                 </>
               ) : (

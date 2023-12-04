@@ -39,7 +39,7 @@ const SearchContainer = ({ setOrder }) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
   const [catalogs, setCatalogs] = useState([]);
-  const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(false);
+  const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
   const videoRef = useRef(null);

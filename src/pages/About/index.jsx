@@ -1,3 +1,4 @@
+import './index.scss';
 import { Button, FormControlLabel, Switch } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { QRCode } from 'antd';
@@ -28,82 +29,87 @@ function About() {
   };
 
   return (
-    <center>
-      <h2 className={'h2 about__heading'}>{t('menu.about')}</h2>
-      <br />
-      <p>{t('pages.about.text1')}</p>
-      <p>{t('pages.about.text2')}</p>
-      <p>{t('pages.about.text3')}</p>
-      <br />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={experimentalEnabled}
-            color={'primary'}
-            onChange={handleExperimentalToggle}
-          />
-        }
-        label={t('pages.about.experimental-features')}
-      />
-      <br />
-      <br />
-      <p>
-        <strong>{t('pages.about.version')}:</strong>
-        &nbsp;
-        {packageJson.version}
-      </p>
-      <br />
-      <p>
-        <strong>{t('pages.about.contact')}:</strong>
-        <br />
-        <a
-          className={'u-email'}
-          href={email}
-        >
-          E-mail
-        </a>
-      </p>
-      {mobileAppUrl ? (
-        <>
+    <div className={'about'}>
+      <div className={'about__container'}>
+        <div className={'about__content'}>
+          <h2 className={'about__heading h2'}>{t('menu.about')}</h2>
+          <p className={'about__paragraph'}>{t('pages.about.text1')}</p>
+          <p className={'about__paragraph'}>{t('pages.about.text2')}</p>
+          <p className={'about__paragraph'}>{t('pages.about.text3')}</p>
           <br />
           <p>
-            <strong>{t('menu.mobile-app')}:</strong>
-            <br />
-            <a href={mobileAppUrl}>Google Play</a>
-            <br />
-            <br />
-            <QRCode
-              bgColor={'#FFFFFF'}
-              errorLevel={'H'}
-              icon={'/logo.png'}
-              value={mobileAppUrl}
+            <strong>{t('pages.about.experimental-features')}:</strong>
+            &nbsp; &nbsp;
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={experimentalEnabled}
+                  color={'primary'}
+                  onChange={handleExperimentalToggle}
+                />
+              }
             />
           </p>
-        </>
-      ) : (
-        <></>
-      )}
-      {donateUrl ? (
-        <>
           <br />
-          <a
-            href={donateUrl}
-            rel={'noopener noreferrer'}
-            target={'_blank'}
-          >
-            <Button
-              color={'warning'}
-              style={{ textTransform: 'capitalize' }}
-              variant={'contained'}
+          <p>
+            <strong>{t('pages.about.version')}:</strong>
+            &nbsp;
+            {packageJson.version}
+          </p>
+          <br />
+          <p>
+            <strong>{t('pages.about.contact')}:</strong>
+            &nbsp;
+            <a
+              className={'u-email'}
+              href={email}
             >
-              {t('general.donate')}
-            </Button>
-          </a>
-        </>
-      ) : (
-        <></>
-      )}
-    </center>
+              E-mail
+            </a>
+          </p>
+          <br />
+          {mobileAppUrl ? (
+            <>
+              <p>
+                <strong>{t('menu.mobile-app')}:</strong>
+                <br />
+                <a href={mobileAppUrl}>Google Play</a>
+                <center>
+                  <QRCode
+                    bgColor={'#FFFFFF'}
+                    errorLevel={'H'}
+                    icon={'/logo.png'}
+                    value={mobileAppUrl}
+                  />
+                </center>
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
+          {donateUrl ? (
+            <>
+              <br />
+              <a
+                href={donateUrl}
+                rel={'noopener noreferrer'}
+                target={'_blank'}
+              >
+                <Button
+                  color={'warning'}
+                  style={{ textTransform: 'capitalize' }}
+                  variant={'contained'}
+                >
+                  {t('general.donate')}
+                </Button>
+              </a>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -118,9 +118,7 @@ function ProductDetails() {
    */
 
   const renderPriceIndicator = (prices, currentPrice) => {
-    const averagePrice = prices.reduce(
-      (acc, curr) => acc + (parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length
-    );
+    const averagePrice = utils.getAveragePrice(prices);
     const productPrice = parseFloat(utils.convertToFloat(currentPrice));
 
     if (productPrice === averagePrice) {
@@ -134,6 +132,7 @@ function ProductDetails() {
         </Tooltip>
       );
     }
+
     if (productPrice > averagePrice) {
       return (
         <Tooltip title={t('data.product-titles.price-indicator-info')}>
@@ -146,15 +145,17 @@ function ProductDetails() {
       );
     }
 
-    return (
-      <Tooltip title={t('data.product-titles.price-indicator-info')}>
-        <div>
-          <strong>{t('data.product-titles.price-indicator')}:</strong>
-          &nbsp;
-          <span className={'badge-green'}>{productPrice}€</span>
-        </div>
-      </Tooltip>
-    );
+    if (productPrice < averagePrice) {
+      return (
+        <Tooltip title={t('data.product-titles.price-indicator-info')}>
+          <div>
+            <strong>{t('data.product-titles.price-indicator')}:</strong>
+            &nbsp;
+            <span className={'badge-green'}>{productPrice}€</span>
+          </div>
+        </Tooltip>
+      );
+    }
   };
 
   /**

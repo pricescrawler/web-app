@@ -545,80 +545,84 @@ function ProductList() {
 
   return (
     <center>
-      <h2 className={'h2 product-list__heading'}>{t('title.products-list')}</h2>
-      <br />
-      {!isLoadingData ? (
-        <>
-          <div className={'options-container'}>
-            <ButtonGroup
-              aria-label={'options dropdown'}
-              onClick={handleClick}
-              variant={'contained'}
-            >
-              <Button sx={{ textTransform: 'capitalize' }}>
-                {t('pages.product-list.options.tooltip')}
-              </Button>
-            </ButtonGroup>
-            <Menu
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                horizontal: 'left',
-                vertical: 'bottom'
-              }}
-              id={'options-menu'}
-              onClose={handleClose}
-              open={Boolean(anchorEl)}
-              transformOrigin={{
-                horizontal: 'left',
-                vertical: 'top'
-              }}
-            >
-              <MenuItem onClick={handleReorder}>
-                {t('pages.product-list.options.redorder')}
-              </MenuItem>
-            </Menu>
-          </div>
-          {renderTable()}
-          <br />
-          <div>
-            <div className={'h5'}>
-              <strong>{t('general.total-price')}:</strong> {renderTotalPrice()}€
+      <div className={'product-list'}>
+        <div className={'product-list__container'}>
+          <h2 className={'product-list__heading h2'}>{t('title.products-list')}</h2>
+        </div>
+
+        {!isLoadingData ? (
+          <>
+            <div className={'options-container'}>
+              <ButtonGroup
+                aria-label={'options dropdown'}
+                onClick={handleClick}
+                variant={'contained'}
+              >
+                <Button sx={{ textTransform: 'capitalize' }}>
+                  {t('pages.product-list.options.tooltip')}
+                </Button>
+              </ButtonGroup>
+              <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  horizontal: 'left',
+                  vertical: 'bottom'
+                }}
+                id={'options-menu'}
+                onClose={handleClose}
+                open={Boolean(anchorEl)}
+                transformOrigin={{
+                  horizontal: 'left',
+                  vertical: 'top'
+                }}
+              >
+                <MenuItem onClick={handleReorder}>
+                  {t('pages.product-list.options.redorder')}
+                </MenuItem>
+              </Menu>
+            </div>
+            {renderTable()}
+            <br />
+            <div>
+              <div className={'h5'}>
+                <strong>{t('general.total-price')}:</strong> {renderTotalPrice()}€
+              </div>
+              <br />
+              <div className={'h6'}>
+                <strong>{t('general.total-price-by-catalog')}:</strong>
+              </div>
+              <p>{renderTotalPriceByCatalog()}</p>
             </div>
             <br />
-            <div className={'h6'}>
-              <strong>{t('general.total-price-by-catalog')}:</strong>
-            </div>
-            <p>{renderTotalPriceByCatalog()}</p>
-          </div>
-          <br />
-          <center>
-            <div className={'product-list-upload d-grid gap-2'}>
-              {isMaintenanceMode === 'true' ? (
-                <></>
-              ) : (
-                <>
-                  {!isListUpdated ? (
-                    <>
-                      <Button
-                        onClick={updateList}
-                        sx={{ textTransform: 'capitalize' }}
-                        variant={'contained'}
-                      >
-                        {t('general.refresh-prices')}
-                      </Button>
-                    </>
-                  ) : (
-                    <> </>
-                  )}
-                  <div>{renderListUpload()}</div>
-                </>
-              )}
-            </div>
-          </center>
-        </>
-      ) : (
-        <Loader />
-      )}
+            <center>
+              <div className={'product-list-upload d-grid gap-2'}>
+                {isMaintenanceMode === 'true' ? (
+                  <></>
+                ) : (
+                  <>
+                    {!isListUpdated ? (
+                      <>
+                        <Button
+                          onClick={updateList}
+                          sx={{ textTransform: 'capitalize' }}
+                          variant={'contained'}
+                        >
+                          {t('general.refresh-prices')}
+                        </Button>
+                      </>
+                    ) : (
+                      <> </>
+                    )}
+                    <div>{renderListUpload()}</div>
+                  </>
+                )}
+              </div>
+            </center>
+          </>
+        ) : (
+          <Loader />
+        )}
+      </div>
     </center>
   );
 }

@@ -6,8 +6,22 @@ th {
   color: white;
 }
 
-.product-list__heading {
-  @include headings-style;
+.product-list {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem;
+    margin: 1rem auto;
+  }
+
+  &__content {
+    text-align: center;
+  }
+
+  &__heading {
+    @include headings-style;
+  }
 }
 
 .product-list-upload {
@@ -23,7 +37,7 @@ th {
 }
 
 .options-container {
-  padding: 1.5rem 0.5rem 1rem 0;
+  padding: 0rem 0.5rem 1rem 0;
   display: flex;
   justify-content: end;
 }

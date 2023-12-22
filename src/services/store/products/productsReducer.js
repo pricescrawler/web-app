@@ -4,7 +4,7 @@
 
 import * as actionTypes from './productsActionTypes';
 import Swal from 'sweetalert2';
-import { combineReducers } from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
 import initialState from './productsInitialState';
 
 /**

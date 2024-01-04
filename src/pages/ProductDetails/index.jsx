@@ -185,6 +185,7 @@ function ProductDetails() {
               {campaignPrice ? (
                 <div>
                   <strong>{t('data.product-fields.regular-price')}:</strong>
+                  &nbsp;
                   <s>{regularPrice}</s>
                   &nbsp;
                   {campaignPrice}
@@ -459,27 +460,32 @@ function ProductDetails() {
   return (
     <>
       {!isLoadingData && isProductLoaded() ? (
-        <Stack
-          alignItems={'center'}
-          direction={'column'}
-          justify={'center'}
-          spacing={2}
-        >
-          <h2 className={'h2 product__heading'}>{t('title.product-details')}</h2>
-          {renderProductDataContainer()}
-          <Typography variant={'h5'}>
-            <strong>{t('general.price-evolution')}</strong>
-          </Typography>
-          {renderProductOutdatedAlert()}
-          <div>
-            {renderStatistics()}
-            <PricesChart data={product.prices} />
+        <div className={'product'}>
+          <div className={'product__container'}>
+            <h2 className={'product__heading h2'}>{t('title.product-details')}</h2>
+
+            <Stack
+              alignItems={'center'}
+              direction={'column'}
+              justify={'center'}
+              spacing={2}
+            >
+              {renderProductDataContainer()}
+              <Typography variant={'h5'}>
+                <strong>{t('general.price-evolution')}</strong>
+              </Typography>
+              {renderProductOutdatedAlert()}
+              <div>
+                {renderStatistics()}
+                <PricesChart data={product.prices} />
+              </div>
+              <Typography variant={'h5'}>
+                <strong>{t('general.prices-history')}</strong>
+              </Typography>
+              {renderTable()}
+            </Stack>
           </div>
-          <Typography variant={'h5'}>
-            <strong>{t('general.prices-history')}</strong>
-          </Typography>
-          {renderTable()}
-        </Stack>
+        </div>
       ) : (
         <Loader />
       )}

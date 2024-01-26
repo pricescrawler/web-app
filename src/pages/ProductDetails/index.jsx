@@ -177,34 +177,32 @@ function ProductDetails() {
         const price = campaignPrice || regularPrice;
 
         return (
-          <>
-            <Stack
-              direction={'column'}
-              spacing={1}
-            >
-              {campaignPrice ? (
-                <div>
-                  <strong>{t('data.product-fields.regular-price')}:</strong>
-                  &nbsp;
-                  <s>{regularPrice}</s>
-                  &nbsp;
-                  {campaignPrice}
-                </div>
-              ) : (
-                <div>
-                  <strong>{t('data.product-fields.regular-price')}:</strong>
-                  &nbsp;
-                  {regularPrice}
-                </div>
-              )}
+          <Stack
+            direction={'column'}
+            spacing={1}
+          >
+            {campaignPrice ? (
               <div>
-                <strong>{t('data.product-fields.price-per-quantity')}:</strong>
+                <strong>{t('data.product-fields.regular-price')}:</strong>
                 &nbsp;
-                {pricePerQuantity}
+                <s>{regularPrice}</s>
+                &nbsp;
+                {campaignPrice}
               </div>
-              {renderPriceIndicator(product.prices, price)}
-            </Stack>
-          </>
+            ) : (
+              <div>
+                <strong>{t('data.product-fields.regular-price')}:</strong>
+                &nbsp;
+                {regularPrice}
+              </div>
+            )}
+            <div>
+              <strong>{t('data.product-fields.price-per-quantity')}:</strong>
+              &nbsp;
+              {pricePerQuantity}
+            </div>
+            {renderPriceIndicator(product.prices, price)}
+          </Stack>
         );
       }
     }

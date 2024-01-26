@@ -78,21 +78,19 @@ function About() {
           </p>
           <br />
           {mobileAppUrl ? (
-            <>
-              <p>
-                <strong>{t('menu.mobile-app')}:</strong>
-                <br />
-                <a href={mobileAppUrl}>Google Play</a>
-                <center>
-                  <QRCode
-                    bgColor={'#FFFFFF'}
-                    errorLevel={'H'}
-                    icon={'/logo.png'}
-                    value={mobileAppUrl}
-                  />
-                </center>
-              </p>
-            </>
+            <p>
+              <strong>{t('menu.mobile-app')}:</strong>
+              <br />
+              <a href={mobileAppUrl}>Google Play</a>
+              <center>
+                <QRCode
+                  bgColor={'#FFFFFF'}
+                  errorLevel={'H'}
+                  icon={'/logo.png'}
+                  value={mobileAppUrl}
+                />
+              </center>
+            </p>
           ) : (
             <></>
           )}

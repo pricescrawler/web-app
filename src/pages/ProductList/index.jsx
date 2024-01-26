@@ -601,15 +601,13 @@ function ProductList() {
                 ) : (
                   <>
                     {!isListUpdated ? (
-                      <>
-                        <Button
-                          onClick={updateList}
-                          sx={{ textTransform: 'capitalize' }}
-                          variant={'contained'}
-                        >
-                          {t('general.refresh-prices')}
-                        </Button>
-                      </>
+                      <Button
+                        onClick={updateList}
+                        sx={{ textTransform: 'capitalize' }}
+                        variant={'contained'}
+                      >
+                        {t('general.refresh-prices')}
+                      </Button>
                     ) : (
                       <> </>
                     )}

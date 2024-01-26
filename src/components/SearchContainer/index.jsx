@@ -263,7 +263,7 @@ const SearchContainer = ({ setOrder }) => {
                   <ListItemText primary={t('pages.search.select-all')} />
                 </MenuItem>
                 {catalogs
-                  .sort((a1, b1) => {
+                  .toSorted((a1, b1) => {
                     if (a1.selected && !b1.selected) {
                       return -1;
                     }
@@ -333,14 +333,12 @@ const SearchContainer = ({ setOrder }) => {
                 {t('general.search')}
               </Button>
               {experimentalFeatures ? (
-                <>
-                  <IconButton
-                    onClick={startScanner}
-                    variant={'contained'}
-                  >
-                    <QrCodeScanner style={{ color: isDarkMode ? 'white' : 'black' }} />
-                  </IconButton>
-                </>
+                <IconButton
+                  onClick={startScanner}
+                  variant={'contained'}
+                >
+                  <QrCodeScanner style={{ color: isDarkMode ? 'white' : 'black' }} />
+                </IconButton>
               ) : (
                 <></>
               )}

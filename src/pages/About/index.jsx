@@ -10,6 +10,7 @@ function About() {
   const email = `mailto:${import.meta.env.VITE_EMAIL}`;
   const donateUrl = import.meta.env.VITE_DONATE_URL;
   const mobileAppUrl = import.meta.env.VITE_MOBILE_APP_URL;
+  const isMobileApp = localStorage.getItem('isMobileApp') === 'true';
 
   const [experimentalEnabled, setExperimentalEnabled] = useState(false);
 
@@ -19,7 +20,11 @@ function About() {
     if (experimentalEnabledLS !== null) {
       setExperimentalEnabled(JSON.parse(experimentalEnabledLS));
     }
-  }, []);
+
+    if (isMobileApp) {
+      setExperimentalEnabled(false);
+    }
+  }, [isMobileApp]);
 
   const handleExperimentalToggle = () => {
     const newValue = !experimentalEnabled;
@@ -37,20 +42,24 @@ function About() {
           <p className={'about__paragraph'}>{t('pages.about.text2')}</p>
           <p className={'about__paragraph'}>{t('pages.about.text3')}</p>
           <br />
-          <p>
-            <strong>{t('pages.about.experimental-features')}:</strong>
-            &nbsp; &nbsp;
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={experimentalEnabled}
-                  color={'primary'}
-                  onChange={handleExperimentalToggle}
+          {!isMobileApp && (
+            <>
+              <p>
+                <strong>{t('pages.about.experimental-features')}:</strong>
+                &nbsp; &nbsp;
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={experimentalEnabled}
+                      color={'primary'}
+                      onChange={handleExperimentalToggle}
+                    />
+                  }
                 />
-              }
-            />
-          </p>
-          <br />
+              </p>
+              <br />
+            </>
+          )}
           <p>
             <strong>{t('pages.about.version')}:</strong>
             &nbsp;

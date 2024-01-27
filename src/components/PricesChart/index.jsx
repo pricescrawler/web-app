@@ -5,8 +5,8 @@
  */
 
 import * as utils from '@services/utils';
+import React, { useEffect, useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -16,6 +16,15 @@ import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line react/prop-types
 function PricesChart({ data }) {
   const { t } = useTranslation();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const darkModeLS = localStorage.getItem('site-dark-mode');
+
+    if (darkModeLS !== null) {
+      setIsDarkMode(JSON.parse(darkModeLS));
+    }
+  }, []);
 
   const createChartData = (prices) => {
     const chartData = [];
@@ -44,17 +53,20 @@ function PricesChart({ data }) {
 
   return (
     <LineChart
-      height={300}
+      height={250}
       series={[
         {
           color: 'red',
           connectNulls: true,
+          curve: 'linear',
           data: chartData.map((point) => point[2]),
           label: t('data.product-titles.price-avg'),
           showMark: false
         },
         {
+          color: isDarkMode ? 'white' : 'black',
           connectNulls: true,
+          curve: 'linear',
           data: chartData.map((point) => point[1]),
           label: t('data.product-fields.regular-price'),
           showMark: false

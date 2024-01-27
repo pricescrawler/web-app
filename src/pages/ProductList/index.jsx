@@ -110,8 +110,13 @@ function ProductList() {
 
   const removeFromProductList = (event, prod) => {
     event.preventDefault();
-    prod.quantity -= 1;
-    dispatch(productsActions.removeFromProductList(prod));
+
+    const updatedProduct = {
+      ...prod,
+      quantity: prod.quantity - 1
+    };
+
+    dispatch(productsActions.removeFromProductList(updatedProduct));
   };
 
   /**
@@ -120,8 +125,13 @@ function ProductList() {
 
   const addToProductList = (event, prod) => {
     event.preventDefault();
-    prod.quantity += 1;
-    dispatch(productsActions.addToProductList(prod));
+
+    const updatedProduct = {
+      ...prod,
+      quantity: prod.quantity + 1
+    };
+
+    dispatch(productsActions.addToProductList(updatedProduct));
   };
 
   /**

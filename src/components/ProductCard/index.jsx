@@ -32,8 +32,12 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
     );
 
     if (product) {
-      product.quantity += 1;
-      dispatch(productsActions.addToProductList(product));
+      const updatedProduct = {
+        ...product,
+        quantity: product.quantity + 1
+      };
+
+      dispatch(productsActions.addToProductList(updatedProduct));
     } else {
       dispatch(
         productsActions.addToProductList({

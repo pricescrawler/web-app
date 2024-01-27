@@ -304,8 +304,12 @@ function ProductDetails() {
               );
 
               if (prodInfo) {
-                prodInfo.quantity += 1;
-                dispatch(productsActions.addToProductList(prodInfo));
+                const updatedProduct = {
+                  ...prodInfo,
+                  quantity: prodInfo.quantity + 1
+                };
+
+                dispatch(productsActions.addToProductList(updatedProduct));
               } else {
                 dispatch(
                   productsActions.addToProductList({
@@ -473,15 +477,16 @@ function ProductDetails() {
                 <strong>{t('general.price-evolution')}</strong>
               </Typography>
               {renderProductOutdatedAlert()}
-              <div>
-                {renderStatistics()}
-                <PricesChart data={product.prices} />
-              </div>
-              <Typography variant={'h5'}>
+              {renderStatistics()}
+              <PricesChart data={product.prices} />
+              <Typography
+                style={{ marginBottom: '1rem' }}
+                variant={'h5'}
+              >
                 <strong>{t('general.prices-history')}</strong>
               </Typography>
-              {renderTable()}
             </Stack>
+            {renderTable()}
           </div>
         </div>
       ) : (

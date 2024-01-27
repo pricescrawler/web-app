@@ -22,7 +22,6 @@ import {
   TextField
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import { QrCodeScanner } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
@@ -34,7 +33,7 @@ import { useTranslation } from 'react-i18next';
  * `SearchContainer`.
  */
 
-const SearchContainer = ({ setOrder }) => {
+const SearchContainer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
@@ -195,7 +194,6 @@ const SearchContainer = ({ setOrder }) => {
     event.preventDefault();
 
     if (searchValue !== '' && selectedCatalogs.length > 0) {
-      setOrder(t('menu.order.default'));
       dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue }));
     } else {
       Swal.fire({
@@ -363,10 +361,6 @@ const SearchContainer = ({ setOrder }) => {
       </div>
     </div>
   );
-};
-
-SearchContainer.propTypes = {
-  setOrder: PropTypes.func.isRequired
 };
 
 export default SearchContainer;

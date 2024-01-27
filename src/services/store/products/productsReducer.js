@@ -103,73 +103,62 @@ export const product = (state = initialState.product, action = {}) => {
 
 export const productList = (state = initialState.productList, action = {}) => {
   switch (action.type) {
-    case actionTypes.ADD_PRODUCT_LIST: {
-      if (state.some((item) => item.key === action.payload.key)) {
-        const prods = state.map((item) => {
-          if (item.key === action.payload.key) {
-            item.quantity = action.payload.quantity;
-          }
-
-          return item;
-        });
-
-        localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
-
-        return prods;
-      }
-
-      const prods = [...state, action.payload];
-
-      localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
-
-      return prods;
-    }
-
     case actionTypes.UPDATE_PRODUCT_LIST: {
       localStorage.setItem(localStorageproductsList, JSON.stringify(action.payload));
 
       return action.payload;
     }
 
-    case actionTypes.REMOVE_PRODUCT_LIST: {
-      if (action.payload.quantity === 0) {
-        const prods = state.filter((item) => item.key !== action.payload.key);
+    case actionTypes.ADD_PRODUCT_LIST: {
+      let updatedProducts;
 
-        localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
-
-        return prods;
-        // eslint-disable-next-line no-else-return
-      } else {
-        const prods = state.map((item) => {
+      if (state.some((item) => item.key === action.payload.key)) {
+        updatedProducts = state.map((item) => {
           if (item.key === action.payload.key) {
-            item.quantity = action.payload.quantity;
+            return { ...item, quantity: action.payload.quantity };
           }
 
           return item;
         });
-
-        localStorage.setItem(localStorageproductsList, JSON.stringify(prods));
-
-        return prods;
+      } else {
+        updatedProducts = [...state, action.payload];
       }
+
+      localStorage.setItem(localStorageproductsList, JSON.stringify(updatedProducts));
+
+      return updatedProducts;
+    }
+
+    case actionTypes.REMOVE_PRODUCT_LIST: {
+      let updatedProducts;
+
+      if (action.payload.quantity === 0) {
+        updatedProducts = state.filter((item) => item.key !== action.payload.key);
+      } else {
+        updatedProducts = state.map((item) => {
+          if (item.key === action.payload.key) {
+            return { ...item, quantity: action.payload.quantity };
+          }
+
+          return item;
+        });
+      }
+
+      localStorage.setItem(localStorageproductsList, JSON.stringify(updatedProducts));
+
+      return updatedProducts;
     }
 
     default: {
       if (state.length === 0) {
-        const prods = JSON.parse(localStorage.getItem(localStorageproductsList));
+        const storedList = JSON.parse(localStorage.getItem(localStorageproductsList)) || [];
 
-        if (prods) {
-          return prods;
-        }
-
-        localStorage.setItem(localStorageproductsList, JSON.stringify(state));
-      } else {
-        return state;
+        return storedList;
       }
+
+      return state;
     }
   }
-
-  return state;
 };
 
 /**

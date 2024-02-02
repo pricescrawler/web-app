@@ -15,7 +15,8 @@ import { useTranslation } from 'react-i18next';
 function Footer() {
   const { t } = useTranslation();
   const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
-  const isMobile = useMediaQuery('(max-width: 600px)');
+  const isSmallScreenSize = useMediaQuery('(max-width: 600px)');
+  const isMobileApp = localStorage.getItem('isMobileApp') === 'true';
 
   return (
     <div className={'nav-footer-container'}>
@@ -32,7 +33,7 @@ function Footer() {
         >
           {t('menu.privacy-terms')}
         </Link>
-        {!isMobile && mobileAppUrl && (
+        {!isSmallScreenSize && !isMobileApp && mobileAppUrl && (
           <Link
             className={'nav-footer-link'}
             rel={'noopener noreferrer'}

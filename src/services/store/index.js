@@ -2,27 +2,21 @@
  * Module dependencies.
  */
 
-import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { composeWithDevTools } from '@redux-devtools/extension';
+import { configureStore } from '@reduxjs/toolkit';
 import productsReducer from './products/productsReducer';
-import thunk from 'redux-thunk';
-
-/**
- * `rootReducer`.
- */
-
-const rootReducer = combineReducers({
-  product: productsReducer,
-  productList: productsReducer,
-  productListId: productsReducer,
-  products: productsReducer
-});
 
 /**
  * Store.
  */
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
+const store = configureStore({
+  reducer: {
+    product: productsReducer,
+    productList: productsReducer,
+    productListId: productsReducer,
+    products: productsReducer
+  }
+});
 
 /**
  * Export `store`.

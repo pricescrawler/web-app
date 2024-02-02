@@ -53,7 +53,7 @@ function ProductList() {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      productList.forEach((list) => {
+      const isAnyProductOutdated = productList.some((list) => {
         list.products?.forEach((prod) => {
           const productDate = new Date(prod.product.date);
           const productParseDate = new Date(
@@ -62,9 +62,11 @@ function ProductList() {
             productDate.getDate()
           );
 
-          return setIsListUpdated(today.getTime() === productParseDate.getTime());
+          return productParseDate < today;
         });
       });
+
+      setIsListUpdated(!isAnyProductOutdated);
     }
   }, [productList]);
 
@@ -110,8 +112,13 @@ function ProductList() {
 
   const removeFromProductList = (event, prod) => {
     event.preventDefault();
-    prod.quantity -= 1;
-    dispatch(productsActions.removeFromProductList(prod));
+
+    const updatedProduct = {
+      ...prod,
+      quantity: prod.quantity - 1
+    };
+
+    dispatch(productsActions.removeFromProductList(updatedProduct));
   };
 
   /**
@@ -120,8 +127,13 @@ function ProductList() {
 
   const addToProductList = (event, prod) => {
     event.preventDefault();
-    prod.quantity += 1;
-    dispatch(productsActions.addToProductList(prod));
+
+    const updatedProduct = {
+      ...prod,
+      quantity: prod.quantity + 1
+    };
+
+    dispatch(productsActions.addToProductList(updatedProduct));
   };
 
   /**
@@ -517,18 +529,12 @@ function ProductList() {
     <>
       <Button
         onClick={uploadList}
-        size={'small'}
-        sx={{
-          '&:hover': {
-            backgroundColor: '#000000'
-          },
-          backgroundColor: '#495057',
-          color: '#fff'
-        }}
+        sx={{ textTransform: 'capitalize' }}
         variant={'contained'}
       >
         {t('general.list-upload')}
       </Button>
+      <br />
       {showFormControl && (
         <>
           <br />
@@ -576,77 +582,82 @@ function ProductList() {
 
   return (
     <center>
-      <h2 className={'h2 product-list__heading'}>{t('title.products-list')}</h2>
-      <br />
-      {!isLoadingData ? (
-        <>
-          <div className={'options-container'}>
-            <ButtonGroup
-              aria-label={'options dropdown'}
-              onClick={handleClick}
-              variant={'contained'}
-            >
-              <Button>{t('pages.product-list.options.tooltip')}</Button>
-            </ButtonGroup>
-            <Menu
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                horizontal: 'left',
-                vertical: 'bottom'
-              }}
-              id={'options-menu'}
-              onClose={handleClose}
-              open={Boolean(anchorEl)}
-              transformOrigin={{
-                horizontal: 'left',
-                vertical: 'top'
-              }}
-            >
-              <MenuItem onClick={handleReorder}>
-                {t('pages.product-list.options.redorder')}
-              </MenuItem>
-            </Menu>
-          </div>
-          {renderTable()}
-          <br />
-          <div>
-            <div className={'h5'}>
-              <strong>{t('general.total-price')}:</strong> {renderTotalPrice()}€
+      <div className={'product-list'}>
+        <div className={'product-list__container'}>
+          <h2 className={'product-list__heading h2'}>{t('title.products-list')}</h2>
+        </div>
+
+        {!isLoadingData ? (
+          <>
+            <div className={'options-container'}>
+              <ButtonGroup
+                aria-label={'options dropdown'}
+                onClick={handleClick}
+                variant={'contained'}
+              >
+                <Button sx={{ textTransform: 'capitalize' }}>
+                  {t('pages.product-list.options.tooltip')}
+                </Button>
+              </ButtonGroup>
+              <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  horizontal: 'left',
+                  vertical: 'bottom'
+                }}
+                id={'options-menu'}
+                onClose={handleClose}
+                open={Boolean(anchorEl)}
+                transformOrigin={{
+                  horizontal: 'left',
+                  vertical: 'top'
+                }}
+              >
+                <MenuItem onClick={handleReorder}>
+                  {t('pages.product-list.options.redorder')}
+                </MenuItem>
+              </Menu>
+            </div>
+            {renderTable()}
+            <br />
+            <div>
+              <div className={'h5'}>
+                <strong>{t('general.total-price')}:</strong> {renderTotalPrice()}€
+              </div>
+              <br />
+              <div className={'h6'}>
+                <strong>{t('general.total-price-by-catalog')}:</strong>
+              </div>
+              <p>{renderTotalPriceByCatalog()}</p>
             </div>
             <br />
-            <div className={'h6'}>
-              <strong>{t('general.total-price-by-catalog')}:</strong>
-            </div>
-            <p>{renderTotalPriceByCatalog()}</p>
-          </div>
-          <br />
-          <center>
-            <div className={'product-list-upload d-grid gap-2'}>
-              {isMaintenanceMode === 'true' ? (
-                <></>
-              ) : (
-                <>
-                  {!isListUpdated ? (
-                    <>
+            <center>
+              <div className={'product-list-upload d-grid gap-2'}>
+                {isMaintenanceMode === 'true' ? (
+                  <></>
+                ) : (
+                  <>
+                    {!isListUpdated ? (
                       <Button
                         onClick={updateList}
-                        variant={'secondary'}
+                        sx={{ textTransform: 'capitalize' }}
+                        variant={'contained'}
                       >
                         {t('general.refresh-prices')}
                       </Button>
-                    </>
-                  ) : (
-                    <> </>
-                  )}
-                  {renderListUpload()}
-                </>
-              )}
-            </div>
-          </center>
-        </>
-      ) : (
-        <Loader />
-      )}
+                    ) : (
+                      <> </>
+                    )}
+                    <div>{renderListUpload()}</div>
+                  </>
+                )}
+              </div>
+            </center>
+          </>
+        ) : (
+          <Loader />
+        )}
+      </div>
     </center>
   );
 }

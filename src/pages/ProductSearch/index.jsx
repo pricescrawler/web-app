@@ -37,7 +37,6 @@ function ProductSearch() {
   const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
   const { isLoadingData, products } = useSelector((state) => state.products);
-
   const currentProducts = Object.assign([], products);
 
   /**
@@ -73,9 +72,12 @@ function ProductSearch() {
         sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
     }
 
-    currentProducts.map((element) => element.products.sort(sortingFunction));
+    const updatedProducts = currentProducts.map((element) => ({
+      ...element,
+      products: [...element.products].sort(sortingFunction)
+    }));
 
-    dispatch(productsActions.getProductsSuccess(currentProducts));
+    dispatch(productsActions.getProductsSuccess(updatedProducts));
   };
 
   /**
@@ -170,7 +172,7 @@ function ProductSearch() {
         <Maintenance />
       ) : (
         <>
-          <SearchContainer setOrder={setOrderBy} />
+          <SearchContainer />
           {renderFilterOptions()}
           {!isLoadingData ? renderProductSearchResults() : <Loader />}
         </>

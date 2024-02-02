@@ -1,4 +1,9 @@
 /* eslint-disable react/prop-types */
+
+/**
+ * Module dependencies.
+ */
+
 import {
   AppBar,
   Badge,
@@ -18,6 +23,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+
+/**
+ * Function `NavigationBar`.
+ */
 
 function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
@@ -80,13 +89,15 @@ function NavigationBar({ theme }) {
             disableGutters
             sx={{ marginLeft: 'auto' }}
           >
-            <img
-              alt={''}
-              className={'d-inline-block'}
-              height={40}
-              src={logo}
-              width={40}
-            />
+            <Link to={'/'}>
+              <img
+                alt={''}
+                className={'d-inline-block'}
+                height={40}
+                src={logo}
+                width={40}
+              />
+            </Link>
             <Typography
               component={Link}
               noWrap

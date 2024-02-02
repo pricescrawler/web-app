@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 module.exports = {
   env: {
     browser: true,
@@ -82,7 +80,7 @@ module.exports = {
     'id-length': [
       'error',
       {
-        exceptions: ['_', 'e', 'i']
+        exceptions: ['_', 'e', 'i', 't']
       }
     ],
     'id-match': [
@@ -93,6 +91,7 @@ module.exports = {
         properties: true
       }
     ],
+    'import/no-unresolved': ['off', { caseSensitive: false }],
     indent: [
       'error',
       2,
@@ -226,12 +225,14 @@ module.exports = {
       }
     ],
     'react/jsx-curly-spacing': 'error',
+    'react/jsx-filename-extension': ['off'],
+    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
     'react/jsx-indent': ['error', 2],
     'react/jsx-indent-props': ['error', 2],
     'react/jsx-key': 'error',
     'react/jsx-max-props-per-line': 'error',
     'react/jsx-no-duplicate-props': 'error',
-    'react/jsx-no-literals': 'error',
+    'react/jsx-no-literals': ['off', { noStrings: false }],
     'react/jsx-no-undef': 'error',
     'react/jsx-sort-props': 'error',
     'react/jsx-tag-spacing': [
@@ -251,6 +252,7 @@ module.exports = {
     'react/no-string-refs': 'error',
     'react/no-unknown-property': 'error',
     'react/prefer-stateless-function': 'error',
+    'react/prop-types': ['error', { ignore: ['form', 'i18n', 'onSubmit'] }],
     'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'error',
     'react/sort-comp': [
@@ -338,16 +340,7 @@ module.exports = {
     'valid-jsdoc': 'error',
     'vars-on-top': 'error',
     'wrap-iife': ['error', 'inside'],
-    yoda: 'error',
-    'id-length': ['error', { exceptions: ['t'] }],
-    'lines-around-comment': ['error', { afterBlockComment: true, beforeBlockComment: false }],
-    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
-    'react/jsx-tag-spacing': ['error', { beforeSelfClosing: 'always' }],
-    'react/prop-types': ['error', { ignore: ['form', 'i18n', 'onSubmit'] }],
-    'react/jsx-no-literals': ['off', { noStrings: false }],
-    'no-console': ['error'],
-    'import/no-unresolved': ['off', { caseSensitive: false }],
-    'react/jsx-filename-extension': ['off']
+    yoda: 'error'
   },
   settings: {
     flowtype: {

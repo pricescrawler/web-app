@@ -32,29 +32,35 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
   const addToList = (listName = t('menu.product-list')) => {
     const productKey = `${locale}.${catalog}.${productData.reference}`;
 
-    const product = productList.find((prod) =>
-      prod.products.some((product) => product.key === productKey)
-    );
+    const product = productList
+      .filter((list) => {
+        return list.name === listName;
+      })
+      .find((prod) => prod.products.some((product) => product.key === productKey));
 
     if (product) {
-      const updatedProductList = productList.map((list) => {
-        if (list.products.some((product) => product.key === productKey)) {
-          return {
-            ...list,
-            products: list.products.map((product) => {
-              if (product.key === productKey) {
-                return { ...product, quantity: product.quantity + 1 };
-              }
+      const updatedProductList = productList
+        .filter((list) => {
+          return list.name === listName;
+        })
+        .map((list) => {
+          if (list.products.some((product) => product.key === productKey)) {
+            return {
+              ...list,
+              products: list.products.map((product) => {
+                if (product.key === productKey) {
+                  return { ...product, quantity: product.quantity + 1 };
+                }
 
-              return product;
-            })
-          };
-        }
+                return product;
+              })
+            };
+          }
 
-        return list;
-      });
+          return list;
+        });
 
-      dispatch(productsActions.updateProductList(updatedProductList));
+      dispatch(productsActions.addToProductList(updatedProductList));
     } else {
       const newProduct = {
         catalog,

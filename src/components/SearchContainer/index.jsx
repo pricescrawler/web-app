@@ -1,5 +1,10 @@
+/**
+ * Module dependencies.
+ */
+
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
+import * as scanner from '@components/Scanner';
 import {
   Box,
   Button,
@@ -8,6 +13,7 @@ import {
   CircularProgress,
   Divider,
   FormControl,
+  IconButton,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -15,15 +21,19 @@ import {
   Stack,
   TextField
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { QrCodeScanner } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import Swal from 'sweetalert2';
 import api from '@services/api';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-const SearchContainer = ({ setOrder }) => {
+/**
+ * `SearchContainer`.
+ */
+
+const SearchContainer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
@@ -31,10 +41,43 @@ const SearchContainer = ({ setOrder }) => {
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
+  const videoRef = useRef(null);
+  const [experimentalFeatures, setExperimentalFeatures] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
   );
+
+  const handleError = (error) => {
+    // eslint-disable-next-line no-alert
+    return alert(error);
+  };
+
+  const handleScan = (result) => {
+    setSearchValue(result.getText());
+    dispatch(productsActions.search({ selectedCatalogs, stringValue: result.getText() }));
+    scanner.stop();
+  };
+
+  const startScanner = () => {
+    setSearchValue('');
+    scanner.barcode(videoRef.current, handleScan, handleError);
+  };
+
+  useEffect(() => {
+    const experimentalEnabledLS = localStorage.getItem('experimentalEnabled');
+
+    if (experimentalEnabledLS !== null) {
+      setExperimentalFeatures(JSON.parse(experimentalEnabledLS));
+    }
+
+    const darkModeLS = localStorage.getItem('site-dark-mode');
+
+    if (darkModeLS !== null) {
+      setIsDarkMode(JSON.parse(darkModeLS));
+    }
+  }, []);
 
   useEffect(() => {
     const cachedData = localStorage.getItem('catalogData');
@@ -151,7 +194,6 @@ const SearchContainer = ({ setOrder }) => {
     event.preventDefault();
 
     if (searchValue !== '' && selectedCatalogs.length > 0) {
-      setOrder(t('menu.order.default'));
       dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue }));
     } else {
       Swal.fire({
@@ -219,7 +261,7 @@ const SearchContainer = ({ setOrder }) => {
                   <ListItemText primary={t('pages.search.select-all')} />
                 </MenuItem>
                 {catalogs
-                  .sort((a1, b1) => {
+                  .toSorted((a1, b1) => {
                     if (a1.selected && !b1.selected) {
                       return -1;
                     }
@@ -268,6 +310,7 @@ const SearchContainer = ({ setOrder }) => {
                 fullWidth
                 label={t('general.search-for-some-product')}
                 onChange={(event) => setSearchValue(event.target.value)}
+                value={searchValue}
                 variant={'outlined'}
               />
               <Divider
@@ -287,16 +330,37 @@ const SearchContainer = ({ setOrder }) => {
               >
                 {t('general.search')}
               </Button>
+              {experimentalFeatures ? (
+                <IconButton
+                  onClick={startScanner}
+                  variant={'contained'}
+                >
+                  <QrCodeScanner style={{ color: isDarkMode ? 'white' : 'black' }} />
+                </IconButton>
+              ) : (
+                <></>
+              )}
             </Stack>
+            {experimentalFeatures ? (
+              <>
+                <br />
+                {!searchValue && (
+                  <center>
+                    <video
+                      ref={videoRef}
+                      style={{ height: 'auto', width: '75%' }}
+                    />
+                  </center>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
           </FormControl>
         </form>
       </div>
     </div>
   );
-};
-
-SearchContainer.propTypes = {
-  setOrder: PropTypes.func.isRequired
 };
 
 export default SearchContainer;

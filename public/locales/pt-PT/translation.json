@@ -51,7 +51,8 @@
       "text1": "Este projeto tem como principal objetivo possibilitar a pesquisa de produtos e dos seus preços em diversos catálogos, armazenando essa informação para comparação e análise futura.",
       "text2": "Os dados dos produtos são obtidos de forma automática, podendo existir erros e inconsistências. Se encontrar algum erro, por favor, reporte-o através do email indicado.",
       "text3": "O mesmo não tem fins comerciais, filiação empresarial ou organizacional, sendo todos os seus componentes open-source.",
-      "version": "Versão"
+      "version": "Versão",
+      "experimental-features": "Funcionalidades Experimentais"
     },
     "privacy-terms": {
       "text1": "Este website apenas recolhe dados anonimizados para fins de análise.",
@@ -77,7 +78,7 @@
       "product-details": "Detalhes",
       "price-details": "Preço",
       "price-indicator": "Indicador",
-      "price-indicator-info": "Verde - Preço mais baixo que o preço médio. Laranja - Preço promocional igual ao médio. Vermelho - Preço mais alto que o preço médio.",
+      "price-indicator-info": "Verde - Preço mais baixo que o preço médio. Laranja - Preço igual ao preço médio. Vermelho - Preço mais alto que o preço médio.",
       "price-min": "Mínimo:",
       "price-max": "Máximo:",
       "price-avg": "Média",
@@ -103,6 +104,9 @@
       "remove-add": "Remover | Adicionar",
       "move": "Cima | Baixo",
       "list": "Lista"
+    },
+    "error": {
+      "product-outdated": "A informação do preço do produto está desatualizada, por favor, tente novamente mais tarde."
     }
   }
 }

@@ -1,4 +1,4 @@
-/* eslint-disable sort-keys */
+/* eslint-disable operator-linebreak */
 /**
  * Module dependencies.
  */
@@ -7,6 +7,7 @@ import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import {
+  Alert,
   Box,
   Button,
   Divider,
@@ -117,9 +118,7 @@ function ProductDetails() {
    */
 
   const renderPriceIndicator = (prices, currentPrice) => {
-    const averagePrice = prices.reduce(
-      (acc, curr) => acc + (parseFloat(utils.getFormattedPrice(curr)), 0) / prices.length
-    );
+    const averagePrice = utils.getAveragePrice(prices);
     const productPrice = parseFloat(utils.convertToFloat(currentPrice));
 
     if (productPrice === averagePrice) {
@@ -133,6 +132,7 @@ function ProductDetails() {
         </Tooltip>
       );
     }
+
     if (productPrice > averagePrice) {
       return (
         <Tooltip title={t('data.product-titles.price-indicator-info')}>
@@ -145,15 +145,17 @@ function ProductDetails() {
       );
     }
 
-    return (
-      <Tooltip title={t('data.product-titles.price-indicator-info')}>
-        <div>
-          <strong>{t('data.product-titles.price-indicator')}:</strong>
-          &nbsp;
-          <span className={'badge-green'}>{productPrice}€</span>
-        </div>
-      </Tooltip>
-    );
+    if (productPrice < averagePrice) {
+      return (
+        <Tooltip title={t('data.product-titles.price-indicator-info')}>
+          <div>
+            <strong>{t('data.product-titles.price-indicator')}:</strong>
+            &nbsp;
+            <span className={'badge-green'}>{productPrice}€</span>
+          </div>
+        </Tooltip>
+      );
+    }
   };
 
   /**
@@ -175,33 +177,32 @@ function ProductDetails() {
         const price = campaignPrice || regularPrice;
 
         return (
-          <>
-            <Stack
-              direction={'column'}
-              spacing={1}
-            >
-              {campaignPrice ? (
-                <div>
-                  <strong>{t('data.product-fields.regular-price')}:</strong>
-                  <s>{regularPrice}</s>
-                  &nbsp;
-                  {campaignPrice}
-                </div>
-              ) : (
-                <div>
-                  <strong>{t('data.product-fields.regular-price')}:</strong>
-                  &nbsp;
-                  {regularPrice}
-                </div>
-              )}
+          <Stack
+            direction={'column'}
+            spacing={1}
+          >
+            {campaignPrice ? (
               <div>
-                <strong>{t('data.product-fields.price-per-quantity')}:</strong>
+                <strong>{t('data.product-fields.regular-price')}:</strong>
                 &nbsp;
-                {pricePerQuantity}
+                <s>{regularPrice}</s>
+                &nbsp;
+                {campaignPrice}
               </div>
-              {renderPriceIndicator(product.prices, price)}
-            </Stack>
-          </>
+            ) : (
+              <div>
+                <strong>{t('data.product-fields.regular-price')}:</strong>
+                &nbsp;
+                {regularPrice}
+              </div>
+            )}
+            <div>
+              <strong>{t('data.product-fields.price-per-quantity')}:</strong>
+              &nbsp;
+              {pricePerQuantity}
+            </div>
+            {renderPriceIndicator(product.prices, price)}
+          </Stack>
         );
       }
     }
@@ -303,8 +304,12 @@ function ProductDetails() {
               );
 
               if (prodInfo) {
-                prodInfo.quantity += 1;
-                dispatch(productsActions.addToProductList(prodInfo));
+                const updatedProduct = {
+                  ...prodInfo,
+                  quantity: prodInfo.quantity + 1
+                };
+
+                dispatch(productsActions.addToProductList(updatedProduct));
               } else {
                 dispatch(
                   productsActions.addToProductList({
@@ -437,29 +442,53 @@ function ProductDetails() {
     );
   };
 
+  const renderProductOutdatedAlert = () => {
+    if (product.prices.length > 0) {
+      const lastPrice = product.prices[product.prices.length - 1];
+
+      const now = new Date();
+      const lastPriceDate = new Date(lastPrice.date);
+
+      if (
+        now.getFullYear() !== lastPriceDate.getFullYear() ||
+        now.getMonth() !== lastPriceDate.getMonth() ||
+        now.getDate() !== lastPriceDate.getDate()
+      ) {
+        return <Alert severity={'warning'}>{t('data.error.product-outdated')}</Alert>;
+      }
+    }
+  };
+
   return (
     <>
       {!isLoadingData && isProductLoaded() ? (
-        <Stack
-          alignItems={'center'}
-          direction={'column'}
-          justify={'center'}
-          spacing={2}
-        >
-          <h2 className={'h2 product__heading'}>{t('title.product-details')}</h2>
-          {renderProductDataContainer()}
-          <Typography variant={'h5'}>
-            <strong>{t('general.price-evolution')}</strong>
-          </Typography>
-          <div>
-            {renderStatistics()}
-            <PricesChart data={product.prices} />
+        <div className={'product'}>
+          <div className={'product__container'}>
+            <h2 className={'product__heading h2'}>{t('title.product-details')}</h2>
+
+            <Stack
+              alignItems={'center'}
+              direction={'column'}
+              justify={'center'}
+              spacing={2}
+            >
+              {renderProductDataContainer()}
+              <Typography variant={'h5'}>
+                <strong>{t('general.price-evolution')}</strong>
+              </Typography>
+              {renderProductOutdatedAlert()}
+              {renderStatistics()}
+              <PricesChart data={product.prices} />
+              <Typography
+                style={{ marginBottom: '1rem' }}
+                variant={'h5'}
+              >
+                <strong>{t('general.prices-history')}</strong>
+              </Typography>
+            </Stack>
+            {renderTable()}
           </div>
-          <Typography variant={'h5'}>
-            <strong>{t('general.prices-history')}</strong>
-          </Typography>
-          {renderTable()}
-        </Stack>
+        </div>
       ) : (
         <Loader />
       )}

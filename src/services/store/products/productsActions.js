@@ -141,7 +141,11 @@ export const search = (searchParam) => {
     api
       .post('/api/v1/products/search', request)
       .then((response) => {
-        dispatch(getSearchProducts(response.data, searchParam));
+        const reorderedResponse = selectedCatalogs.map((catalog) => {
+          return response.data.find((item) => item.catalog === catalog.value.split('.').pop());
+        });
+
+        dispatch(getSearchProducts(reorderedResponse, searchParam));
       })
       .catch((error) => dispatch(getProductsFail(error)));
   };

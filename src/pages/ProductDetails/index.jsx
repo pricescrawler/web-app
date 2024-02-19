@@ -12,6 +12,8 @@ import {
   Button,
   Divider,
   Grid,
+  Menu,
+  MenuItem,
   Paper,
   Stack,
   Table,
@@ -23,9 +25,11 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AddIcon from '@mui/icons-material/Add';
 import Loader from '@components/Loader';
+import { MAX_LISTS } from '../../services/store/products/productsReducer';
 import PricesChart from '@components/PricesChart';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +44,7 @@ function ProductDetails() {
   const { isLoadingData, product } = useSelector((state) => state.product);
   const { products } = useSelector((state) => state.products);
   const { productList } = useSelector((state) => state.productList);
+  const [menuAnchor, setMenuAnchor] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -48,6 +53,75 @@ function ProductDetails() {
   }, [dispatch, locale, catalog, reference]);
 
   const isProductLoaded = () => !!product.prices;
+
+  /**
+   * Create new List.
+   */
+
+  const handleCreateNewList = () => {
+    if (productList.length >= MAX_LISTS) {
+      return;
+    }
+
+    const newList = {
+      name: `List ${productList.length + 1}`,
+      products: []
+    };
+
+    dispatch(productsActions.createNewList(newList));
+  };
+
+  /**
+   * Add to List.
+   */
+
+  const addToList = (listName = t('menu.product-list')) => {
+    const productKey = `${locale}.${catalog}.${reference}`;
+
+    const product = productList
+      .filter((list) => {
+        return list.name === listName;
+      })
+      .find((prod) => prod.products.some((product) => product.key === productKey));
+
+    if (product) {
+      productList
+        .filter((list) => {
+          return list.name === listName;
+        })
+        .map((list) => {
+          if (list.products.some((product) => product.key === productKey)) {
+            return {
+              ...list,
+              products: list.products.map((product) => {
+                if (product.key === productKey) {
+                  dispatch(
+                    productsActions.addToProductList(
+                      { ...product, quantity: product.quantity + 1 },
+                      listName
+                    )
+                  );
+                }
+              })
+            };
+          }
+        });
+    } else {
+      const productData = product;
+
+      const newProduct = {
+        catalog,
+        historyEnabled: true,
+        key: productKey,
+        locale,
+        product: productData,
+        quantity: 1
+      };
+
+      dispatch(productsActions.addToProductList(newProduct, listName));
+      setMenuAnchor(null);
+    }
+  };
 
   /**
    * Render Statistics.
@@ -290,45 +364,32 @@ function ProductDetails() {
     );
 
     if (productFiltered.length > 0) {
-      const prod = productFiltered[0];
-      // eslint-disable-next-line id-length
-      const p = prod.products.filter((prod) => prod.reference === reference);
+      const firstProduct = productFiltered[0];
+      const prod = firstProduct.products.filter((prod) => prod.reference === reference);
 
-      if (p.length > 0) {
+      if (prod.length > 0) {
         return (
-          <Button
-            onClick={() => {
-              const productData = p[0];
-              const prodInfo = productList.find(
-                (prod) => prod.key === `${locale}.${catalog}.${productData.reference}`
-              );
-
-              if (prodInfo) {
-                const updatedProduct = {
-                  ...prodInfo,
-                  quantity: prodInfo.quantity + 1
-                };
-
-                dispatch(productsActions.addToProductList(updatedProduct));
-              } else {
-                dispatch(
-                  productsActions.addToProductList({
-                    catalog,
-                    historyEnabled: true,
-                    key: `${locale}.${catalog}.${productData.reference}`,
-                    locale,
-                    product: productData,
-                    quantity: 1
-                  })
-                );
-              }
-            }}
-            size={'small'}
-            style={{ textTransform: 'capitalize' }}
-            variant={'contained'}
+          <Menu
+            anchorEl={menuAnchor}
+            onClose={() => setMenuAnchor(null)}
+            open={Boolean(menuAnchor)}
           >
-            {t('data.product-fields.add-to-list')}
-          </Button>
+            {productList.map((list) => (
+              <MenuItem
+                key={list.name}
+                onClick={() => addToList(list.name)}
+              >
+                {list.name}
+              </MenuItem>
+            ))}
+
+            {productList.length < MAX_LISTS && (
+              <MenuItem onClick={handleCreateNewList}>
+                {t('general.new-list')}
+                <AddIcon sx={{ fontSize: '1.4rem', marginInlineStart: '0.3rem' }} />
+              </MenuItem>
+            )}
+          </Menu>
         );
       }
     }

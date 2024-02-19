@@ -120,8 +120,8 @@ export const uploadProductList = (product) => ({
  * Remove from Product List.
  */
 
-export const removeFromProductList = (product) => ({
-  payload: product,
+export const removeFromProductList = (product, listName) => ({
+  payload: { listName, product },
   type: actionTypes.REMOVE_PRODUCT_FROM_LIST
 });
 

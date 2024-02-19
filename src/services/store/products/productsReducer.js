@@ -1,3 +1,5 @@
+/* eslint-disable no-confusing-arrow */
+
 /**
  * Module dependencies.
  */
@@ -114,6 +116,7 @@ export const productList = (state = initialState.productList, action = {}) => {
       if (state.length === MAX_LISTS) {
         return state;
       }
+
       const newList = {
         name: `${t('menu.product-list')} ${state.length + 1}`,
         products: []
@@ -136,13 +139,9 @@ export const productList = (state = initialState.productList, action = {}) => {
           if (existingProduct) {
             return {
               ...list,
-              products: list.products.map((prod) => {
-                if (prod.key === newProduct.key) {
-                  return { ...prod, quantity: prod.quantity + newProduct.quantity };
-                }
-
-                return prod;
-              })
+              products: list.products.map((prod) =>
+                prod.key === newProduct.key ? { ...prod, quantity: newProduct.quantity } : prod
+              )
             };
           }
 
@@ -160,38 +159,18 @@ export const productList = (state = initialState.productList, action = {}) => {
       return updatedState;
     }
 
-    case actionTypes.UPDATE_LIST_NAME: {
-      const updatedState = state.map((list) => {
-        if (list.name === action.payload.oldListName) {
-          return {
-            ...list,
-            name: action.payload.newListName
-          };
-        }
-
-        return list;
-      });
-
-      localStorage.setItem(localStorageproductsList, JSON.stringify(updatedState));
-
-      return updatedState;
-    }
-
     case actionTypes.REMOVE_PRODUCT_FROM_LIST: {
-      const updatedState = state.map((list) => {
-        if (list.name === action.payload.listName) {
-          if (action.payload.quantity === 0) {
-            list.products = list.products.filter(
-              (product) => product.key !== action.payload.productKey
-            );
-          } else {
-            list.products = list.products.map((product) => {
-              if (product.key === action.payload.productKey) {
-                product.quantity = action.payload.quantity;
-              }
+      const { listName, product } = action.payload;
+      const { key, quantity } = product;
 
-              return product;
-            });
+      const updatedState = state.map((list) => {
+        if (list.name === listName) {
+          if (quantity === 0) {
+            list.products = list.products.filter((product) => product.key !== key);
+          } else {
+            list.products = list.products.map((product) =>
+              product.key === key ? { ...product, quantity } : product
+            );
           }
         }
 

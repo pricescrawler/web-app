@@ -110,7 +110,7 @@ function ProductList() {
    *  `removeFromProductList.
    */
 
-  const removeFromProductList = (event, prod) => {
+  const removeFromProductList = (event, prod, listName) => {
     event.preventDefault();
 
     const updatedProduct = {
@@ -118,14 +118,14 @@ function ProductList() {
       quantity: prod.quantity - 1
     };
 
-    dispatch(productsActions.removeFromProductList(updatedProduct));
+    dispatch(productsActions.removeFromProductList(updatedProduct, listName));
   };
 
   /**
    *  `addToProductList.
    */
 
-  const addToProductList = (event, prod) => {
+  const addToProductList = (event, prod, listName) => {
     event.preventDefault();
 
     const updatedProduct = {
@@ -133,7 +133,7 @@ function ProductList() {
       quantity: prod.quantity + 1
     };
 
-    dispatch(productsActions.addToProductList(updatedProduct));
+    dispatch(productsActions.addToProductList(updatedProduct, listName));
   };
 
   /**
@@ -421,7 +421,7 @@ function ProductList() {
                           spacing={1}
                         >
                           <IconButton
-                            onClick={(event) => removeFromProductList(event, prod)}
+                            onClick={(event) => removeFromProductList(event, prod, listName)}
                             size={'small'}
                             sx={{
                               '&:hover': {
@@ -437,7 +437,7 @@ function ProductList() {
                             />
                           </IconButton>
                           <IconButton
-                            onClick={(event) => addToProductList(event, prod)}
+                            onClick={(event) => addToProductList(event, prod, listName)}
                             size={'small'}
                             sx={{
                               '&:hover': {

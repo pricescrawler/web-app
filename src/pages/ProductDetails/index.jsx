@@ -10,6 +10,7 @@ import {
   Alert,
   Box,
   Button,
+  ButtonGroup,
   Divider,
   Grid,
   Menu,
@@ -28,6 +29,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Loader from '@components/Loader';
 import { MAX_LISTS } from '../../services/store/products/productsReducer';
 import PricesChart from '@components/PricesChart';
@@ -78,26 +80,26 @@ function ProductDetails() {
   const addToList = (listName = t('menu.product-list')) => {
     const productKey = `${locale}.${catalog}.${reference}`;
 
-    const product = productList
+    const productListItem = productList
       .filter((list) => {
         return list.name === listName;
       })
-      .find((prod) => prod.products.some((product) => product.key === productKey));
+      .find((prod) => prod.products.some((item) => item.key === productKey));
 
-    if (product) {
+    if (productListItem) {
       productList
         .filter((list) => {
           return list.name === listName;
         })
         .map((list) => {
-          if (list.products.some((product) => product.key === productKey)) {
+          if (list.products.some((item) => item.key === productKey)) {
             return {
               ...list,
-              products: list.products.map((product) => {
-                if (product.key === productKey) {
+              products: list.products.map((listItem) => {
+                if (listItem.key === productKey) {
                   dispatch(
                     productsActions.addToProductList(
-                      { ...product, quantity: product.quantity + 1 },
+                      { ...listItem, quantity: listItem.quantity + 1 },
                       listName
                     )
                   );
@@ -107,14 +109,12 @@ function ProductDetails() {
           }
         });
     } else {
-      const productData = product;
-
       const newProduct = {
         catalog,
         historyEnabled: true,
         key: productKey,
         locale,
-        product: productData,
+        product,
         quantity: 1
       };
 
@@ -369,27 +369,51 @@ function ProductDetails() {
 
       if (prod.length > 0) {
         return (
-          <Menu
-            anchorEl={menuAnchor}
-            onClose={() => setMenuAnchor(null)}
-            open={Boolean(menuAnchor)}
-          >
-            {productList.map((list) => (
-              <MenuItem
-                key={list.name}
-                onClick={() => addToList(list.name)}
+          <>
+            <ButtonGroup variant={'contained'}>
+              <Button
+                className={'product-card-button'}
+                onClick={() => addToList('menu.product-list 1')}
+                size={'small'}
+                style={{ textTransform: 'capitalize' }}
               >
-                {list.name}
-              </MenuItem>
-            ))}
-
-            {productList.length < MAX_LISTS && (
-              <MenuItem onClick={handleCreateNewList}>
-                {t('general.new-list')}
-                <AddIcon sx={{ fontSize: '1.4rem', marginInlineStart: '0.3rem' }} />
-              </MenuItem>
-            )}
-          </Menu>
+                {t('data.product-fields.add-to-list')}
+              </Button>
+              <Button
+                aria-expanded={menuAnchor ? 'true' : undefined}
+                aria-haspopup={'menu'}
+                aria-label={'split button'}
+                className={'product-card-button'}
+                endIcon={<ArrowDropDownIcon />}
+                onClick={(event) => setMenuAnchor(event.currentTarget)}
+                size={'small'}
+                style={{ width: '1rem' }}
+              />
+            </ButtonGroup>
+            <Menu
+              MenuListProps={{
+                'aria-labelledby': 'split-button-menu'
+              }}
+              anchorEl={menuAnchor}
+              onClose={() => setMenuAnchor(null)}
+              open={Boolean(menuAnchor)}
+            >
+              {productList.map((list) => (
+                <MenuItem
+                  key={list.name}
+                  onClick={() => addToList(list.name)}
+                >
+                  {list.name}
+                </MenuItem>
+              ))}
+              {productList.length < MAX_LISTS && (
+                <MenuItem onClick={handleCreateNewList}>
+                  {t('general.new-list')}
+                  <AddIcon sx={{ fontSize: '1.4rem', marginInlineStart: '0.3rem' }} />
+                </MenuItem>
+              )}
+            </Menu>
+          </>
         );
       }
     }

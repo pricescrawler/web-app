@@ -19,7 +19,7 @@
     "bootstrap": "^5.2.2",
     "commitizen": "^4.2.5",
     "eslint-plugin-flowtype": "^8.0.3",
-    "eslint-plugin-jest": "27.6.3",
+    "eslint-plugin-jest": "27.9.0",
     "eslint-plugin-mocha": "10.2.0",
     "eslint-plugin-new-with-error": "5.0.0",
     "eslint-plugin-sort-class-members": "1.19.0",

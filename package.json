@@ -23,7 +23,7 @@
     "eslint-plugin-mocha": "10.4.1",
     "eslint-plugin-new-with-error": "5.0.0",
     "eslint-plugin-sort-class-members": "1.20.0",
-    "eslint-plugin-sort-destructure-keys": "1.5.0",
+    "eslint-plugin-sort-destructure-keys": "2.0.0",
     "eslint-plugin-sort-imports-es6": "^0.0.3",
     "eslint-plugin-sql-template": "^2.0.0",
     "eslint-plugin-switch-case": "^1.1.2",

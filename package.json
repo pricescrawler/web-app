@@ -22,7 +22,7 @@
     "eslint-plugin-jest": "28.8.3",
     "eslint-plugin-mocha": "10.5.0",
     "eslint-plugin-new-with-error": "5.0.0",
-    "eslint-plugin-sort-class-members": "1.20.0",
+    "eslint-plugin-sort-class-members": "1.21.0",
     "eslint-plugin-sort-destructure-keys": "2.0.0",
     "eslint-plugin-sort-imports-es6": "^0.0.3",
     "eslint-plugin-sql-template": "^2.0.0",

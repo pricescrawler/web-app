@@ -25,7 +25,7 @@
     "eslint-plugin-sort-class-members": "1.21.0",
     "eslint-plugin-sort-destructure-keys": "2.0.0",
     "eslint-plugin-sort-imports-es6": "^0.0.3",
-    "eslint-plugin-sql-template": "^2.0.0",
+    "eslint-plugin-sql-template": "^3.0.0",
     "eslint-plugin-switch-case": "^3.0.1",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",

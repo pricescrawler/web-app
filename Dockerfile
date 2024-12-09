@@ -1,7 +1,7 @@
 FROM node:21 as build
 WORKDIR /app
 COPY package.json .
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY . .
 
 FROM node:21

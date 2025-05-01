@@ -27,7 +27,7 @@
     "eslint-plugin-sort-imports-es6": "^0.0.3",
     "eslint-plugin-sql-template": "^3.0.0",
     "eslint-plugin-switch-case": "^3.0.1",
-    "i18next": "^24.0.2",
+    "i18next": "^25.0.2",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^3.0.1",
     "prettier": "^3.3.2",

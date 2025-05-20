@@ -223,6 +223,48 @@ function ProductList() {
     }
   };
 
+  const exportToCSV = () => {
+    if (!productList) return;
+    const headers = [
+      t('data.product-fields.catalog'),
+      t('data.product-fields.reference'),
+      t('data.product-fields.name'),
+      t('data.product-fields.regular-price'),
+      t('data.product-fields.price-per-quantity'),
+      t('data.product-fields.quantity'),
+      'URL'
+    ];
+
+    const rows = productList.map(({ catalog, locale, product, quantity }) => [
+      `${locale}.${catalog}`,
+      product.reference,
+      product.name,
+      product.regularPrice,
+      product.pricePerQuantity,
+      quantity,
+      product.productUrl
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((e) => e.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const formatDateForFilename = (d = new Date()) =>
+      d.toISOString().replace(/T/, '_').replace(/:/g, '-').split('.')[0];
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `${t('pages.product-list.csv.prefix')}${formatDateForFilename()}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   /**
    *  `renderTable.
    */
@@ -588,6 +630,9 @@ function ProductList() {
               >
                 <MenuItem onClick={handleReorder}>
                   {t('pages.product-list.options.redorder')}
+                </MenuItem>
+                <MenuItem onClick={exportToCSV}>
+                  {t('pages.product-list.options.export-csv')}
                 </MenuItem>
               </Menu>
             </div>

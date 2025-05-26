@@ -47,7 +47,7 @@
     "format:write": "prettier --write .",
     "lint:check": "eslint src/**/*.{js,jsx}",
     "lint:fix": "eslint --fix .",
-    "prepare": "husky install",
+    "prepare": "husky",
     "commit": "cz"
   },
   "eslintConfig": {
@@ -84,7 +84,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^16.1.0",
-    "husky": ">=8.0.1",
+    "husky": "^9.1.7",
     "lint-staged": "^15.2.7",
     "prop-types": "^15.8.1",
     "sass": "^1.77.6",
@@ -93,11 +93,6 @@
   "lint-staged": {
     "*.{jsx,js}": "yarn lint:check",
     "*.{js,jsx,css,md,html,json}": "yarn format:write"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "config": {
     "commitizen": {

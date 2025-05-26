@@ -237,12 +237,12 @@ function ProductList() {
 
     const rows = productList.map(({ catalog, locale, product, quantity }) => [
       `${locale}.${catalog}`,
-      product.reference,
-      product.name,
-      product.regularPrice,
-      product.pricePerQuantity,
-      quantity,
-      product.productUrl
+      product.reference ?? '',
+      product.name ?? '',
+      product.campaignPrice ?? product.regularPrice ?? '',
+      product.pricePerQuantity ?? '',
+      quantity ?? '',
+      product.productUrl ?? ''
     ]);
 
     const csvContent = [headers, ...rows]

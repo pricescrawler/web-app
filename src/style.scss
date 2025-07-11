@@ -1,4 +1,4 @@
-@import 'bootstrap/dist/css/bootstrap.min.css';
-
 //Core
-@import './styles/core/base.scss';
+@use './styles/core/base.scss';
+
+@import 'bootstrap/dist/css/bootstrap.min.css';

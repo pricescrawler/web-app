@@ -10,7 +10,6 @@ import {
   Box,
   Container,
   Divider,
-  Hidden,
   IconButton,
   Menu,
   MenuItem,
@@ -111,12 +110,14 @@ function NavigationBar({ theme }) {
 
             <Box sx={{ flexGrow: 1 }} />
 
-            <Hidden mdDown>
+            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <Typography
                 component={Link}
                 noWrap
                 sx={{
+                  alignItems: 'center',
                   color: 'inherit',
+                  display: 'flex',
                   mr: 3
                 }}
                 to={'/'}
@@ -169,8 +170,7 @@ function NavigationBar({ theme }) {
                 onClick={toggleDarkMode}
                 size={'small'}
                 sx={{
-                  '&:hover': { backgroundColor: '#000000' },
-                  backgroundColor: '#495057'
+                  '&:hover': { backgroundColor: '#000000' }
                 }}
               >
                 {darkMode ? (
@@ -185,9 +185,9 @@ function NavigationBar({ theme }) {
                   />
                 )}
               </IconButton>
-            </Hidden>
+            </Box>
 
-            <Hidden mdUp>
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 aria-label={'menu'}
                 color={'inherit'}
@@ -196,7 +196,7 @@ function NavigationBar({ theme }) {
               >
                 <MenuIcon />
               </IconButton>
-            </Hidden>
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>

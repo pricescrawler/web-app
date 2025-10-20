@@ -39,9 +39,9 @@ import { useTranslation } from 'react-i18next';
 function ProductList() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isLoadingData, productList, productListUpload } = useSelector(
-    (state) => state.productList
-  );
+  const isLoadingData = useSelector((state) => state.isLoadingData);
+  const productList = useSelector((state) => state.productList);
+  const productListUpload = useSelector((state) => state.productListUpload);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isListUpdated, setIsListUpdated] = useState(true);
   const [showFormControl, setShowFormControl] = useState(false);
@@ -358,7 +358,7 @@ function ProductList() {
                   <TableRow key={index}>
                     <TableCell align={'center'}>
                       <img
-                        alt={''}
+                        alt={name}
                         className={'product-list-img'}
                         referrerPolicy={'no-referrer'}
                         src={product.imageUrl}

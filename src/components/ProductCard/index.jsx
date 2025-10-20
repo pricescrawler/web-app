@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 function ProductCard({ catalog, historyEnabled, locale, productData }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { productList } = useSelector((state) => state.productList);
+  const productList = useSelector((state) => state.productList);
 
   const renderText = (value) => (value.length > 35 ? `${value.substring(0, 35)}...` : value);
 
@@ -56,7 +56,7 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
     <div className={'product-card mb-2 mt-2 position-relative'}>
       <center>
         <img
-          alt={''}
+          alt={productData.name || 'Product image'}
           className={'product-card-image'}
           referrerPolicy={'no-referrer'}
           src={productData.imageUrl ? productData.imageUrl : '-'}

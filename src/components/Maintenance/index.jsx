@@ -22,7 +22,7 @@ const Maintenance = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTimeRemaining(getTimeRemaining);
-    }, 10);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, [getTimeRemaining]);

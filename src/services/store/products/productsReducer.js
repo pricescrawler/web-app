@@ -41,9 +41,8 @@ export const isLoadingData = (state = initialState.isLoadingData, action) => {
 /**
  *  Products.
  */
-// FIXME: Replace function name
 
-export const products = (state = initialState.products, action = {}) => {
+export const productsData = (state = initialState.products, action = {}) => {
   switch (action.type) {
     case actionTypes.GET_PRODUCTS_SUCCESS:
       return action.payload;
@@ -200,6 +199,6 @@ export default combineReducers({
   product,
   productList,
   productListUpload,
-  products,
+  products: productsData,
   searchQuery
 });

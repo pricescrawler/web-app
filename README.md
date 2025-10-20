@@ -13,18 +13,14 @@ data consumption and visualization.
 
 You will need node installed globally on your machine.
 
-| name   |        >= |
-| :----- | --------: |
-| `node` | `16.17.0` |
+| name   |   >= |
+| :----- | ---: |
+| `node` | `21` |
 
 ## 🕹️ Getting Started
 
-1. Create a file with the name .env
-2. Paste the following content of the created file
-
-```.env
-VITE_API_URL=https://prices-crawler-content-api-example.onrender.com
-```
+1. Copy `.env.example` to `.env`.
+2. Fill in the required values.
 
 These instructions will get you a copy of the project up and running on your local and production machine.
 
@@ -61,3 +57,5 @@ Builds the app for production to the dist folder.
 | 3   | VITE_MAINTENANCE_MODE     | Boolean   | Is Maintenance Mode On | -       |
 | 4   | VITE_MAINTENANCE_END_DATE | Date Time | Maintenance Time End   | -       |
 | 5   | VITE_MOBILE_APP_URL       | String    | Mobile App URL         | -       |
+| 6   | VITE_API_TIMEOUT          | Number    | API request timeout ms | 30000   |
+| 7   | VITE_DONATE_URL           | String    | Donation page URL      | -       |

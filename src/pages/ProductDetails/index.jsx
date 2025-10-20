@@ -37,9 +37,10 @@ import { useTranslation } from 'react-i18next';
 function ProductDetails() {
   const { t } = useTranslation();
   const { catalog, locale, reference } = useParams();
-  const { isLoadingData, product } = useSelector((state) => state.product);
-  const { products } = useSelector((state) => state.products);
-  const { productList } = useSelector((state) => state.productList);
+  const isLoadingData = useSelector((state) => state.isLoadingData);
+  const product = useSelector((state) => state.product);
+  const products = useSelector((state) => state.products);
+  const productList = useSelector((state) => state.productList);
 
   const dispatch = useDispatch();
 
@@ -344,12 +345,7 @@ function ProductDetails() {
             justify={'center'}
             spacing={{ md: 10, xs: 1 }}
           >
-            <Grid
-              item
-              md={5}
-              style={{ display: 'flex', justifyContent: 'center' }}
-              xs={12}
-            >
+            <Grid style={{ display: 'flex', justifyContent: 'center' }}>
               <img
                 alt={product.name}
                 className={'product-img'}
@@ -358,12 +354,7 @@ function ProductDetails() {
                 src={product.imageUrl}
               />
             </Grid>
-            <Grid
-              item
-              md={7}
-              style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}
-              xs={12}
-            >
+            <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
               <Stack
                 direction={'column'}
                 spacing={1}

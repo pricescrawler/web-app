@@ -33,10 +33,11 @@ import { useTranslation } from 'react-i18next';
 function ProductSearch() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [orderBy, setOrderBy] = useState(t('menu.order.default'));
+  const [orderBy, setOrderBy] = useState('');
   const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
 
-  const { isLoadingData, products } = useSelector((state) => state.products);
+  const isLoadingData = useSelector((state) => state.isLoadingData);
+  const products = useSelector((state) => state.products);
   const currentProducts = Object.assign([], products);
 
   /**

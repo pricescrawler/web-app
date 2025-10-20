@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next';
 function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
   const [lang, setLang] = useState(i18n.language);
-  const { productList } = useSelector((state) => state.productList);
+  const productList = useSelector((state) => state.productList);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const logo = '/logo.png';
 
@@ -86,7 +86,7 @@ function NavigationBar({ theme }) {
           >
             <Link to={'/'}>
               <img
-                alt={''}
+                alt={'Prices Crawler logo'}
                 className={'d-inline-block'}
                 height={40}
                 src={logo}

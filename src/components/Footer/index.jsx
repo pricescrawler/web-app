@@ -34,14 +34,14 @@ function Footer() {
           {t('menu.privacy-terms')}
         </Link>
         {!isSmallScreenSize && !isMobileApp && mobileAppUrl && (
-          <Link
+          <a
             className={'nav-footer-link'}
+            href={mobileAppUrl}
             rel={'noopener noreferrer'}
             target={'_blank'}
-            to={mobileAppUrl}
           >
             {t('menu.mobile-app')}
-          </Link>
+          </a>
         )}
       </div>
     </div>

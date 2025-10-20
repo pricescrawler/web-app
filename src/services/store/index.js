@@ -10,12 +10,7 @@ import productsReducer from './products/productsReducer';
  */
 
 const store = configureStore({
-  reducer: {
-    product: productsReducer,
-    productList: productsReducer,
-    productListId: productsReducer,
-    products: productsReducer
-  }
+  reducer: productsReducer
 });
 
 /**

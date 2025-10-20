@@ -260,8 +260,8 @@ const SearchContainer = () => {
                   />
                   <ListItemText primary={t('pages.search.select-all')} />
                 </MenuItem>
-                {catalogs
-                  .toSorted((a1, b1) => {
+                {[...catalogs]
+                  .sort((a1, b1) => {
                     if (a1.selected && !b1.selected) {
                       return -1;
                     }

@@ -5,7 +5,7 @@
  */
 
 import * as utils from '@services/utils';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +17,8 @@ import { useTranslation } from 'react-i18next';
 function PricesChart({ data }) {
   const { t } = useTranslation();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [chartWidth, setChartWidth] = useState(0);
+  const chartContainerRef = useRef(null);
 
   useEffect(() => {
     const darkModeLS = localStorage.getItem('site-dark-mode');
@@ -24,6 +26,31 @@ function PricesChart({ data }) {
     if (darkModeLS !== null) {
       setIsDarkMode(JSON.parse(darkModeLS));
     }
+  }, []);
+
+  useEffect(() => {
+    if (typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      if (!entries || entries.length === 0) {
+        return;
+      }
+
+      const { width } = entries[0].contentRect;
+
+      setChartWidth(width);
+    });
+
+    const currentContainer = chartContainerRef.current;
+
+    if (currentContainer) {
+      observer.observe(currentContainer);
+      setChartWidth(currentContainer.getBoundingClientRect().width);
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   const createChartData = (prices) => {
@@ -52,33 +79,41 @@ function PricesChart({ data }) {
   const chartData = createChartData(data);
 
   return (
-    <LineChart
-      height={250}
-      series={[
-        {
-          color: 'red',
-          connectNulls: true,
-          curve: 'linear',
-          data: chartData.map((point) => point[2]),
-          label: t('data.product-titles.price-avg'),
-          showMark: false
-        },
-        {
-          color: isDarkMode ? 'white' : 'black',
-          connectNulls: true,
-          curve: 'linear',
-          data: chartData.map((point) => point[1]),
-          label: t('data.product-fields.regular-price'),
-          showMark: false
-        }
-      ]}
-      xAxis={[
-        {
-          data: chartData.map((point) => point[0]),
-          scaleType: 'time'
-        }
-      ]}
-    />
+    <div
+      ref={chartContainerRef}
+      style={{ width: '100%' }}
+    >
+      {chartWidth > 0 && (
+        <LineChart
+          height={250}
+          width={chartWidth}
+          series={[
+            {
+              color: 'red',
+              connectNulls: true,
+              curve: 'linear',
+              data: chartData.map((point) => point[2]),
+              label: t('data.product-titles.price-avg'),
+              showMark: false
+            },
+            {
+              color: isDarkMode ? 'white' : 'black',
+              connectNulls: true,
+              curve: 'linear',
+              data: chartData.map((point) => point[1]),
+              label: t('data.product-fields.regular-price'),
+              showMark: false
+            }
+          ]}
+          xAxis={[
+            {
+              data: chartData.map((point) => point[0]),
+              scaleType: 'time'
+            }
+          ]}
+        />
+      )}
+    </div>
   );
 }
 

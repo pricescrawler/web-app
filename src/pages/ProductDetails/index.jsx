@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 /**
  * Module dependencies.
  */
@@ -6,24 +5,28 @@
 import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Paper,
-  Stack,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
-  TableRow,
-  Tooltip,
-  Typography
-} from '@mui/material';
-import React, { useEffect } from 'react';
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  AlertTriangle,
+  Check,
+  ExternalLink,
+  Info,
+  Plus,
+  TrendingDown,
+  TrendingUp
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
 import PricesChart from '@components/PricesChart';
@@ -48,442 +51,372 @@ function ProductDetails() {
     dispatch(productsActions.getProduct({ catalog, locale, reference }));
   }, [dispatch, locale, catalog, reference]);
 
+  const [added, setAdded] = useState(false);
+
   const isProductLoaded = () => !!product.prices;
 
-  /**
-   * Render Statistics.
-   */
-
   const renderStatistics = () => {
-    if (product.prices) {
-      const maxPrice = Math.max(
-        ...product.prices.map((price) => parseFloat(utils.getFormattedPrice(price)))
-      );
-      const minPrice = Math.min(
-        ...product.prices.map((price) => parseFloat(utils.getFormattedPrice(price)))
-      );
+    if (!product.prices) return null;
 
-      return (
-        <Stack
-          alignItems={'center'}
-          direction={{ md: 'row', xs: 'column' }}
-          divider={
-            <Divider
-              flexItem
-              orientation={'vertical'}
-            />
-          }
-          justifyContent={'center'}
-          spacing={{ md: 2, xs: 0 }}
-        >
-          <div>
-            <strong>{t('data.product-titles.price-min')}</strong>&nbsp;{minPrice}
-          </div>
-          <div>
-            <strong>{t('data.product-titles.price-max')}</strong>&nbsp;{maxPrice}
-          </div>
-          <div>
-            <strong>{t('data.product-titles.price-avg')}:</strong>&nbsp;
-            {utils.getAveragePrice(product.prices)}
-          </div>
-          <div>
-            <strong>{t('data.product-titles.price-last')}</strong>&nbsp;
-            {utils.getLastPrice(product)}
-          </div>
-        </Stack>
-      );
-    }
+    const maxPrice = Math.max(
+      ...product.prices.map((price) => parseFloat(utils.getFormattedPrice(price)))
+    );
+    const minPrice = Math.min(
+      ...product.prices.map((price) => parseFloat(utils.getFormattedPrice(price)))
+    );
+
+    const stats = [
+      { label: t('data.product-titles.price-min'), value: `${minPrice}€` },
+      { label: t('data.product-titles.price-max'), value: `${maxPrice}€` },
+      {
+        label: t('data.product-titles.price-avg'),
+        value: `${utils.getAveragePrice(product.prices)}€`
+      },
+      { label: t('data.product-titles.price-last'), value: utils.getLastPrice(product) }
+    ];
+
+    return (
+      <div className={'grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl'}>
+        {stats.map((stat, i) => (
+          <Card
+            className={'text-center'}
+            key={i}
+          >
+            <CardContent className={'pt-4 pb-3 px-3'}>
+              <p className={'text-xs text-muted-foreground mb-1'}>{stat.label}</p>
+              <p className={'text-lg font-bold'}>{stat.value}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
   };
-
-  /**
-   * Render EanUpc.
-   */
 
   const renderEanUpc = (eanUpc) => {
-    if (eanUpc) {
-      if (eanUpc.length === 1) {
-        return eanUpc[0];
-      }
+    if (!eanUpc) return null;
+    if (eanUpc.length === 1) return eanUpc[0];
 
-      return eanUpc.map((eanUpc, index) => (
-        <span key={index}>
-          <br />
-          {eanUpc}
-        </span>
-      ));
-    }
+    return eanUpc.map((code, index) => (
+      <span key={index}>
+        <br />
+        {code}
+      </span>
+    ));
   };
-
-  /**
-   * Render Price Indicator.
-   */
 
   const renderPriceIndicator = (prices, currentPrice) => {
     const averagePrice = utils.getAveragePrice(prices);
     const productPrice = parseFloat(utils.convertToFloat(currentPrice));
 
-    if (productPrice === averagePrice) {
-      return (
-        <Tooltip title={t('data.product-titles.price-indicator-info')}>
-          <div>
-            <strong>{t('data.product-titles.price-indicator')}:</strong>
-            &nbsp;
-            <span className={'badge-orange'}>{productPrice}€</span>
-          </div>
-        </Tooltip>
-      );
-    }
+    let color, icon, label;
 
     if (productPrice > averagePrice) {
-      return (
-        <Tooltip title={t('data.product-titles.price-indicator-info')}>
-          <div>
-            <strong>{t('data.product-titles.price-indicator')}:</strong>
-            &nbsp;
-            <span className={'badge-red'}>{productPrice}€</span>
-          </div>
-        </Tooltip>
-      );
+      color =
+        'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800';
+      icon = <TrendingUp size={12} />;
+      label = `${productPrice}€`;
+    } else if (productPrice < averagePrice) {
+      color =
+        'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/40 border-green-200 dark:border-green-800';
+      icon = <TrendingDown size={12} />;
+      label = `${productPrice}€`;
+    } else {
+      color =
+        'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800';
+      icon = null;
+      label = `${productPrice}€`;
     }
 
-    if (productPrice < averagePrice) {
-      return (
-        <Tooltip title={t('data.product-titles.price-indicator-info')}>
-          <div>
-            <strong>{t('data.product-titles.price-indicator')}:</strong>
-            &nbsp;
-            <span className={'badge-green'}>{productPrice}€</span>
-          </div>
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className={'flex items-center gap-1.5'}>
+              <span className={'text-sm font-medium text-muted-foreground'}>
+                {t('data.product-titles.price-indicator')}:
+              </span>
+              <span
+                className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${color}`}
+              >
+                {icon}
+                {label}
+              </span>
+              <Info
+                className={'text-muted-foreground/50 cursor-help'}
+                size={12}
+              />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className={'max-w-[200px] text-xs'}>
+              {t('data.product-titles.price-indicator-info')}
+            </p>
+          </TooltipContent>
         </Tooltip>
-      );
-    }
+      </TooltipProvider>
+    );
   };
-
-  /**
-   * Render Product Prices.
-   */
 
   const renderProductPrices = () => {
     const productFiltered = products.filter(
       (cat) => cat.locale === locale && cat.catalog === catalog
     );
 
-    if (productFiltered.length > 0) {
-      const prod = productFiltered[0];
-      // eslint-disable-next-line id-length
-      const p = prod.products.filter((prod) => prod.reference === reference);
+    if (productFiltered.length === 0) return null;
+    const p = productFiltered[0].products.filter((prod) => prod.reference === reference);
 
-      if (p.length > 0) {
-        const { campaignPrice, pricePerQuantity, regularPrice } = p[0];
-        const price = campaignPrice || regularPrice;
+    if (p.length === 0) return null;
 
-        return (
-          <Stack
-            direction={'column'}
-            spacing={1}
-          >
-            {campaignPrice ? (
-              <div>
-                <strong>{t('data.product-fields.regular-price')}:</strong>
-                &nbsp;
-                <s>{regularPrice}</s>
-                &nbsp;
+    const { campaignPrice, pricePerQuantity, regularPrice } = p[0];
+    const price = campaignPrice || regularPrice;
+
+    return (
+      <div className={'flex flex-col gap-2'}>
+        <div className={'flex items-baseline gap-2'}>
+          {campaignPrice ? (
+            <>
+              <span className={'text-2xl font-bold text-green-600 dark:text-green-400'}>
                 {campaignPrice}
-              </div>
-            ) : (
-              <div>
-                <strong>{t('data.product-fields.regular-price')}:</strong>
-                &nbsp;
-                {regularPrice}
-              </div>
-            )}
-            <div>
-              <strong>{t('data.product-fields.price-per-quantity')}:</strong>
-              &nbsp;
-              {pricePerQuantity}
-            </div>
-            {renderPriceIndicator(product.prices, price)}
-          </Stack>
-        );
-      }
-    }
+              </span>
+              <span className={'text-base text-muted-foreground line-through'}>{regularPrice}</span>
+            </>
+          ) : (
+            <span className={'text-2xl font-bold'}>{regularPrice}</span>
+          )}
+        </div>
+        {pricePerQuantity && <p className={'text-sm text-muted-foreground'}>{pricePerQuantity}</p>}
+        {renderPriceIndicator(product.prices, price)}
+      </div>
+    );
   };
-
-  /**
-   * Render Table.
-   */
-
-  const renderTable = () => {
-    const prices = Object.assign([], product.prices);
-
-    if (prices && !isLoadingData) {
-      prices.sort((first, second) => {
-        const firstDate = new Date(first.date);
-        const secondDate = new Date(second.date);
-
-        return secondDate - firstDate;
-      });
-
-      return (
-        <TableContainer
-          component={Paper}
-          sx={{ maxHeight: 500, maxWidth: 1000, overflowX: 'scroll' }}
-        >
-          <Table size={'small'}>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  align={'center'}
-                  style={{ color: 'white' }}
-                >
-                  {t('data.product-fields.regular-price')}
-                </TableCell>
-                <TableCell
-                  align={'center'}
-                  style={{ color: 'white' }}
-                >
-                  {t('data.product-fields.campaign-price')}
-                </TableCell>
-                <TableCell
-                  align={'center'}
-                  style={{ color: 'white' }}
-                >
-                  {t('data.product-fields.price-per-quantity')}
-                </TableCell>
-                <TableCell
-                  align={'center'}
-                  style={{ color: 'white' }}
-                >
-                  {t('data.product-fields.quantity')}
-                </TableCell>
-                <TableCell
-                  align={'center'}
-                  style={{ color: 'white' }}
-                >
-                  {t('general.date')}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {prices.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell align={'center'}>{row.regularPrice}</TableCell>
-                  <TableCell align={'center'}>{row.campaignPrice}</TableCell>
-                  <TableCell align={'center'}>{row.pricePerQuantity}</TableCell>
-                  <TableCell align={'center'}>{row.quantity ? row.quantity : row.name}</TableCell>
-                  <TableCell align={'center'}>{row.date}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      );
-    }
-  };
-
-  /**
-   * Render Add to List Button.
-   */
 
   const renderAddToListButton = () => {
     const productFiltered = products.filter(
       (cat) => cat.locale === locale && cat.catalog === catalog
     );
 
-    if (productFiltered.length > 0) {
-      const prod = productFiltered[0];
-      // eslint-disable-next-line id-length
-      const p = prod.products.filter((prod) => prod.reference === reference);
+    if (productFiltered.length === 0) return null;
+    const p = productFiltered[0].products.filter((prod) => prod.reference === reference);
 
-      if (p.length > 0) {
-        return (
-          <Button
-            onClick={() => {
-              const productData = p[0];
-              const prodInfo = productList.find(
-                (prod) => prod.key === `${locale}.${catalog}.${productData.reference}`
-              );
+    if (p.length === 0) return null;
 
-              if (prodInfo) {
-                const updatedProduct = {
-                  ...prodInfo,
-                  quantity: prodInfo.quantity + 1
-                };
-
-                dispatch(productsActions.addToProductList(updatedProduct));
-              } else {
-                dispatch(
-                  productsActions.addToProductList({
-                    catalog,
-                    historyEnabled: true,
-                    key: `${locale}.${catalog}.${productData.reference}`,
-                    locale,
-                    product: productData,
-                    quantity: 1
-                  })
-                );
-              }
-            }}
-            size={'small'}
-            style={{ textTransform: 'capitalize' }}
-            variant={'contained'}
-          >
-            {t('data.product-fields.add-to-list')}
-          </Button>
-        );
-      }
-    }
-  };
-
-  const renderProductDataContainer = () => {
     return (
-      <>
-        <Box justify={'center'}>
-          <Grid
-            alignItems={'center'}
-            container
-            justify={'center'}
-            spacing={{ md: 10, xs: 1 }}
-          >
-            <Grid style={{ display: 'flex', justifyContent: 'center' }}>
-              <img
-                alt={product.name}
-                className={'product-img'}
-                loading={'lazy'}
-                referrerPolicy={'no-referrer'}
-                src={product.imageUrl}
-              />
-            </Grid>
-            <Grid style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-              <Stack
-                direction={'column'}
-                spacing={1}
-              >
-                <Stack
-                  direction={{ md: 'row', xs: 'column' }}
-                  divider={
-                    <Divider
-                      flexItem
-                      orientation={'vertical'}
-                    />
-                  }
-                  spacing={{ md: 1, xs: 0.5 }}
-                >
-                  <div>
-                    <strong>{t('data.product-fields.locale')}:</strong>&nbsp;{product.locale}
-                  </div>
-                  <div>
-                    <strong>{t('data.product-fields.catalog')}:</strong>&nbsp;{product.catalog}
-                  </div>
-                  <div>
-                    <strong>{t('data.product-fields.reference')}:</strong>&nbsp;{product.reference}
-                  </div>
-                </Stack>
-                <div>
-                  <strong>{t('data.product-fields.name')}:</strong>
-                  &nbsp;
-                  {product.name ? product.name : '-'}
-                </div>
-                <div>
-                  <strong>{t('data.product-fields.brand')}:</strong>
-                  &nbsp;
-                  {product.brand ? product.brand : '-'}
-                </div>
-                <div>
-                  <strong>{t('data.product-fields.quantity')}:</strong>
-                  &nbsp;
-                  {product.quantity ? product.quantity : '-'}
-                </div>
-                <div>
-                  <strong>{t('data.product-fields.description')}:</strong>
-                  &nbsp;
-                  {product.description ? product.description : '-'}
-                </div>
-                <div>
-                  <strong>EAN/UPC:</strong>
-                  &nbsp;
-                  {product.eanUpc ? renderEanUpc(product.eanUpc) : '-'}
-                </div>
-                <div>{renderProductPrices()}</div>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Box>
+      <Button
+        onClick={() => {
+          const productData = p[0];
+          const prodInfo = productList.find(
+            (prod) => prod.key === `${locale}.${catalog}.${productData.reference}`
+          );
 
-        <Stack>
-          <center>
-            <a
-              href={product.productUrl}
-              rel={'noopener noreferrer'}
-              target={'_blank'}
-            >
-              <Button
-                size={'small'}
-                style={{ textTransform: 'capitalize' }}
-                variant={'contained'}
-              >
-                {t('data.product-fields.store-page')}
-              </Button>
-            </a>
-            &nbsp;&nbsp;
-            {renderAddToListButton()}
-          </center>
-        </Stack>
-      </>
+          if (prodInfo) {
+            dispatch(
+              productsActions.addToProductList({
+                ...prodInfo,
+                quantity: prodInfo.quantity + 1
+              })
+            );
+          } else {
+            dispatch(
+              productsActions.addToProductList({
+                catalog,
+                historyEnabled: true,
+                key: `${locale}.${catalog}.${productData.reference}`,
+                locale,
+                product: productData,
+                quantity: 1
+              })
+            );
+          }
+          setAdded(true);
+          setTimeout(() => setAdded(false), 1500);
+        }}
+        size={'sm'}
+        variant={added ? 'default' : 'outline'}
+        className={added ? 'bg-green-500 hover:bg-green-500 border-green-500 text-white' : ''}
+      >
+        {added ? (
+          <Check
+            className={'mr-1'}
+            size={14}
+          />
+        ) : (
+          <Plus
+            className={'mr-1'}
+            size={14}
+          />
+        )}
+        {t('data.product-fields.add-to-list')}
+      </Button>
     );
   };
 
   const renderProductOutdatedAlert = () => {
-    if (product.prices.length > 0) {
-      const lastPrice = product.prices[product.prices.length - 1];
+    if (!product.prices?.length) return null;
 
-      const now = new Date();
-      const lastPriceDate = new Date(lastPrice.date);
+    const lastPrice = product.prices[product.prices.length - 1];
+    const now = new Date();
+    const lastPriceDate = new Date(lastPrice.date);
 
-      if (
-        now.getFullYear() !== lastPriceDate.getFullYear() ||
-        now.getMonth() !== lastPriceDate.getMonth() ||
-        now.getDate() !== lastPriceDate.getDate()
-      ) {
-        return <Alert severity={'warning'}>{t('data.error.product-outdated')}</Alert>;
-      }
-    }
+    const isOutdated =
+      now.getFullYear() !== lastPriceDate.getFullYear() ||
+      now.getMonth() !== lastPriceDate.getMonth() ||
+      now.getDate() !== lastPriceDate.getDate();
+
+    if (!isOutdated) return null;
+
+    return (
+      <Alert
+        className={
+          'border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/40 max-w-2xl w-full'
+        }
+        variant={'default'}
+      >
+        <AlertTriangle className={'text-amber-600 dark:text-amber-400 h-4 w-4'} />
+        <AlertDescription className={'text-amber-700 dark:text-amber-300'}>
+          {t('data.error.product-outdated')}
+        </AlertDescription>
+      </Alert>
+    );
   };
 
-  return (
-    <>
-      {!isLoadingData && isProductLoaded() ? (
-        <div className={'product'}>
-          <div className={'product__container'}>
-            <h2 className={'product__heading h2'}>{t('title.product-details')}</h2>
+  if (isLoadingData || !isProductLoaded()) return <Loader />;
 
-            <Stack
-              alignItems={'center'}
-              direction={'column'}
-              justify={'center'}
-              spacing={2}
+  return (
+    <div className={'max-w-5xl mx-auto px-4 py-8'}>
+      <h2 className={'text-2xl font-bold tracking-tight mb-8 text-center'}>
+        {t('title.product-details')}
+      </h2>
+
+      {/* Product header */}
+      <Card className={'mb-6'}>
+        <CardContent className={'p-6'}>
+          <div className={'flex flex-col md:flex-row gap-8 items-start'}>
+            {/* Image */}
+            <div
+              className={
+                'flex-shrink-0 flex items-center justify-center bg-muted/40 rounded-lg p-4 w-full md:w-48 h-48'
+              }
             >
-              {renderProductDataContainer()}
-              <Typography variant={'h5'}>
-                <strong>{t('general.price-evolution')}</strong>
-              </Typography>
-              {renderProductOutdatedAlert()}
-              {renderStatistics()}
-              <PricesChart data={product.prices} />
-              <Typography
-                style={{ marginBottom: '1rem' }}
-                variant={'h5'}
-              >
-                <strong>{t('general.prices-history')}</strong>
-              </Typography>
-            </Stack>
-            {renderTable()}
+              <img
+                alt={product.name}
+                className={'max-h-full max-w-full object-contain'}
+                loading={'lazy'}
+                referrerPolicy={'no-referrer'}
+                src={product.imageUrl}
+              />
+            </div>
+
+            {/* Info */}
+            <div className={'flex-1 flex flex-col gap-4'}>
+              <div>
+                <div className={'flex flex-wrap gap-2 text-xs text-muted-foreground mb-2'}>
+                  <span className={'bg-muted px-2 py-0.5 rounded font-mono'}>{product.locale}</span>
+                  <span className={'bg-muted px-2 py-0.5 rounded font-mono'}>
+                    {product.catalog}
+                  </span>
+                  <span className={'bg-muted px-2 py-0.5 rounded font-mono'}>
+                    {product.reference}
+                  </span>
+                </div>
+                <h3 className={'text-xl font-semibold leading-tight'}>{product.name || '-'}</h3>
+              </div>
+
+              <div className={'grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm'}>
+                {[
+                  [t('data.product-fields.brand'), product.brand],
+                  [t('data.product-fields.quantity'), product.quantity],
+                  [t('data.product-fields.description'), product.description],
+                  ['EAN/UPC', product.eanUpc ? renderEanUpc(product.eanUpc) : null]
+                ].map(([label, value]) =>
+                  value ? (
+                    <div key={label}>
+                      <span className={'text-muted-foreground text-xs'}>{label}</span>
+                      <p className={'font-medium'}>{value}</p>
+                    </div>
+                  ) : null
+                )}
+              </div>
+
+              {renderProductPrices()}
+
+              <div className={'flex gap-2 pt-2'}>
+                <a
+                  href={product.productUrl}
+                  rel={'noopener noreferrer'}
+                  target={'_blank'}
+                >
+                  <Button size={'sm'}>
+                    <ExternalLink
+                      className={'mr-1.5'}
+                      size={14}
+                    />
+                    {t('data.product-fields.store-page')}
+                  </Button>
+                </a>
+                {renderAddToListButton()}
+              </div>
+            </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Price evolution section */}
+      <div className={'flex flex-col items-center gap-5 mb-6'}>
+        <h4 className={'text-lg font-semibold'}>{t('general.price-evolution')}</h4>
+        {renderProductOutdatedAlert()}
+        {renderStatistics()}
+        <div className={'w-full'}>
+          <PricesChart data={product.prices} />
         </div>
-      ) : (
-        <Loader />
-      )}
-    </>
+      </div>
+
+      {/* Price history table */}
+      <div className={'flex flex-col gap-3'}>
+        <h4 className={'text-lg font-semibold'}>{t('general.prices-history')}</h4>
+        <Card>
+          <CardContent className={'p-0'}>
+            <div className={'max-h-[420px] overflow-x-auto overflow-y-auto rounded-lg w-full'}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className={'text-center sticky top-0'}>
+                      {t('data.product-fields.regular-price')}
+                    </TableHead>
+                    <TableHead className={'text-center sticky top-0'}>
+                      {t('data.product-fields.campaign-price')}
+                    </TableHead>
+                    <TableHead className={'text-center sticky top-0'}>
+                      {t('data.product-fields.price-per-quantity')}
+                    </TableHead>
+                    <TableHead className={'text-center sticky top-0'}>
+                      {t('data.product-fields.quantity')}
+                    </TableHead>
+                    <TableHead className={'text-center sticky top-0'}>
+                      {t('general.date')}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...product.prices]
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className={'text-center'}>{row.regularPrice}</TableCell>
+                        <TableCell className={'text-center'}>{row.campaignPrice}</TableCell>
+                        <TableCell className={'text-center'}>{row.pricePerQuantity}</TableCell>
+                        <TableCell className={'text-center'}>{row.quantity ?? row.name}</TableCell>
+                        <TableCell className={'text-center text-muted-foreground text-xs'}>
+                          {row.date}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
 

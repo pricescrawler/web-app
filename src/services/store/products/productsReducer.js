@@ -3,7 +3,6 @@
  */
 
 import * as actionTypes from './productsActionTypes';
-import Swal from 'sweetalert2';
 import { combineReducers } from '@reduxjs/toolkit';
 import initialState from './productsInitialState';
 
@@ -48,19 +47,13 @@ export const productsData = (state = initialState.products, action = {}) => {
       return action.payload;
 
     case actionTypes.GET_SEARCHED_PRODUCTS: {
-      // eslint-disable-next-line no-shadow
       const { products } = action.payload;
 
       return products;
     }
 
     case actionTypes.GET_PRODUCTS_FAIL: {
-      Swal.fire({
-        confirmButtonColor: '#6c757d',
-        icon: 'error',
-        text: `${action.payload} - ${action.payload.response.statusText}`,
-        title: `Error`
-      });
+      alert(`Error: ${action.payload}`);
 
       return {};
     }
@@ -81,12 +74,7 @@ export const product = (state = initialState.product, action = {}) => {
     }
 
     case actionTypes.GET_PRODUCT_FAIL: {
-      Swal.fire({
-        confirmButtonColor: '#6c757d',
-        icon: 'error',
-        text: `${action.payload} - ${action.payload.response.statusText}`,
-        title: `Error`
-      });
+      alert(`Error: ${action.payload}`);
 
       return {};
     }

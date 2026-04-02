@@ -3,27 +3,33 @@
  * Module dependencies.
  */
 
-import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import { Check, ExternalLink, GitCompareArrows, History, Plus, Tag } from 'lucide-react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
  * Function `ProductCard`.
  */
 
-function ProductCard({ catalog, historyEnabled, locale, productData }) {
+function ProductCard({
+  catalog,
+  historyEnabled,
+  isInComparison,
+  locale,
+  onToggleCompare,
+  productData
+}) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
+  const [added, setAdded] = useState(false);
 
-  const renderText = (value) => (value.length > 35 ? `${value.substring(0, 35)}...` : value);
-
-  /**
-   * Add to List.
-   */
+  const truncate = (value, max = 40) =>
+    value && value.length > max ? `${value.substring(0, max)}…` : value;
 
   const addToList = (event) => {
     event.preventDefault();
@@ -32,12 +38,12 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
     );
 
     if (product) {
-      const updatedProduct = {
-        ...product,
-        quantity: product.quantity + 1
-      };
-
-      dispatch(productsActions.addToProductList(updatedProduct));
+      dispatch(
+        productsActions.addToProductList({
+          ...product,
+          quantity: product.quantity + 1
+        })
+      );
     } else {
       dispatch(
         productsActions.addToProductList({
@@ -50,117 +56,158 @@ function ProductCard({ catalog, historyEnabled, locale, productData }) {
         })
       );
     }
+
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
   };
 
-  return (
-    <div className={'product-card mb-2 mt-2 position-relative'}>
-      <center>
-        <img
-          alt={productData.name || 'Product image'}
-          className={'product-card-image'}
-          referrerPolicy={'no-referrer'}
-          src={productData.imageUrl ? productData.imageUrl : '-'}
-        />
-      </center>
+  const hasCampaign = !!productData.campaignPrice;
 
-      <div className={'product-card-info'}>
-        <span className={'product-card-span'}>{t('data.product-fields.name')}</span>
-        <p className={'product-card-text'}>
-          {renderText(productData.name ? productData.name : '-')}
-        </p>
+  return (
+    <Card
+      className={
+        'group relative flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 border border-border/60 bg-card'
+      }
+    >
+      {/* Campaign badge */}
+      {hasCampaign && (
+        <div
+          className={
+            'absolute top-3 right-3 z-10 bg-red-500 text-white text-[10px] font-bold rounded-full px-2 py-1 flex items-center gap-1 shadow-md'
+          }
+        >
+          <Tag size={9} />
+          PROMO
+        </div>
+      )}
+
+      {/* Compare button */}
+      {onToggleCompare && (
+        <button
+          className={`absolute top-3 left-3 z-10 rounded-full p-1.5 shadow-md transition-colors ${
+            isInComparison
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground border border-border'
+          }`}
+          onClick={onToggleCompare}
+          title={isInComparison ? 'Remover da comparação' : 'Adicionar à comparação'}
+        >
+          <GitCompareArrows size={12} />
+        </button>
+      )}
+
+      {/* Product image */}
+      <div className={'relative flex items-center justify-center p-4 h-[140px] overflow-hidden'}>
+        <img
+          alt={productData.name || 'Product'}
+          className={
+            'max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105'
+          }
+          referrerPolicy={'no-referrer'}
+          src={productData.imageUrl || '/logo.png'}
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
       </div>
 
-      <div className={'product-card-info'}>
-        <span className={'product-card-span'}>{t('data.product-fields.regular-price')}</span>
+      <CardContent className={'flex-1 p-4 flex flex-col gap-2'}>
+        {/* Name */}
+        <p
+          className={'font-semibold text-sm leading-tight min-h-[2.5rem] line-clamp-2'}
+          title={productData.name}
+        >
+          {productData.name || '-'}
+        </p>
 
-        {productData.campaignPrice ? (
-          <p className={'product-card-text'}>
-            <s>{productData.regularPrice}</s> &nbsp; {productData.campaignPrice}
-          </p>
-        ) : (
-          <p className={'product-card-text'}>
-            {productData.regularPrice ? productData.regularPrice : '-'}
+        {/* Price */}
+        <div className={'flex items-baseline gap-2'}>
+          {hasCampaign ? (
+            <>
+              <span className={'text-lg font-bold text-green-600 dark:text-green-400'}>
+                {productData.campaignPrice}
+              </span>
+              <span className={'text-sm text-muted-foreground line-through'}>
+                {productData.regularPrice}
+              </span>
+            </>
+          ) : (
+            <span className={'text-lg font-bold'}>{productData.regularPrice || '-'}</span>
+          )}
+        </div>
+
+        {/* Price per quantity */}
+        {productData.pricePerQuantity && (
+          <p className={'text-xs text-muted-foreground'}>
+            {truncate(productData.pricePerQuantity)}
           </p>
         )}
-      </div>
 
-      <div className={'product-card-info'}>
-        <span className={'product-card-span'}>{t('data.product-fields.price-per-quantity')}</span>
-        <p className={'product-card-text'}>
-          {renderText(productData.pricePerQuantity ? productData.pricePerQuantity : '-')}
-        </p>
-      </div>
+        {/* Meta info */}
+        <div className={'mt-auto pt-2 border-t border-border/50 flex flex-col gap-1'}>
+          {productData.brand && (
+            <p className={'text-xs text-muted-foreground'}>
+              <span className={'font-medium text-foreground/70'}>
+                {t('data.product-fields.brand')}:
+              </span>{' '}
+              {truncate(productData.brand, 30)}
+            </p>
+          )}
+          {productData.quantity && (
+            <p className={'text-xs text-muted-foreground'}>
+              <span className={'font-medium text-foreground/70'}>
+                {t('data.product-fields.quantity')}:
+              </span>{' '}
+              {truncate(productData.quantity, 30)}
+            </p>
+          )}
+        </div>
+      </CardContent>
 
-      <div className={'product-card-info'}>
-        <span className={'product-card-span'}>{t('data.product-fields.quantity')}</span>
-        <p className={'product-card-text'}>
-          {renderText(productData.quantity ? productData.quantity : '-')}
-        </p>
-      </div>
-
-      <div className={'product-card-info'}>
-        <span className={'product-card-span'}>{t('data.product-fields.brand')}</span>
-        <p className={'product-card-text'}>
-          {renderText(productData.brand ? productData.brand : '-')}
-        </p>
-      </div>
-
-      <div className={'product-card-info'}>
-        <span className={'product-card-span'}>{t('data.product-fields.description')}</span>
-        <p className={'product-card-text'}>
-          {renderText(productData.description ? productData.description : '-')}
-        </p>
-      </div>
-
-      <center>
+      <CardFooter className={'p-3 pt-0 flex gap-2'}>
         <a
+          className={'flex-1'}
           href={productData.productUrl}
           rel={'noopener noreferrer'}
           target={'_blank'}
         >
-          <button className={'product-card-button'}>{t('data.product-fields.store-page')}</button>
+          <button
+            className={
+              'w-full h-full flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md border border-border hover:bg-accent transition-colors'
+            }
+          >
+            <ExternalLink size={12} />
+          </button>
         </a>
-        &nbsp;&nbsp;
-        {historyEnabled ? (
+
+        {historyEnabled && (
           <Link
-            target={'_self'}
+            className={'flex-1'}
             to={`/product/${locale}/${catalog}/${productData.reference}`}
           >
-            <button className={'product-card-button'}>{t('data.product-fields.details')}</button>
+            <button
+              className={
+                'w-full h-full flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md border border-border hover:bg-accent transition-colors'
+              }
+            >
+              <History size={12} />
+            </button>
           </Link>
-        ) : (
-          <></>
         )}
-        &nbsp;&nbsp;
+
         <button
-          className={'product-card-button'}
+          className={`flex-1 flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md transition-all duration-300 ${
+            added
+              ? 'bg-green-500 text-white'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90'
+          }`}
           onClick={addToList}
         >
-          {t('data.product-fields.add-to-list')}
+          {added ? <Check size={12} /> : <Plus size={12} />}
         </button>
-      </center>
-
-      {productData.campaignPrice ? (
-        <span
-          className={
-            'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
-          }
-        >
-          <br />
-          <br />
-          %
-          <br />
-          <br />
-        </span>
-      ) : (
-        <></>
-      )}
-    </div>
+      </CardFooter>
+    </Card>
   );
 }
-
-/**
- * Export `ProductCard`.
- */
 
 export default ProductCard;

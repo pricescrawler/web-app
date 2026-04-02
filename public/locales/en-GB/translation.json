@@ -71,7 +71,7 @@
       },
       "options": {
         "export-csv": "Export CSV",
-        "tooltip": "Options ▼",
+        "tooltip": "Options",
         "redorder": "Reorder"
       }
     }

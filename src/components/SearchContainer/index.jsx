@@ -2,29 +2,21 @@
  * Module dependencies.
  */
 
-import './index.scss';
 import * as productsActions from '@services/store/products/productsActions';
 import * as scanner from '@components/Scanner';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  CircularProgress,
-  Divider,
-  FormControl,
-  IconButton,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
-  Stack,
-  TextField
-} from '@mui/material';
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, QrCode, X, ChevronDown } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { QrCodeScanner } from '@mui/icons-material';
-import SendIcon from '@mui/icons-material/Send';
-import Swal from 'sweetalert2';
 import api from '@services/api';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -39,18 +31,17 @@ const SearchContainer = () => {
   const [searchValue, setSearchValue] = useState('');
   const [catalogs, setCatalogs] = useState([]);
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
   const videoRef = useRef(null);
   const [experimentalFeatures, setExperimentalFeatures] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
   );
 
   const handleError = (error) => {
-    // eslint-disable-next-line no-alert
     return alert(error);
   };
 
@@ -70,12 +61,6 @@ const SearchContainer = () => {
 
     if (experimentalEnabledLS !== null) {
       setExperimentalFeatures(JSON.parse(experimentalEnabledLS));
-    }
-
-    const darkModeLS = localStorage.getItem('site-dark-mode');
-
-    if (darkModeLS !== null) {
-      setIsDarkMode(JSON.parse(darkModeLS));
     }
   }, []);
 
@@ -111,22 +96,18 @@ const SearchContainer = () => {
             category.catalogs.forEach((catalog) => {
               if (catalog.active) {
                 if (catalog.stores.length === 0) {
-                  const catalogData = {
+                  fetchedCatalogs.push({
                     label: catalog.name,
                     selected: catalog.data.selected,
                     value: catalog.id
-                  };
-
-                  fetchedCatalogs.push(catalogData);
+                  });
                 } else {
                   catalog.stores.forEach((store) => {
-                    const catalogData = {
+                    fetchedCatalogs.push({
                       label: `${catalog.name} - ${store.name}`,
                       selected: !!store.data.selected,
                       value: `${catalog.id}#${store.id}`
-                    };
-
-                    fetchedCatalogs.push(catalogData);
+                    });
                   });
                 }
               }
@@ -136,57 +117,31 @@ const SearchContainer = () => {
 
         localStorage.setItem('catalogData', JSON.stringify(fetchedCatalogs));
         localStorage.setItem('catalogDataTimestamp', new Date().getTime().toString());
-
         setCatalogs(fetchedCatalogs);
         setSelectedCatalogs(fetchedCatalogs.filter((catalog) => catalog.selected));
         setIsLoadingCatalogs(false);
       })
       .catch((error) => {
-        Swal.fire({
-          confirmButtonColor: '#6c757d',
-          icon: 'error',
-          text: `${catalogErrorT} - (${error})`,
-          title: 'Error'
-        });
+        alert(`${catalogErrorT} - (${error})`);
         setIsLoadingCatalogs(false);
       });
   }, [catalogErrorT]);
 
-  const handleStoreRemoval = (catalogValue) => {
-    const updatedCatalogs = selectedCatalogs.filter((catalog) => catalog.value !== catalogValue);
+  const toggleCatalog = (catalog) => {
+    const isSelected = selectedCatalogs.some((c) => c.value === catalog.value);
 
-    setSelectedCatalogs(updatedCatalogs);
+    if (isSelected) {
+      setSelectedCatalogs(selectedCatalogs.filter((c) => c.value !== catalog.value));
+    } else {
+      setSelectedCatalogs([...selectedCatalogs, catalog]);
+    }
   };
 
-  const handleCatalog = (ev) => {
-    const selectedCatalog = ev.target.value[ev.target.value.length - 1];
-
-    if (selectedCatalog === 'select-all') {
-      if (selectedCatalogs.length !== catalogs.length) {
-        setSelectedCatalogs([...catalogs]);
-      } else {
-        setSelectedCatalogs([]);
-      }
+  const toggleAll = () => {
+    if (selectedCatalogs.length === catalogs.length) {
+      setSelectedCatalogs([]);
     } else {
-      const isCatalogSelected = selectedCatalogs.some(
-        (catalog) => catalog.label === selectedCatalog
-      );
-
-      if (isCatalogSelected) {
-        const updatedCatalogs = selectedCatalogs.filter(
-          (catalog) => catalog.label !== selectedCatalog
-        );
-
-        setSelectedCatalogs(updatedCatalogs);
-      } else {
-        const catalogToAdd = catalogs.find((catalog) => catalog.label === selectedCatalog);
-
-        if (catalogToAdd) {
-          const updatedCatalogs = [...selectedCatalogs, catalogToAdd];
-
-          setSelectedCatalogs(updatedCatalogs);
-        }
-      }
+      setSelectedCatalogs([...catalogs]);
     }
   };
 
@@ -196,169 +151,175 @@ const SearchContainer = () => {
     if (searchValue !== '' && selectedCatalogs.length > 0) {
       dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue }));
     } else {
-      Swal.fire({
-        confirmButtonColor: '#6c757d',
-        icon: 'info',
-        text: inputErrorT,
-        title: 'Info'
-      });
+      alert(inputErrorT);
     }
   };
 
+  const sortedCatalogs = [...catalogs].sort((a, b) => {
+    if (a.selected && !b.selected) return -1;
+    if (!a.selected && b.selected) return 1;
+
+    return a.label.localeCompare(b.label);
+  });
+
+  const allSelected = selectedCatalogs.length === catalogs.length && catalogs.length > 0;
+
   return (
-    <div className={'homepage__search'}>
-      <div className={'homepage__search-container'}>
-        <FormControl fullWidth>
-          {isLoadingCatalogs ? (
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'center',
-                minHeight: 56
-              }}
-            >
-              <CircularProgress size={24} />
-            </Box>
-          ) : (
-            <>
-              {selectedCatalogs.length === 0 && (
-                <InputLabel
-                  id={'search-multi-select-label'}
-                  shrink={false}
-                >
+    <div className={'flex flex-col gap-3'}>
+      {/* Catalog selector */}
+      <Popover
+        onOpenChange={setCatalogOpen}
+        open={catalogOpen}
+      >
+        <PopoverTrigger asChild>
+          <button
+            className={
+              'w-full bg-background hover:bg-muted/50 border border-input rounded-lg px-4 py-2.5 text-sm text-left flex items-center justify-between gap-2 transition-colors min-h-11 shadow-sm'
+            }
+            disabled={isLoadingCatalogs}
+            type={'button'}
+          >
+            <div className={'flex flex-wrap gap-1.5 flex-1'}>
+              {isLoadingCatalogs ? (
+                <span className={'text-muted-foreground text-sm'}>A carregar lojas…</span>
+              ) : selectedCatalogs.length === 0 ? (
+                <span className={'text-muted-foreground text-sm'}>
                   {t('pages.search.select-catalog')}
-                </InputLabel>
-              )}
-              <Select
-                className={'homepage__multi'}
-                labelId={'search-multi-select-label'}
-                multiple
-                onChange={handleCatalog}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((catalog, index) => (
-                      <Chip
-                        key={`chip-${index}`}
-                        label={catalog.label}
-                        onDelete={() => handleStoreRemoval(catalog.value)}
-                        onMouseDown={(event) => {
-                          event.stopPropagation();
-                        }}
-                        size={'small'}
-                        variant={'outlined'}
-                      />
-                    ))}
-                  </Box>
-                )}
-                value={selectedCatalogs}
-              >
-                <MenuItem value={'select-all'}>
-                  <Checkbox
-                    checked={selectedCatalogs.length === catalogs.length}
-                    color={'secondary'}
-                  />
-                  <ListItemText primary={t('pages.search.select-all')} />
-                </MenuItem>
-                {[...catalogs]
-                  .sort((a1, b1) => {
-                    if (a1.selected && !b1.selected) {
-                      return -1;
-                    }
-                    if (!a1.selected && b1.selected) {
-                      return 1;
-                    }
-
-                    return a1.label.localeCompare(b1.label);
-                  })
-                  .map((catalog, index) => {
-                    const isSelected = selectedCatalogs.some(
-                      (selectedCatalog) => selectedCatalog.value === catalog.value
-                    );
-
-                    return (
-                      <MenuItem
-                        key={`menu-item-${index}`}
-                        value={catalog.label}
-                      >
-                        <Checkbox
-                          checked={isSelected}
-                          color={'secondary'}
-                        />
-                        <ListItemText primary={catalog.label} />
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-            </>
-          )}
-        </FormControl>
-        <form
-          action={'POST'}
-          className={'homepage__form'}
-          onSubmit={handleProductSearch}
-        >
-          <FormControl fullWidth>
-            <Stack
-              direction={'row'}
-              spacing={0.4}
-            >
-              <TextField
-                autoComplete={'off'}
-                className={'homepage__textfield'}
-                color={'secondary'}
-                fullWidth
-                label={t('general.search-for-some-product')}
-                onChange={(event) => setSearchValue(event.target.value)}
-                value={searchValue}
-                variant={'outlined'}
-              />
-              <Divider
-                color={'secondary'}
-                flexItem
-                orientation={'vertical'}
-                spacing={1}
-                variant={'middle'}
-              />
-              <Button
-                className={'homepage__search-button'}
-                color={'secondary'}
-                endIcon={<SendIcon />}
-                sx={{ textTransform: 'capitalize' }}
-                type={'submit'}
-                variant={'contained'}
-              >
-                {t('general.search')}
-              </Button>
-              {experimentalFeatures ? (
-                <IconButton
-                  onClick={startScanner}
-                  variant={'contained'}
-                >
-                  <QrCodeScanner style={{ color: isDarkMode ? 'white' : 'black' }} />
-                </IconButton>
+                </span>
+              ) : allSelected ? (
+                <span className={'text-foreground text-sm font-medium'}>
+                  {t('pages.search.select-all')} ({catalogs.length})
+                </span>
               ) : (
-                <></>
+                selectedCatalogs.slice(0, 4).map((catalog) => (
+                  <span
+                    className={
+                      'bg-primary text-primary-foreground rounded-md px-2 py-0.5 text-xs font-medium flex items-center gap-1'
+                    }
+                    key={catalog.value}
+                  >
+                    {catalog.label}
+                    <button
+                      className={'hover:opacity-70 transition-opacity'}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCatalogs(
+                          selectedCatalogs.filter((c) => c.value !== catalog.value)
+                        );
+                      }}
+                      type={'button'}
+                    >
+                      <X size={10} />
+                    </button>
+                  </span>
+                ))
               )}
-            </Stack>
-            {experimentalFeatures ? (
-              <>
-                <br />
-                {!searchValue && (
-                  <center>
-                    <video
-                      ref={videoRef}
-                      style={{ height: 'auto', width: '75%' }}
+              {!allSelected && selectedCatalogs.length > 4 && (
+                <span className={'text-muted-foreground text-xs self-center'}>
+                  +{selectedCatalogs.length - 4} mais
+                </span>
+              )}
+            </div>
+            <ChevronDown
+              className={`text-muted-foreground shrink-0 transition-transform duration-200 ${catalogOpen ? 'rotate-180' : ''}`}
+              size={16}
+            />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          align={'start'}
+          className={'p-0 w-[var(--radix-popover-trigger-width)] max-w-lg shadow-2xl'}
+        >
+          <Command>
+            <CommandInput placeholder={'Pesquisar loja…'} />
+            <CommandList className={'max-h-64'}>
+              <CommandEmpty>Nenhuma loja encontrada.</CommandEmpty>
+              <CommandGroup>
+                <CommandItem
+                  className={'font-medium'}
+                  onSelect={toggleAll}
+                  value={'__select-all__'}
+                >
+                  <Checkbox
+                    checked={allSelected}
+                    className={'mr-2'}
+                  />
+                  {t('pages.search.select-all')}
+                  <span className={'ml-auto text-xs text-muted-foreground'}>{catalogs.length}</span>
+                </CommandItem>
+              </CommandGroup>
+              <CommandGroup>
+                {sortedCatalogs.map((catalog) => (
+                  <CommandItem
+                    key={catalog.value}
+                    onSelect={() => toggleCatalog(catalog)}
+                    value={catalog.label}
+                  >
+                    <Checkbox
+                      checked={selectedCatalogs.some((c) => c.value === catalog.value)}
+                      className={'mr-2'}
                     />
-                  </center>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-          </FormControl>
-        </form>
-      </div>
+                    {catalog.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+
+      {/* Search input */}
+      <form
+        action={'POST'}
+        onSubmit={handleProductSearch}
+      >
+        <div className={'flex gap-2'}>
+          <div className={'relative flex-1'}>
+            <Search
+              className={'absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground'}
+              size={16}
+            />
+            <input
+              autoComplete={'off'}
+              className={
+                'w-full bg-background border border-input hover:border-ring/50 focus:border-ring rounded-lg pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all shadow-sm'
+              }
+              onChange={(event) => setSearchValue(event.target.value)}
+              placeholder={t('general.search-for-some-product')}
+              value={searchValue}
+            />
+          </div>
+          <Button
+            className={'px-5 h-[46px] font-semibold shrink-0'}
+            type={'submit'}
+          >
+            {t('general.search')}
+          </Button>
+          {experimentalFeatures && (
+            <button
+              className={
+                'w-12 h-[46px] flex items-center justify-center rounded-lg border border-input hover:bg-muted transition-colors'
+              }
+              onClick={startScanner}
+              type={'button'}
+            >
+              <QrCode
+                className={'text-muted-foreground'}
+                size={18}
+              />
+            </button>
+          )}
+        </div>
+
+        {experimentalFeatures && !searchValue && (
+          <div className={'mt-3 flex justify-center'}>
+            <video
+              ref={videoRef}
+              style={{ borderRadius: '0.5rem', height: 'auto', width: '75%' }}
+            />
+          </div>
+        )}
+      </form>
     </div>
   );
 };

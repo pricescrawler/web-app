@@ -2,10 +2,8 @@
  * Module dependencies.
  */
 
-import './index.scss';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -15,41 +13,54 @@ import { useTranslation } from 'react-i18next';
 function Footer() {
   const { t } = useTranslation();
   const [mobileAppUrl] = useState(import.meta.env.VITE_MOBILE_APP_URL);
-  const isSmallScreenSize = useMediaQuery('(max-width: 600px)');
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isMobileApp = localStorage.getItem('isMobileApp') === 'true';
 
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 600px)');
+
+    setIsSmallScreen(mq.matches);
+    const handler = (e) => setIsSmallScreen(e.matches);
+
+    mq.addEventListener('change', handler);
+
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   return (
-    <div className={'nav-footer-container'}>
-      <div className={'nav-footer'}>
+    <footer className={'mt-auto border-t border-border/50 bg-[#1a1d20]'}>
+      <div
+        className={'max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-6'}
+      >
         <Link
-          className={'nav-footer-link'}
+          className={'text-sm text-white/50 hover:text-white transition-colors'}
           to={'/about'}
         >
           {t('menu.about')}
         </Link>
+        <span className={'text-white/20 text-xs'}>·</span>
         <Link
-          className={'nav-footer-link'}
+          className={'text-sm text-white/50 hover:text-white transition-colors'}
           to={'/privacy-terms'}
         >
           {t('menu.privacy-terms')}
         </Link>
-        {!isSmallScreenSize && !isMobileApp && mobileAppUrl && (
-          <a
-            className={'nav-footer-link'}
-            href={mobileAppUrl}
-            rel={'noopener noreferrer'}
-            target={'_blank'}
-          >
-            {t('menu.mobile-app')}
-          </a>
+        {!isSmallScreen && !isMobileApp && mobileAppUrl && (
+          <>
+            <span className={'text-white/20 text-xs'}>·</span>
+            <a
+              className={'text-sm text-white/50 hover:text-white transition-colors'}
+              href={mobileAppUrl}
+              rel={'noopener noreferrer'}
+              target={'_blank'}
+            >
+              {t('menu.mobile-app')}
+            </a>
+          </>
         )}
       </div>
-    </div>
+    </footer>
   );
 }
-
-/**
- * Export `Footer`.
- */
 
 export default Footer;

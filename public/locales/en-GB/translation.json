@@ -11,6 +11,8 @@
     "product-list": "List ",
     "about": "About",
     "privacy-terms": "Privacy & Terms",
+    "view-mode-scroll": "Horizontal scroll",
+    "view-mode-grid": "Grid",
     "order": {
       "default": "Sort by",
       "asc": "Price: Low to high",
@@ -42,7 +44,18 @@
     "maintenance": "Please try again later. Available in:",
     "product-list-replace": "Are you sure you want to import this product list? This will replace your current product list.",
     "general.product-list-replace-title": "Import Product List:",
-    "error": "Error"
+    "error": "Error",
+    "comparison": {
+      "title": "Compare products",
+      "compare": "Compare",
+      "clear": "Clear",
+      "empty-slot": "+ product",
+      "best": "best",
+      "view-product": "View product",
+      "add": "Add to comparison",
+      "remove": "Remove from comparison",
+      "price-final": "Final price"
+    }
   },
   "pages": {
     "about": {
@@ -71,8 +84,15 @@
       },
       "options": {
         "export-csv": "Export CSV",
+        "export-xlsx": "Export XLSX",
+        "copy-whatsapp": "Copy list (WhatsApp/SMS)",
         "tooltip": "Options",
         "redorder": "Reorder"
+      },
+      "copy": {
+        "header": "🛒 Shopping list",
+        "catalog-total": "Total",
+        "grand-total": "Grand total"
       }
     }
   },

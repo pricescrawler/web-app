@@ -194,7 +194,7 @@ function ProductList() {
       catalogMap[key].push(prod);
     });
 
-    const lines = ['🛒 Lista de compras', ''];
+    const lines = [t('pages.product-list.copy.header'), ''];
 
     Object.entries(catalogMap).forEach(([catalogKey, items]) => {
       lines.push(`*${catalogKey}*`);
@@ -205,14 +205,14 @@ function ProductList() {
         catalogTotal += parseFloat(lineTotal);
         lines.push(`• ${item.product.name} x${item.quantity} — ${lineTotal}€`);
       });
-      lines.push(`_Total: ${catalogTotal.toFixed(2)}€_`);
+      lines.push(`_${t('pages.product-list.copy.catalog-total')}: ${catalogTotal.toFixed(2)}€_`);
       lines.push('');
     });
 
     const grandTotal = productList
       .reduce((acc, prod) => acc + utils.getFormattedPrice(prod.product) * prod.quantity, 0)
       .toFixed(2);
-    lines.push(`*Total geral: ${grandTotal}€*`);
+    lines.push(`*${t('pages.product-list.copy.grand-total')}: ${grandTotal}€*`);
 
     navigator.clipboard.writeText(lines.join('\n'));
   };
@@ -271,14 +271,14 @@ function ProductList() {
                     className={'mr-2'}
                     size={14}
                   />
-                  Copiar lista (WhatsApp/SMS)
+                  {t('pages.product-list.options.copy-whatsapp')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={exportToXLSX}>
                   <Download
                     className={'mr-2'}
                     size={14}
                   />
-                  Exportar XLSX
+                  {t('pages.product-list.options.export-xlsx')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

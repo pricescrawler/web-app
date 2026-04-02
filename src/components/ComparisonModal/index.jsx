@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ExternalLink } from 'lucide-react';
 import React from 'react';
 import * as utils from '@services/utils';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Helpers.
@@ -27,50 +28,52 @@ const tryParsePrice = (str) => {
   return isNaN(val) ? null : val;
 };
 
-const rows = [
-  {
-    label: 'Preço final',
-    getValue: (item) => item.productData.campaignPrice || item.productData.regularPrice || null,
-    getNumeric: (item) => parseFloat(utils.getFormattedPrice(item.productData)) || null,
-    isBest: true
-  },
-  {
-    label: 'Preço regular',
-    getValue: (item) => item.productData.regularPrice || null,
-    getNumeric: () => null,
-    isBest: false
-  },
-  {
-    label: 'Preço campanha',
-    getValue: (item) => item.productData.campaignPrice || null,
-    getNumeric: () => null,
-    isBest: false
-  },
-  {
-    label: 'Preço/Quantidade',
-    getValue: (item) => item.productData.pricePerQuantity || null,
-    getNumeric: (item) => tryParsePrice(item.productData.pricePerQuantity),
-    isBest: true
-  },
-  {
-    label: 'Marca',
-    getValue: (item) => item.productData.brand || null,
-    getNumeric: () => null,
-    isBest: false
-  },
-  {
-    label: 'Quantidade',
-    getValue: (item) => item.productData.quantity || null,
-    getNumeric: () => null,
-    isBest: false
-  }
-];
-
 /**
  * Function `ComparisonModal`.
  */
 
 function ComparisonModal({ items, open, onOpenChange }) {
+  const { t } = useTranslation();
+
+  const rows = [
+    {
+      label: t('general.comparison.price-final'),
+      getValue: (item) => item.productData.campaignPrice || item.productData.regularPrice || null,
+      getNumeric: (item) => parseFloat(utils.getFormattedPrice(item.productData)) || null,
+      isBest: true
+    },
+    {
+      label: t('data.product-fields.regular-price'),
+      getValue: (item) => item.productData.regularPrice || null,
+      getNumeric: () => null,
+      isBest: false
+    },
+    {
+      label: t('data.product-fields.campaign-price'),
+      getValue: (item) => item.productData.campaignPrice || null,
+      getNumeric: () => null,
+      isBest: false
+    },
+    {
+      label: t('data.product-fields.price-per-quantity'),
+      getValue: (item) => item.productData.pricePerQuantity || null,
+      getNumeric: (item) => tryParsePrice(item.productData.pricePerQuantity),
+      isBest: true
+    },
+    {
+      label: t('data.product-fields.brand'),
+      getValue: (item) => item.productData.brand || null,
+      getNumeric: () => null,
+      isBest: false
+    },
+    {
+      label: t('data.product-fields.quantity'),
+      getValue: (item) => item.productData.quantity || null,
+      getNumeric: () => null,
+      isBest: false
+    }
+  ];
+
   const bestIndexes = rows.map((row) => (row.isBest ? getBestIndex(items, row.getNumeric) : -1));
 
   const visibleRows = rows.filter((row) => items.some((item) => row.getValue(item)));
@@ -82,7 +85,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
     >
       <DialogContent className={'max-w-5xl w-[calc(100vw-2rem)] overflow-hidden p-4 sm:p-6'}>
         <DialogHeader>
-          <DialogTitle>Comparar produtos</DialogTitle>
+          <DialogTitle>{t('general.comparison.title')}</DialogTitle>
         </DialogHeader>
 
         {/* Mobile: stacked cards */}
@@ -92,7 +95,6 @@ function ComparisonModal({ items, open, onOpenChange }) {
               className={'border border-border rounded-lg overflow-hidden'}
               key={`${item.locale}.${item.catalog}.${item.productData.reference}`}
             >
-              {/* Product header */}
               <div className={'flex items-center gap-3 p-3 bg-muted/20 border-b border-border'}>
                 <img
                   alt={item.productData.name}
@@ -123,7 +125,6 @@ function ComparisonModal({ items, open, onOpenChange }) {
                 )}
               </div>
 
-              {/* Attributes */}
               <div className={'divide-y divide-border'}>
                 {visibleRows.map((row) => {
                   const value = row.getValue(item);
@@ -144,7 +145,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
                                 'mr-1 text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded-full'
                               }
                             >
-                              melhor
+                              {t('general.comparison.best')}
                             </span>
                           )}
                           {value}
@@ -204,7 +205,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
                           target={'_blank'}
                         >
                           <ExternalLink size={11} />
-                          Ver produto
+                          {t('general.comparison.view-product')}
                         </a>
                       )}
                     </div>
@@ -248,7 +249,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
                                     'mr-1 text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded-full font-medium'
                                   }
                                 >
-                                  melhor
+                                  {t('general.comparison.best')}
                                 </span>
                               )}
                               {value}

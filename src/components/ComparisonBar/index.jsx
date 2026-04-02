@@ -6,12 +6,15 @@
 import { X, GitCompareArrows, Trash2 } from 'lucide-react';
 import React from 'react';
 import * as utils from '@services/utils';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Function `ComparisonBar`.
  */
 
 function ComparisonBar({ items, onRemove, onClear, onCompare }) {
+  const { t } = useTranslation();
+
   if (items.length === 0) return null;
 
   return (
@@ -66,7 +69,7 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
               }
               key={i}
             >
-              + produto
+              {t('general.comparison.empty-slot')}
             </div>
           ))}
         </div>
@@ -80,7 +83,7 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
             onClick={onClear}
           >
             <Trash2 size={13} />
-            <span>Limpar</span>
+            <span>{t('general.comparison.clear')}</span>
           </button>
           <button
             className={`flex items-center gap-1.5 text-sm font-medium py-2 px-4 rounded-md transition-colors ${
@@ -92,7 +95,7 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
             onClick={onCompare}
           >
             <GitCompareArrows size={15} />
-            Comparar ({items.length})
+            {t('general.comparison.compare')} ({items.length})
           </button>
         </div>
       </div>

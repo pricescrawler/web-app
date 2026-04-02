@@ -148,14 +148,14 @@ function ProductSearch() {
                     <button
                       className={`p-1.5 transition-colors ${viewMode === 'scroll' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'}`}
                       onClick={() => handleViewModeChange('scroll')}
-                      title={'Scroll horizontal'}
+                      title={t('menu.view-mode-scroll')}
                     >
                       <GalleryHorizontal size={15} />
                     </button>
                     <button
                       className={`p-1.5 transition-colors border-l border-border ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'}`}
                       onClick={() => handleViewModeChange('grid')}
-                      title={'Grelha'}
+                      title={t('menu.view-mode-grid')}
                     >
                       <LayoutGrid size={15} />
                     </button>

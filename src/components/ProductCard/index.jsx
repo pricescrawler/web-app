@@ -90,7 +90,7 @@ function ProductCard({
               : 'bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground border border-border'
           }`}
           onClick={onToggleCompare}
-          title={isInComparison ? 'Remover da comparação' : 'Adicionar à comparação'}
+          title={isInComparison ? t('general.comparison.remove') : t('general.comparison.add')}
         >
           <GitCompareArrows size={12} />
         </button>

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 const Maintenance = () => {
@@ -28,12 +27,9 @@ const Maintenance = () => {
   }, [getTimeRemaining]);
 
   return (
-    <Stack
-      alignItems={'center'}
-      spacing={2}
-    >
-      <Typography variant={'h4'}>{t('title.maintenance')}</Typography>
-      <Typography variant={'body1'}>{t('general.maintenance')}</Typography>
+    <div className={'flex flex-col items-center gap-4'}>
+      <h4 className={'text-2xl font-bold'}>{t('title.maintenance')}</h4>
+      <p>{t('general.maintenance')}</p>
 
       <p>
         {timeRemaining.days > 0 && (
@@ -49,7 +45,7 @@ const Maintenance = () => {
           &nbsp; hours
         </span>
       </p>
-    </Stack>
+    </div>
   );
 };
 

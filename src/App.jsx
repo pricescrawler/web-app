@@ -2,45 +2,15 @@
  * Module dependencies.
  */
 
-import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import About from '@pages/About';
-import { CssBaseline } from '@mui/material';
 import Footer from '@components/Footer';
 import NavigationBar from '@components/NavigationBar';
 import PrivacyTerms from '@pages/PrivacyTerms';
 import ProductDetails from '@pages/ProductDetails';
 import ProductList from '@pages/ProductList';
 import ProductSearch from '@pages/ProductSearch';
-
-/**
- * `Theme`.
- */
-
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#343a40'
-    },
-    secondary: {
-      main: '#343a40'
-    }
-  }
-});
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#fff'
-    },
-    secondary: {
-      main: '#fff'
-    }
-  }
-});
 
 /**
  * `App`.
@@ -55,10 +25,9 @@ function App() {
   });
 
   return (
-    <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
-      <Router>
-        <NavigationBar theme={{ darkMode, setDarkMode }} />
+    <Router>
+      <NavigationBar theme={{ darkMode, setDarkMode }} />
+      <div className={'pt-14'}>
         <Routes>
           <Route
             element={<ProductSearch />}
@@ -81,9 +50,9 @@ function App() {
             path={'/privacy-terms'}
           />
         </Routes>
-        <Footer />
-      </Router>
-    </MuiThemeProvider>
+      </div>
+      <Footer />
+    </Router>
   );
 }
 

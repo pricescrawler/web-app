@@ -1,7 +1,10 @@
-import './index.scss';
-import { Button, FormControlLabel, Switch } from '@mui/material';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { ExternalLink, FlaskConical, Info, Mail, Smartphone, Star } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { QRCode } from 'antd';
+import { QRCodeSVG } from 'qrcode.react';
 import packageJson from '../../../package.json';
 import { useTranslation } from 'react-i18next';
 
@@ -15,15 +18,10 @@ function About() {
   const [experimentalEnabled, setExperimentalEnabled] = useState(false);
 
   useEffect(() => {
-    const experimentalEnabledLS = localStorage.getItem('experimentalEnabled');
+    const val = localStorage.getItem('experimentalEnabled');
 
-    if (experimentalEnabledLS !== null) {
-      setExperimentalEnabled(JSON.parse(experimentalEnabledLS));
-    }
-
-    if (isMobileApp) {
-      setExperimentalEnabled(false);
-    }
+    if (val !== null) setExperimentalEnabled(JSON.parse(val));
+    if (isMobileApp) setExperimentalEnabled(false);
   }, [isMobileApp]);
 
   const handleExperimentalToggle = () => {
@@ -34,87 +32,129 @@ function About() {
   };
 
   return (
-    <div className={'about'}>
-      <div className={'about__container'}>
-        <div className={'about__content'}>
-          <h2 className={'about__heading h2'}>{t('menu.about')}</h2>
-          <p className={'about__paragraph'}>{t('pages.about.text1')}</p>
-          <p className={'about__paragraph'}>{t('pages.about.text2')}</p>
-          <p className={'about__paragraph'}>{t('pages.about.text3')}</p>
-          <br />
-          {!isMobileApp && (
-            <>
-              <p>
-                <strong>{t('pages.about.experimental-features')}:</strong>
-                &nbsp; &nbsp;
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={experimentalEnabled}
-                      color={'primary'}
-                      onChange={handleExperimentalToggle}
-                    />
-                  }
-                />
-              </p>
-              <br />
-            </>
-          )}
-          <p>
-            <strong>{t('pages.about.version')}:</strong>
-            &nbsp;
-            {packageJson.version}
-          </p>
-          <br />
-          <p>
-            <strong>{t('pages.about.contact')}:</strong>
-            &nbsp;
+    <div className={'max-w-2xl mx-auto px-4 py-10'}>
+      <div className={'text-center mb-8'}>
+        <div
+          className={'inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-muted mb-4'}
+        >
+          <Info
+            className={'text-muted-foreground'}
+            size={24}
+          />
+        </div>
+        <h2 className={'text-2xl font-bold tracking-tight'}>{t('menu.about')}</h2>
+      </div>
+
+      <div className={'flex flex-col gap-4'}>
+        {/* Description */}
+        <Card>
+          <CardContent
+            className={'p-5 flex flex-col gap-2 text-sm leading-relaxed text-muted-foreground'}
+          >
+            <p>{t('pages.about.text1')}</p>
+            <p>{t('pages.about.text2')}</p>
+            <p className={'font-semibold text-foreground'}>{t('pages.about.text3')}</p>
+          </CardContent>
+        </Card>
+
+        {/* Version */}
+        <Card>
+          <CardContent className={'p-5 flex items-center justify-between'}>
+            <span className={'text-sm text-muted-foreground'}>{t('pages.about.version')}</span>
+            <span className={'font-mono text-sm font-semibold bg-muted px-2 py-0.5 rounded'}>
+              v{packageJson.version}
+            </span>
+          </CardContent>
+        </Card>
+
+        {/* Contact */}
+        <Card>
+          <CardContent className={'p-5 flex items-center justify-between'}>
+            <div className={'flex items-center gap-2 text-sm'}>
+              <Mail
+                className={'text-muted-foreground'}
+                size={16}
+              />
+              <span className={'text-muted-foreground'}>{t('pages.about.contact')}</span>
+            </div>
             <a
-              className={'u-email'}
+              className={'text-sm font-medium hover:underline'}
               href={email}
             >
               E-mail
             </a>
-          </p>
-          <br />
-          {mobileAppUrl ? (
-            <p>
-              <strong>{t('menu.mobile-app')}:</strong>
-              <br />
-              <a href={mobileAppUrl}>Google Play</a>
-              <center>
-                <QRCode
-                  bgColor={'#FFFFFF'}
-                  errorLevel={'H'}
-                  icon={'/logo.png'}
-                  value={mobileAppUrl}
+          </CardContent>
+        </Card>
+
+        {/* Experimental features */}
+        {!isMobileApp && (
+          <Card>
+            <CardContent className={'p-5 flex items-center justify-between'}>
+              <div className={'flex items-center gap-2'}>
+                <FlaskConical
+                  className={'text-muted-foreground'}
+                  size={16}
                 />
-              </center>
-            </p>
-          ) : (
-            <></>
-          )}
-          {donateUrl ? (
-            <>
-              <br />
-              <a
-                href={donateUrl}
-                rel={'noopener noreferrer'}
-                target={'_blank'}
-              >
-                <Button
-                  color={'warning'}
-                  style={{ textTransform: 'capitalize' }}
-                  variant={'contained'}
+                <Label
+                  className={'text-sm cursor-pointer'}
+                  htmlFor={'experimental-toggle'}
                 >
-                  {t('general.donate')}
-                </Button>
+                  {t('pages.about.experimental-features')}
+                </Label>
+              </div>
+              <Switch
+                checked={experimentalEnabled}
+                id={'experimental-toggle'}
+                onCheckedChange={handleExperimentalToggle}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Mobile app */}
+        {mobileAppUrl && (
+          <Card>
+            <CardContent className={'p-5 flex flex-col items-center gap-4'}>
+              <div className={'flex items-center gap-2 self-start'}>
+                <Smartphone
+                  className={'text-muted-foreground'}
+                  size={16}
+                />
+                <span className={'text-sm font-medium'}>{t('menu.mobile-app')}</span>
+              </div>
+              <a
+                className={'text-sm font-medium hover:underline flex items-center gap-1'}
+                href={mobileAppUrl}
+              >
+                Google Play
+                <ExternalLink size={12} />
               </a>
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
+              <QRCodeSVG
+                bgColor={'transparent'}
+                imageSettings={{ excavate: true, height: 24, src: '/logo.png', width: 24 }}
+                level={'H'}
+                size={140}
+                value={mobileAppUrl}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Donate */}
+        {donateUrl && (
+          <div className={'text-center'}>
+            <a
+              href={donateUrl}
+              rel={'noopener noreferrer'}
+              target={'_blank'}
+            >
+              <Button className={'gap-2'}>
+                <Star size={14} />
+                {t('general.donate')}
+              </Button>
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

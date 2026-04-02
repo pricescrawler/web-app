@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+import './index.css';
 import './style.scss';
 import '@services/i18n';
 import React, { Suspense } from 'react';

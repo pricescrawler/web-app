@@ -66,7 +66,7 @@ function ProductCard({
   return (
     <Card
       className={
-        'group relative flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 border border-border/60 bg-card'
+        'group relative flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 border border-border/60 bg-card'
       }
     >
       {/* Campaign badge */}
@@ -137,11 +137,9 @@ function ProductCard({
         </div>
 
         {/* Price per quantity */}
-        {productData.pricePerQuantity && (
-          <p className={'text-xs text-muted-foreground'}>
-            {truncate(productData.pricePerQuantity)}
-          </p>
-        )}
+        <p className={'text-xs text-muted-foreground min-h-[1rem]'}>
+          {productData.pricePerQuantity ? truncate(productData.pricePerQuantity) : ''}
+        </p>
 
         {/* Meta info */}
         <div className={'mt-auto pt-2 border-t border-border/50 flex flex-col gap-1'}>

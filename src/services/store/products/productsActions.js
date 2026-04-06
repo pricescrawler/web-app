@@ -4,6 +4,7 @@
 
 import * as actionTypes from './productsActionTypes';
 import api from '@services/api';
+import { toast } from 'sonner';
 
 /**
  * Get Product Start.
@@ -138,7 +139,10 @@ export const search = (searchParam) => {
 
         dispatch(getSearchProducts(reorderedResponse, searchParam));
       })
-      .catch((error) => dispatch(getProductsFail(error)));
+      .catch((error) => {
+        toast.error(`Erro ao pesquisar produtos: ${error?.message ?? error}`);
+        dispatch(getProductsFail(error));
+      });
   };
 };
 
@@ -153,7 +157,10 @@ export const getUpdatedProductList = (searchParam) => (dispatch) => {
     .then((response) => {
       dispatch(updateProductList(response.data));
     })
-    .catch((error) => dispatch(getProductsFail(error)));
+    .catch((error) => {
+      toast.error(`Erro ao atualizar lista: ${error?.message ?? error}`);
+      dispatch(getProductsFail(error));
+    });
 };
 
 /**
@@ -170,7 +177,10 @@ export const getProduct = (searchParam) => {
       .then((response) => {
         dispatch(getProductSuccess(response.data));
       })
-      .catch((error) => dispatch(getProductsFail(error)));
+      .catch((error) => {
+        toast.error(`Erro ao carregar produto: ${error?.message ?? error}`);
+        dispatch(getProductsFail(error));
+      });
   };
 };
 
@@ -181,7 +191,10 @@ export const saveProductList = (searchParam) => (dispatch) => {
     .then((response) => {
       dispatch(uploadProductList(response));
     })
-    .catch((error) => dispatch(getProductsFail(error)));
+    .catch((error) => {
+      toast.error(`Erro ao guardar lista: ${error?.message ?? error}`);
+      dispatch(getProductsFail(error));
+    });
 };
 
 export const retrieveProductList = (searchParam) => (dispatch) => {
@@ -191,5 +204,8 @@ export const retrieveProductList = (searchParam) => (dispatch) => {
     .then((response) => {
       dispatch(updateProductList(response.data));
     })
-    .catch((error) => dispatch(getProductsFail(error)));
+    .catch((error) => {
+      toast.error(`Erro ao recuperar lista: ${error?.message ?? error}`);
+      dispatch(getProductsFail(error));
+    });
 };

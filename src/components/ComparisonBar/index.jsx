@@ -38,9 +38,7 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
                 className={'w-7 h-7 sm:w-8 sm:h-8 object-contain flex-shrink-0'}
                 referrerPolicy={'no-referrer'}
                 src={item.productData.imageUrl || '/logo.png'}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
+                onError={utils.handleImageError}
               />
               <div className={'flex flex-col min-w-0 hidden sm:flex'}>
                 <span className={'text-xs font-medium truncate max-w-[100px]'}>

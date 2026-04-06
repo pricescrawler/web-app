@@ -5,6 +5,8 @@
 import React, { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import About from '@pages/About';
+import ErrorBoundary from '@components/ErrorBoundary';
+import Favorites from '@pages/Favorites';
 import Footer from '@components/Footer';
 import NavigationBar from '@components/NavigationBar';
 import PrivacyTerms from '@pages/PrivacyTerms';
@@ -18,38 +20,47 @@ import ProductSearch from '@pages/ProductSearch';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
-    const json = localStorage.getItem('site-dark-mode');
-    const savedDarkMode = JSON.parse(json);
+    try {
+      const json = localStorage.getItem('site-dark-mode');
 
-    return savedDarkMode ?? false;
+      return JSON.parse(json) ?? false;
+    } catch {
+      return false;
+    }
   });
 
   return (
     <Router>
       <NavigationBar theme={{ darkMode, setDarkMode }} />
       <div className={'pt-14'}>
-        <Routes>
-          <Route
-            element={<ProductSearch />}
-            path={'/'}
-          />
-          <Route
-            element={<ProductList />}
-            path={'/product/list'}
-          />
-          <Route
-            element={<ProductDetails />}
-            path={'/product/:locale/:catalog/:reference'}
-          />
-          <Route
-            element={<About />}
-            path={'/about'}
-          />
-          <Route
-            element={<PrivacyTerms />}
-            path={'/privacy-terms'}
-          />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route
+              element={<ProductSearch />}
+              path={'/'}
+            />
+            <Route
+              element={<ProductList />}
+              path={'/product/list'}
+            />
+            <Route
+              element={<ProductDetails />}
+              path={'/product/:locale/:catalog/:reference'}
+            />
+            <Route
+              element={<Favorites />}
+              path={'/favorites'}
+            />
+            <Route
+              element={<About />}
+              path={'/about'}
+            />
+            <Route
+              element={<PrivacyTerms />}
+              path={'/privacy-terms'}
+            />
+          </Routes>
+        </ErrorBoundary>
       </div>
       <Footer />
     </Router>

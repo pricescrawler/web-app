@@ -4,6 +4,7 @@
 
 import * as actionTypes from './productsActionTypes';
 import { combineReducers } from '@reduxjs/toolkit';
+import { favorites } from '../favorites/favoritesReducer';
 import initialState from './productsInitialState';
 
 /**
@@ -53,8 +54,6 @@ export const productsData = (state = initialState.products, action = {}) => {
     }
 
     case actionTypes.GET_PRODUCTS_FAIL: {
-      alert(`Error: ${action.payload}`);
-
       return {};
     }
 
@@ -74,8 +73,6 @@ export const product = (state = initialState.product, action = {}) => {
     }
 
     case actionTypes.GET_PRODUCT_FAIL: {
-      alert(`Error: ${action.payload}`);
-
       return {};
     }
 
@@ -138,9 +135,13 @@ export const productList = (state = initialState.productList, action = {}) => {
 
     default: {
       if (state.length === 0) {
-        const storedList = JSON.parse(localStorage.getItem(localStorageproductsList)) || [];
+        try {
+          const storedList = JSON.parse(localStorage.getItem(localStorageproductsList)) || [];
 
-        return storedList;
+          return storedList;
+        } catch {
+          return [];
+        }
       }
 
       return state;
@@ -183,6 +184,7 @@ export const searchQuery = (state = initialState.searchQuery, action = {}) => {
  */
 
 export default combineReducers({
+  favorites,
   isLoadingData,
   product,
   productList,

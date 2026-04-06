@@ -43,6 +43,7 @@ import {
   Minus,
   Plus,
   RefreshCw,
+  ShoppingCart,
   Upload
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -157,6 +158,85 @@ function ProductList() {
     }));
   };
 
+  const exportToPDF = () => {
+    if (!productList?.length) return;
+
+    const title = t('title.products-list');
+    const totalPrice = renderTotalPrice();
+    const catalogTotals = renderTotalPriceByCatalog();
+
+    const rows = productList
+      .map(({ catalog, locale, product, quantity }) => {
+        const price = product.campaignPrice ?? product.regularPrice ?? '';
+        const lineTotal = (parseFloat(utils.getFormattedPrice(product)) * quantity).toFixed(2);
+
+        return `
+          <tr>
+            <td>${locale}.${catalog}</td>
+            <td>${product.name ?? ''}</td>
+            <td style="text-align:center">${price}</td>
+            <td style="text-align:center">${quantity}</td>
+            <td style="text-align:right;font-weight:600">${lineTotal}€</td>
+          </tr>`;
+      })
+      .join('');
+
+    const catalogTotalRows = catalogTotals
+      .map(
+        ({ catalog, total }) =>
+          `<tr><td colspan="4" style="text-align:right;color:#666">${catalog}</td><td style="text-align:right;font-weight:600">${total}€</td></tr>`
+      )
+      .join('');
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>${title}</title>
+  <style>
+    body { font-family: sans-serif; font-size: 12px; padding: 24px; color: #111; }
+    h1 { font-size: 18px; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    th { background: #f4f4f4; text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd; font-size: 11px; }
+    td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+    .total-row td { border-top: 2px solid #ddd; font-size: 13px; font-weight: 700; }
+    @media print { body { padding: 0; } }
+  </style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>${t('data.product-fields.catalog')}</th>
+        <th>${t('data.product-fields.name')}</th>
+        <th style="text-align:center">${t('data.product-fields.regular-price')}</th>
+        <th style="text-align:center">${t('data.product-fields.quantity')}</th>
+        <th style="text-align:right">${t('pages.product-list.table.pdf-total')}</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows}
+      ${catalogTotalRows}
+      <tr class="total-row">
+        <td colspan="4" style="text-align:right">${t('general.total-price')}</td>
+        <td style="text-align:right">${totalPrice}€</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>`;
+
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => {
+      win.print();
+      win.close();
+    }, 300);
+  };
+
   const exportToXLSX = () => {
     if (!productList) return;
     const headers = [
@@ -244,45 +324,54 @@ function ProductList() {
       ) : (
         <div className={'flex flex-col gap-6'}>
           {/* Toolbar */}
-          <div className={'flex items-center justify-end gap-2'}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size={'sm'}
-                  variant={'outline'}
-                >
-                  {t('pages.product-list.options.tooltip')}
-                  <ChevronDown
-                    className={'ml-1.5'}
-                    size={14}
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align={'end'}>
-                <DropdownMenuItem onClick={() => setShowReorderControl(!showReorderControl)}>
-                  <ArrowUp
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.redorder')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={copyListAsText}>
-                  <ClipboardCopy
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.copy-whatsapp')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={exportToXLSX}>
-                  <Download
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.export-xlsx')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          {productList?.length > 0 && (
+            <div className={'flex items-center justify-end gap-2'}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size={'sm'}
+                    variant={'outline'}
+                  >
+                    {t('pages.product-list.options.tooltip')}
+                    <ChevronDown
+                      className={'ml-1.5'}
+                      size={14}
+                    />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align={'end'}>
+                  <DropdownMenuItem onClick={() => setShowReorderControl(!showReorderControl)}>
+                    <ArrowUp
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.redorder')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={copyListAsText}>
+                    <ClipboardCopy
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.copy-whatsapp')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportToXLSX}>
+                    <Download
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.export-xlsx')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportToPDF}>
+                    <Download
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.export-pdf')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
 
           {/* Table */}
           {productList?.length > 0 ? (
@@ -311,7 +400,9 @@ function ProductList() {
                         <TableHead className={'text-center w-[80px] sm:w-[100px]'}>
                           {t('data.product-fields.remove-add')}
                         </TableHead>
-                        <TableHead className={'text-center w-[60px] sm:w-[80px]'}>Links</TableHead>
+                        <TableHead className={'text-center w-[60px] sm:w-[80px]'}>
+                          {t('pages.product-list.table.links')}
+                        </TableHead>
                         {showReorderControl && (
                           <TableHead className={'text-center w-[80px]'}>
                             {t('data.product-fields.move')}
@@ -427,9 +518,19 @@ function ProductList() {
               </CardContent>
             </Card>
           ) : (
-            <div className={'text-center py-16 text-muted-foreground'}>
-              <p className={'text-lg font-medium mb-1'}>{t('title.products-list')}</p>
-              <p className={'text-sm'}>Adiciona produtos através da pesquisa.</p>
+            <div
+              className={'flex flex-col items-center justify-center min-h-[40vh] gap-3 text-center'}
+            >
+              <ShoppingCart
+                className={'text-muted-foreground/30'}
+                size={48}
+              />
+              <p className={'text-muted-foreground font-medium'}>
+                {t('pages.product-list.empty.title')}
+              </p>
+              <p className={'text-muted-foreground/70 text-sm'}>
+                {t('pages.product-list.empty.subtitle')}
+              </p>
             </div>
           )}
 

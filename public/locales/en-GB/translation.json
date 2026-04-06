@@ -9,6 +9,7 @@
   "menu": {
     "home": "Search",
     "product-list": "List ",
+    "favorites": "Favourites",
     "about": "About",
     "privacy-terms": "Privacy & Terms",
     "view-mode-scroll": "Horizontal scroll",
@@ -45,6 +46,10 @@
     "product-list-replace": "Are you sure you want to import this product list? This will replace your current product list.",
     "general.product-list-replace-title": "Import Product List:",
     "error": "Error",
+    "favorites": {
+      "add": "Add to favourites",
+      "remove": "Remove from favourites"
+    },
     "comparison": {
       "title": "Compare products",
       "compare": "Compare",
@@ -72,11 +77,39 @@
       "delete-local-data-text": "This will delete all the data stored locally on your device, including product lists. This action cannot be undone.",
       "delete-local-data-button": "Delete Local Data"
     },
+    "favorites": {
+      "title": "Favourites",
+      "empty": "No favourite products yet.",
+      "empty-sub": "Search for products and save your favourites with the ♥ icon",
+      "options": {
+        "tooltip": "Options",
+        "clear-all": "Clear all favourites"
+      }
+    },
     "search": {
       "input-error": "Catalogues or search query missing.",
       "catalog-error": "Error while loading catalogues.",
       "select-all": "Select All",
-      "select-catalog": "Select catalogues"
+      "select-catalog": "Select catalogues",
+      "result": "result",
+      "result_plural": "results",
+      "store": "store",
+      "store_plural": "stores",
+      "empty": {
+        "title": "No products found",
+        "subtitle": "Try adjusting the filters or search for another term."
+      }
+    },
+    "filters": {
+      "title": "Filters",
+      "brand": "Brand",
+      "price-range": "Price range",
+      "price-min": "Min.",
+      "price-max": "Max.",
+      "clear": "Clear filters",
+      "active": "{{count}} active filter",
+      "active_plural": "{{count}} active filters",
+      "no-brands": "No brands available"
     },
     "product-list": {
       "csv": {
@@ -85,6 +118,7 @@
       "options": {
         "export-csv": "Export CSV",
         "export-xlsx": "Export XLSX",
+        "export-pdf": "Export PDF",
         "copy-whatsapp": "Copy list (WhatsApp/SMS)",
         "tooltip": "Options",
         "redorder": "Reorder"
@@ -93,7 +127,20 @@
         "header": "🛒 Shopping list",
         "catalog-total": "Total",
         "grand-total": "Grand total"
+      },
+      "table": {
+        "links": "Links",
+        "pdf-total": "Total"
+      },
+      "empty": {
+        "title": "Your product list is empty",
+        "subtitle": "Add products through search to start tracking prices."
       }
+    }
+  },
+  "components": {
+    "search-container": {
+      "loading-stores": "Loading stores…"
     }
   },
   "data": {

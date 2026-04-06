@@ -40,7 +40,7 @@ function Favorites() {
                 size={'sm'}
                 variant={'outline'}
               >
-                Opções
+                {t('pages.favorites.options.tooltip')}
                 <ChevronDown
                   className={'ml-1.5'}
                   size={14}
@@ -55,7 +55,7 @@ function Favorites() {
                   className={'mr-2'}
                   size={14}
                 />
-                Limpar todos os favoritos
+                {t('pages.favorites.options.clear-all')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

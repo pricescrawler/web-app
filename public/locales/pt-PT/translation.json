@@ -80,13 +80,25 @@
     "favorites": {
       "title": "Favoritos",
       "empty": "Ainda não tens produtos favoritos.",
-      "empty-sub": "Pesquisa produtos e guarda os teus favoritos com o ícone ♥"
+      "empty-sub": "Pesquisa produtos e guarda os teus favoritos com o ícone ♥",
+      "options": {
+        "tooltip": "Opções",
+        "clear-all": "Limpar todos os favoritos"
+      }
     },
     "search": {
       "input-error": "Catálogos or termo de pesquisa em falta.",
       "catalog-error": "Erro ao carregar os catálogos.",
       "select-all": "Selecionar todos",
-      "select-catalog": "Selecionar catálogos"
+      "select-catalog": "Selecionar catálogos",
+      "result": "resultado",
+      "result_plural": "resultados",
+      "store": "loja",
+      "store_plural": "lojas",
+      "empty": {
+        "title": "Nenhum produto encontrado",
+        "subtitle": "Tente ajustar os filtros ou pesquisar por outro termo."
+      }
     },
     "filters": {
       "title": "Filtros",
@@ -115,7 +127,20 @@
         "header": "🛒 Lista de compras",
         "catalog-total": "Total",
         "grand-total": "Total geral"
+      },
+      "table": {
+        "links": "Links",
+        "pdf-total": "Total"
+      },
+      "empty": {
+        "title": "A sua lista de produtos está vazia",
+        "subtitle": "Adicione produtos através da pesquisa para começar a acompanhar preços."
       }
+    }
+  },
+  "components": {
+    "search-container": {
+      "loading-stores": "A carregar lojas…"
     }
   },
   "data": {

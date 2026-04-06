@@ -182,7 +182,9 @@ const SearchContainer = () => {
           >
             <div className={'flex flex-wrap gap-1.5 flex-1'}>
               {isLoadingCatalogs ? (
-                <span className={'text-muted-foreground text-sm'}>A carregar lojas…</span>
+                <span className={'text-muted-foreground text-sm'}>
+                  {t('components.search-container.loading-stores')}
+                </span>
               ) : selectedCatalogs.length === 0 ? (
                 <span className={'text-muted-foreground text-sm'}>
                   {t('pages.search.select-catalog')}

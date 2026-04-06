@@ -188,9 +188,12 @@ function ProductSearch() {
               <div className={'flex items-center justify-between mb-4 flex-wrap gap-3'}>
                 <p className={'text-sm text-muted-foreground'}>
                   <span className={'font-semibold text-foreground'}>{totalResults}</span>{' '}
-                  {totalResults === 1 ? 'resultado' : 'resultados'} em{' '}
+                  {totalResults === 1 ? t('pages.search.result') : t('pages.search.result_plural')}{' '}
+                  em{' '}
                   <span className={'font-semibold text-foreground'}>{filteredProducts.length}</span>{' '}
-                  {filteredProducts.length === 1 ? 'loja' : 'lojas'}
+                  {filteredProducts.length === 1
+                    ? t('pages.search.store')
+                    : t('pages.search.store_plural')}
                 </p>
                 <div className={'flex items-center gap-3'}>
                   {/* Filters toggle */}
@@ -490,9 +493,9 @@ function ProductSearch() {
                 className={'text-muted-foreground/30'}
                 size={48}
               />
-              <p className={'text-muted-foreground font-medium'}>Nenhum produto encontrado</p>
+              <p className={'text-muted-foreground font-medium'}>{t('pages.search.empty.title')}</p>
               <p className={'text-muted-foreground/70 text-sm'}>
-                Tente ajustar os filtros ou pesquisar por outro termo.
+                {t('pages.search.empty.subtitle')}
               </p>
             </div>
           )}

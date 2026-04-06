@@ -212,7 +212,7 @@ function ProductList() {
         <th>${t('data.product-fields.name')}</th>
         <th style="text-align:center">${t('data.product-fields.regular-price')}</th>
         <th style="text-align:center">${t('data.product-fields.quantity')}</th>
-        <th style="text-align:right">Total</th>
+        <th style="text-align:right">${t('pages.product-list.table.pdf-total')}</th>
       </tr>
     </thead>
     <tbody>
@@ -400,7 +400,9 @@ function ProductList() {
                         <TableHead className={'text-center w-[80px] sm:w-[100px]'}>
                           {t('data.product-fields.remove-add')}
                         </TableHead>
-                        <TableHead className={'text-center w-[60px] sm:w-[80px]'}>Links</TableHead>
+                        <TableHead className={'text-center w-[60px] sm:w-[80px]'}>
+                          {t('pages.product-list.table.links')}
+                        </TableHead>
                         {showReorderControl && (
                           <TableHead className={'text-center w-[80px]'}>
                             {t('data.product-fields.move')}
@@ -524,10 +526,10 @@ function ProductList() {
                 size={48}
               />
               <p className={'text-muted-foreground font-medium'}>
-                A sua lista de produtos está vazia
+                {t('pages.product-list.empty.title')}
               </p>
               <p className={'text-muted-foreground/70 text-sm'}>
-                Adicione produtos através da pesquisa para começar a acompanhar preços.
+                {t('pages.product-list.empty.subtitle')}
               </p>
             </div>
           )}

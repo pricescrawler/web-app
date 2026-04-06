@@ -17,9 +17,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArrowUpDown, GalleryHorizontal, LayoutGrid } from 'lucide-react';
+import { ArrowUpDown, GalleryHorizontal, LayoutGrid, SlidersHorizontal, X } from 'lucide-react';
 import ComparisonBar from '@components/ComparisonBar';
 import ComparisonModal from '@components/ComparisonModal';
 import Loader from '@components/Loader';
@@ -42,49 +42,92 @@ function ProductSearch() {
   );
   const [comparisonItems, setComparisonItems] = useState([]);
   const [comparisonOpen, setComparisonOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [priceRange, setPriceRange] = useState({ max: '', min: '' });
 
   const isLoadingData = useSelector((state) => state.isLoadingData);
   const products = useSelector((state) => state.products);
-  const currentProducts = Object.assign([], products);
+  const currentProducts = useMemo(() => [...products], [products]);
 
-  const handleSortChanges = (value) => {
-    setOrderBy(value);
+  const availableBrands = useMemo(() => {
+    const brands = new Set();
 
-    let sortingFunction;
+    currentProducts.forEach((catalog) => {
+      catalog.products.forEach((product) => {
+        if (product.brand) brands.add(product.brand);
+      });
+    });
 
-    switch (value) {
-      case t('menu.order.asc'):
-        sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
-        break;
-      case t('menu.order.desc'):
-        sortingFunction = (a1, b1) => utils.getFormattedPrice(b1) - utils.getFormattedPrice(a1);
-        break;
-      case t('menu.order.asc-price-per-quantity'):
-        sortingFunction = (a1, b1) =>
-          utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
-        break;
-      case t('menu.order.desc-price-per-quantity'):
-        sortingFunction = (a1, b1) =>
-          utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity);
-        break;
-      default:
-        sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
-    }
+    return [...brands].sort();
+  }, [currentProducts]);
 
-    const updatedProducts = currentProducts.map((element) => ({
-      ...element,
-      products: [...element.products].sort(sortingFunction)
-    }));
+  const activeFilterCount =
+    selectedBrands.length + (priceRange.min !== '' ? 1 : 0) + (priceRange.max !== '' ? 1 : 0);
 
-    dispatch(productsActions.getProductsSuccess(updatedProducts));
-  };
+  const filteredProducts = useMemo(() => {
+    if (activeFilterCount === 0) return currentProducts;
 
-  const handleViewModeChange = (mode) => {
+    return currentProducts
+      .map((catalog) => ({
+        ...catalog,
+        products: catalog.products.filter((product) => {
+          if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) return false;
+          const price = parseFloat(utils.getFormattedPrice(product));
+          if (priceRange.min !== '' && price < parseFloat(priceRange.min)) return false;
+          if (priceRange.max !== '' && price > parseFloat(priceRange.max)) return false;
+          return true;
+        })
+      }))
+      .filter((catalog) => catalog.products.length > 0);
+  }, [activeFilterCount, currentProducts, priceRange, selectedBrands]);
+
+  const clearFilters = useCallback(() => {
+    setSelectedBrands([]);
+    setPriceRange({ max: '', min: '' });
+  }, []);
+
+  const handleSortChanges = useCallback(
+    (value) => {
+      setOrderBy(value);
+
+      let sortingFunction;
+
+      switch (value) {
+        case t('menu.order.asc'):
+          sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
+          break;
+        case t('menu.order.desc'):
+          sortingFunction = (a1, b1) => utils.getFormattedPrice(b1) - utils.getFormattedPrice(a1);
+          break;
+        case t('menu.order.asc-price-per-quantity'):
+          sortingFunction = (a1, b1) =>
+            utils.convertToFloat(a1.pricePerQuantity) - utils.convertToFloat(b1.pricePerQuantity);
+          break;
+        case t('menu.order.desc-price-per-quantity'):
+          sortingFunction = (a1, b1) =>
+            utils.convertToFloat(b1.pricePerQuantity) - utils.convertToFloat(a1.pricePerQuantity);
+          break;
+        default:
+          sortingFunction = (a1, b1) => utils.getFormattedPrice(a1) - utils.getFormattedPrice(b1);
+      }
+
+      const updatedProducts = currentProducts.map((element) => ({
+        ...element,
+        products: [...element.products].sort(sortingFunction)
+      }));
+
+      dispatch(productsActions.getProductsSuccess(updatedProducts));
+    },
+    [currentProducts, dispatch, t]
+  );
+
+  const handleViewModeChange = useCallback((mode) => {
     setViewMode(mode);
     localStorage.setItem('productSearchViewMode', mode);
-  };
+  }, []);
 
-  const toggleComparison = (item) => {
+  const toggleComparison = useCallback((item) => {
     const key = `${item.locale}.${item.catalog}.${item.productData.reference}`;
     setComparisonItems((prev) => {
       const exists = prev.find(
@@ -95,14 +138,17 @@ function ProductSearch() {
       if (prev.length >= 4) return prev;
       return [...prev, item];
     });
-  };
+  }, []);
 
-  const isInComparison = (catalog, locale, reference) =>
-    comparisonItems.some(
-      (i) => i.catalog === catalog && i.locale === locale && i.productData.reference === reference
-    );
+  const isInComparison = useCallback(
+    (catalog, locale, reference) =>
+      comparisonItems.some(
+        (i) => i.catalog === catalog && i.locale === locale && i.productData.reference === reference
+      ),
+    [comparisonItems]
+  );
 
-  const totalResults = currentProducts.reduce((acc, cat) => acc + cat.products.length, 0);
+  const totalResults = filteredProducts.reduce((acc, cat) => acc + cat.products.length, 0);
 
   return (
     <div>
@@ -137,10 +183,31 @@ function ProductSearch() {
                 <p className={'text-sm text-muted-foreground'}>
                   <span className={'font-semibold text-foreground'}>{totalResults}</span>{' '}
                   {totalResults === 1 ? 'resultado' : 'resultados'} em{' '}
-                  <span className={'font-semibold text-foreground'}>{currentProducts.length}</span>{' '}
-                  {currentProducts.length === 1 ? 'loja' : 'lojas'}
+                  <span className={'font-semibold text-foreground'}>{filteredProducts.length}</span>{' '}
+                  {filteredProducts.length === 1 ? 'loja' : 'lojas'}
                 </p>
                 <div className={'flex items-center gap-3'}>
+                  {/* Filters toggle */}
+                  <button
+                    className={`flex items-center gap-1.5 h-8 px-3 rounded-md border text-sm transition-colors ${
+                      filtersOpen || activeFilterCount > 0
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border hover:bg-muted text-muted-foreground'
+                    }`}
+                    onClick={() => setFiltersOpen((v) => !v)}
+                  >
+                    <SlidersHorizontal size={13} />
+                    {t('pages.filters.title')}
+                    {activeFilterCount > 0 && (
+                      <span
+                        className={
+                          'bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1'
+                        }
+                      >
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </button>
                   {/* View mode toggle */}
                   <div
                     className={'flex items-center border border-border rounded-md overflow-hidden'}
@@ -189,10 +256,97 @@ function ProductSearch() {
                 </div>
               </div>
 
+              {/* Filter panel */}
+              {filtersOpen && (
+                <div
+                  className={
+                    'mb-4 p-4 border border-border rounded-lg bg-muted/20 flex flex-col gap-4'
+                  }
+                >
+                  <div className={'flex flex-col sm:flex-row gap-4'}>
+                    {/* Brand filter */}
+                    {availableBrands.length > 0 && (
+                      <div className={'flex-1'}>
+                        <p className={'text-xs font-medium mb-2 text-muted-foreground'}>
+                          {t('pages.filters.brand')}
+                        </p>
+                        <div className={'flex flex-wrap gap-1.5'}>
+                          {availableBrands.map((brand) => (
+                            <button
+                              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                                selectedBrands.includes(brand)
+                                  ? 'bg-primary text-primary-foreground border-primary'
+                                  : 'bg-background border-border hover:bg-muted'
+                              }`}
+                              key={brand}
+                              onClick={() =>
+                                setSelectedBrands((prev) =>
+                                  prev.includes(brand)
+                                    ? prev.filter((b) => b !== brand)
+                                    : [...prev, brand]
+                                )
+                              }
+                            >
+                              {brand}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Price range filter */}
+                    <div className={'shrink-0'}>
+                      <p className={'text-xs font-medium mb-2 text-muted-foreground'}>
+                        {t('pages.filters.price-range')}
+                      </p>
+                      <div className={'flex items-center gap-2'}>
+                        <input
+                          className={
+                            'w-20 bg-background border border-input rounded-md px-2 py-1 text-sm outline-none focus:border-ring transition-colors'
+                          }
+                          min={'0'}
+                          placeholder={t('pages.filters.price-min')}
+                          type={'number'}
+                          value={priceRange.min}
+                          onChange={(e) =>
+                            setPriceRange((prev) => ({ ...prev, min: e.target.value }))
+                          }
+                        />
+                        <span className={'text-muted-foreground text-sm'}>—</span>
+                        <input
+                          className={
+                            'w-20 bg-background border border-input rounded-md px-2 py-1 text-sm outline-none focus:border-ring transition-colors'
+                          }
+                          min={'0'}
+                          placeholder={t('pages.filters.price-max')}
+                          type={'number'}
+                          value={priceRange.max}
+                          onChange={(e) =>
+                            setPriceRange((prev) => ({ ...prev, max: e.target.value }))
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {activeFilterCount > 0 && (
+                    <button
+                      className={
+                        'self-start flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors'
+                      }
+                      onClick={clearFilters}
+                    >
+                      <X size={12} />
+                      {t('pages.filters.clear')}
+                    </button>
+                  )}
+                </div>
+              )}
+
               {/* Scroll horizontal view */}
               {viewMode === 'scroll' && (
                 <div className={'space-y-4'}>
-                  {currentProducts.map((productCatalogs, index) => (
+                  {filteredProducts.map((productCatalogs, index) => (
                     <div
                       className={
                         'border border-border rounded-lg shadow-sm overflow-hidden bg-card'
@@ -257,10 +411,10 @@ function ProductSearch() {
               {/* Grid view */}
               {viewMode === 'grid' && (
                 <Accordion
-                  defaultValue={currentProducts.map((_, i) => `item-${i}`)}
+                  defaultValue={filteredProducts.map((_, i) => `item-${i}`)}
                   type={'multiple'}
                 >
-                  {currentProducts.map((productCatalogs, index) => (
+                  {filteredProducts.map((productCatalogs, index) => (
                     <AccordionItem
                       className={
                         'border border-border rounded-lg mb-4 shadow-sm overflow-hidden bg-card border-l-4 border-l-primary/40'

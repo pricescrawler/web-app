@@ -21,13 +21,6 @@ const getBestIndex = (items, getNumericValue) => {
   return values.indexOf(min);
 };
 
-const tryParsePrice = (str) => {
-  if (!str) return null;
-  const cleaned = str.replace(',', '.').replace(/[^0-9.]/g, '');
-  const val = parseFloat(cleaned);
-  return isNaN(val) ? null : val;
-};
-
 /**
  * Function `ComparisonModal`.
  */
@@ -57,7 +50,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
     {
       label: t('data.product-fields.price-per-quantity'),
       getValue: (item) => item.productData.pricePerQuantity || null,
-      getNumeric: (item) => tryParsePrice(item.productData.pricePerQuantity),
+      getNumeric: (item) => utils.tryParsePrice(item.productData.pricePerQuantity),
       isBest: true
     },
     {
@@ -101,9 +94,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
                   className={'w-10 h-10 object-contain flex-shrink-0'}
                   referrerPolicy={'no-referrer'}
                   src={item.productData.imageUrl || '/logo.png'}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
+                  onError={utils.handleImageError}
                 />
                 <div className={'min-w-0'}>
                   <p className={'text-xs font-semibold leading-tight line-clamp-2'}>

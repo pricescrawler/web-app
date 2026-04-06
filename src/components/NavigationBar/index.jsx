@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Moon, Sun, Menu as MenuIcon, ShoppingCart } from 'lucide-react';
+import { Moon, Sun, Menu as MenuIcon, Heart, ShoppingCart } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -32,6 +32,7 @@ function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
   const [lang, setLang] = useState(i18n.language);
   const productList = useSelector((state) => state.productList);
+  const favorites = useSelector((state) => state.favorites);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const logo = '/logo.png';
   const location = useLocation();
@@ -126,6 +127,23 @@ function NavigationBar({ theme }) {
             )}
           </Link>
 
+          <Link
+            className={`${navLinkClass('/favorites')} flex items-center gap-1.5`}
+            to={'/favorites'}
+          >
+            <Heart size={14} />
+            {t('menu.favorites')}
+            {favorites.length > 0 && (
+              <span
+                className={
+                  'bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 leading-none'
+                }
+              >
+                {favorites.length}
+              </span>
+            )}
+          </Link>
+
           {/* Language select */}
           <Select
             onValueChange={changeLanguage}
@@ -212,6 +230,23 @@ function NavigationBar({ theme }) {
                       }
                     >
                       {count}
+                    </span>
+                  )}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  className={'w-full flex items-center justify-between'}
+                  to={'/favorites'}
+                >
+                  {t('menu.favorites')}
+                  {favorites.length > 0 && (
+                    <span
+                      className={
+                        'bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none'
+                      }
+                    >
+                      {favorites.length}
                     </span>
                   )}
                 </Link>

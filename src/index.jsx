@@ -10,6 +10,7 @@ import { Analytics } from '@vercel/analytics/react';
 import App from './App';
 import Loader from '@components/Loader';
 import { Provider } from 'react-redux';
+import { Toaster } from 'sonner';
 import { createRoot } from 'react-dom/client';
 import store from '@services/store';
 
@@ -45,6 +46,10 @@ app.render(
         </Suspense>
       </Provider>
     </React.StrictMode>
+    <Toaster
+      position={'top-right'}
+      richColors
+    />
     <Analytics beforeSend={modifyAnalyticsEvent} />
   </>
 );

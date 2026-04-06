@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Search, QrCode, X, ChevronDown } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import api from '@services/api';
+import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +43,7 @@ const SearchContainer = () => {
   );
 
   const handleError = (error) => {
-    return alert(error);
+    toast.error(String(error));
   };
 
   const handleScan = (result) => {
@@ -122,7 +123,7 @@ const SearchContainer = () => {
         setIsLoadingCatalogs(false);
       })
       .catch((error) => {
-        alert(`${catalogErrorT} - (${error})`);
+        toast.error(`${catalogErrorT} - (${error?.message ?? error})`);
         setIsLoadingCatalogs(false);
       });
   }, [catalogErrorT]);
@@ -149,9 +150,9 @@ const SearchContainer = () => {
     event.preventDefault();
 
     if (searchValue !== '' && selectedCatalogs.length > 0) {
-      dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue }));
+      dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue.trim() }));
     } else {
-      alert(inputErrorT);
+      toast.warning(inputErrorT);
     }
   };
 

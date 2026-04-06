@@ -9,6 +9,7 @@
   "menu": {
     "home": "Pesquisar",
     "product-list": "Lista ",
+    "favorites": "Favoritos",
     "about": "Sobre",
     "privacy-terms": "Política de Privacidade",
     "view-mode-scroll": "Scroll horizontal",
@@ -45,6 +46,10 @@
     "product-list-replace": "Tem a certeza de que deseja importar esta lista de produtos? Isto irá substituir a sua lista de produtos atual.",
     "product-list-replace-title": "Importar lista de produtos:",
     "error": "Erro",
+    "favorites": {
+      "add": "Adicionar aos favoritos",
+      "remove": "Remover dos favoritos"
+    },
     "comparison": {
       "title": "Comparar produtos",
       "compare": "Comparar",
@@ -72,11 +77,27 @@
       "delete-local-data-text": "Eliminar todos os dados locais, incluindo as listas de produtos. Esta ação não pode ser revertida.",
       "delete-local-data-button": "Eliminar dados"
     },
+    "favorites": {
+      "title": "Favoritos",
+      "empty": "Ainda não tens produtos favoritos.",
+      "empty-sub": "Pesquisa produtos e guarda os teus favoritos com o ícone ♥"
+    },
     "search": {
       "input-error": "Catálogos or termo de pesquisa em falta.",
       "catalog-error": "Erro ao carregar os catálogos.",
       "select-all": "Selecionar todos",
       "select-catalog": "Selecionar catálogos"
+    },
+    "filters": {
+      "title": "Filtros",
+      "brand": "Marca",
+      "price-range": "Faixa de preço",
+      "price-min": "Mín.",
+      "price-max": "Máx.",
+      "clear": "Limpar filtros",
+      "active": "{{count}} filtro ativo",
+      "active_plural": "{{count}} filtros ativos",
+      "no-brands": "Sem marcas disponíveis"
     },
     "product-list": {
       "csv": {
@@ -85,6 +106,7 @@
       "options": {
         "export-csv": "Exportar CSV",
         "export-xlsx": "Exportar XLSX",
+        "export-pdf": "Exportar PDF",
         "copy-whatsapp": "Copiar lista (WhatsApp/SMS)",
         "tooltip": "Opções",
         "redorder": "Reordenar"

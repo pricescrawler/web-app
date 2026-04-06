@@ -1,13 +1,30 @@
 /**
  * Converts a text string containing a price to a float number with two decimal places.
+ * Returns 0 if the value is null, undefined or unparseable.
  * @param {string} price - The text string containing the price.
  * @returns {number} The converted price as a float number.
  * */
 
 export const convertToFloat = (price) => {
+  if (!price) return 0;
   const priceDouble = parseFloat(price.replace(',', '.').replace(/[^0-9.]/g, ''));
 
-  return priceDouble.toFixed(2);
+  return isNaN(priceDouble) ? 0 : priceDouble.toFixed(2);
+};
+
+/**
+ * Parses a price string to a numeric value for comparison purposes.
+ * Returns null if the value is null, undefined or unparseable.
+ * @param {string} str - The price string.
+ * @returns {number|null} The numeric price or null.
+ * */
+
+export const tryParsePrice = (str) => {
+  if (!str) return null;
+  const cleaned = str.replace(',', '.').replace(/[^0-9.]/g, '');
+  const val = parseFloat(cleaned);
+
+  return isNaN(val) ? null : val;
 };
 
 /**
@@ -62,4 +79,14 @@ export const getAveragePrice = (prices) => {
 
 export const renderCatalogName = (product) => {
   return product.data.catalogName || product.catalog;
+};
+
+/**
+ * Hides a broken image by setting its display to none.
+ * Shared handler for onError across all product image elements.
+ * @param {React.SyntheticEvent} e - The image error event.
+ * */
+
+export const handleImageError = (e) => {
+  e.target.style.display = 'none';
 };

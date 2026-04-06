@@ -19,7 +19,14 @@ import {
 } from '@/components/ui/select';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArrowUpDown, GalleryHorizontal, LayoutGrid, SlidersHorizontal, X } from 'lucide-react';
+import {
+  ArrowUpDown,
+  GalleryHorizontal,
+  LayoutGrid,
+  Search,
+  SlidersHorizontal,
+  X
+} from 'lucide-react';
 import ComparisonBar from '@components/ComparisonBar';
 import ComparisonModal from '@components/ComparisonModal';
 import Loader from '@components/Loader';
@@ -156,7 +163,6 @@ function ProductSearch() {
       <div className={'border-b border-border/60 bg-background pt-8 pb-10 px-4'}>
         <div className={'max-w-2xl mx-auto text-center mb-6'}>
           <h1 className={'text-3xl sm:text-4xl font-bold tracking-tight mb-1'}>{t('menu.home')}</h1>
-          <p className={'text-muted-foreground text-sm'}>{t('general.search-for-some-product')}</p>
         </div>
         {isMaintenanceMode === 'true' ? (
           <div className={'max-w-2xl mx-auto'}>
@@ -476,7 +482,20 @@ function ProductSearch() {
                 </Accordion>
               )}
             </>
-          ) : null}
+          ) : (
+            <div
+              className={'flex flex-col items-center justify-center min-h-[40vh] gap-3 text-center'}
+            >
+              <Search
+                className={'text-muted-foreground/30'}
+                size={48}
+              />
+              <p className={'text-muted-foreground font-medium'}>Nenhum produto encontrado</p>
+              <p className={'text-muted-foreground/70 text-sm'}>
+                Tente ajustar os filtros ou pesquisar por outro termo.
+              </p>
+            </div>
+          )}
         </div>
       )}
       <ComparisonBar

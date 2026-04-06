@@ -29,21 +29,7 @@ function Favorites() {
   return (
     <div className={'max-w-7xl mx-auto px-4 py-8'}>
       <div className={'flex items-center justify-center gap-3 mb-6'}>
-        <Heart
-          className={'text-red-500'}
-          fill={'currentColor'}
-          size={22}
-        />
         <h2 className={'text-2xl font-bold tracking-tight'}>{t('pages.favorites.title')}</h2>
-        {favorites.length > 0 && (
-          <span
-            className={
-              'text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-border'
-            }
-          >
-            {favorites.length}
-          </span>
-        )}
       </div>
 
       {favorites.length > 0 && (

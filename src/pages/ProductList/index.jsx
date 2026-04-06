@@ -43,6 +43,7 @@ import {
   Minus,
   Plus,
   RefreshCw,
+  ShoppingCart,
   Upload
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -323,52 +324,54 @@ function ProductList() {
       ) : (
         <div className={'flex flex-col gap-6'}>
           {/* Toolbar */}
-          <div className={'flex items-center justify-end gap-2'}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size={'sm'}
-                  variant={'outline'}
-                >
-                  {t('pages.product-list.options.tooltip')}
-                  <ChevronDown
-                    className={'ml-1.5'}
-                    size={14}
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align={'end'}>
-                <DropdownMenuItem onClick={() => setShowReorderControl(!showReorderControl)}>
-                  <ArrowUp
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.redorder')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={copyListAsText}>
-                  <ClipboardCopy
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.copy-whatsapp')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={exportToXLSX}>
-                  <Download
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.export-xlsx')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={exportToPDF}>
-                  <Download
-                    className={'mr-2'}
-                    size={14}
-                  />
-                  {t('pages.product-list.options.export-pdf')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          {productList?.length > 0 && (
+            <div className={'flex items-center justify-end gap-2'}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size={'sm'}
+                    variant={'outline'}
+                  >
+                    {t('pages.product-list.options.tooltip')}
+                    <ChevronDown
+                      className={'ml-1.5'}
+                      size={14}
+                    />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align={'end'}>
+                  <DropdownMenuItem onClick={() => setShowReorderControl(!showReorderControl)}>
+                    <ArrowUp
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.redorder')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={copyListAsText}>
+                    <ClipboardCopy
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.copy-whatsapp')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportToXLSX}>
+                    <Download
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.export-xlsx')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportToPDF}>
+                    <Download
+                      className={'mr-2'}
+                      size={14}
+                    />
+                    {t('pages.product-list.options.export-pdf')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
 
           {/* Table */}
           {productList?.length > 0 ? (
@@ -513,9 +516,19 @@ function ProductList() {
               </CardContent>
             </Card>
           ) : (
-            <div className={'text-center py-16 text-muted-foreground'}>
-              <p className={'text-lg font-medium mb-1'}>{t('title.products-list')}</p>
-              <p className={'text-sm'}>Adiciona produtos através da pesquisa.</p>
+            <div
+              className={'flex flex-col items-center justify-center min-h-[40vh] gap-3 text-center'}
+            >
+              <ShoppingCart
+                className={'text-muted-foreground/30'}
+                size={48}
+              />
+              <p className={'text-muted-foreground font-medium'}>
+                A sua lista de produtos está vazia
+              </p>
+              <p className={'text-muted-foreground/70 text-sm'}>
+                Adicione produtos através da pesquisa para começar a acompanhar preços.
+              </p>
             </div>
           )}
 

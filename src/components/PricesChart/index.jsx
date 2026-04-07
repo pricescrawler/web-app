@@ -3,7 +3,7 @@
  */
 
 import * as utils from '@services/utils';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -33,33 +33,33 @@ function PricesChart({ data }) {
     }
   }, []);
 
-  const createChartData = (prices) => {
-    const chartData = [];
+  const chartData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+
     const uniqueDates = new Set();
-    const average = parseFloat(utils.getAveragePrice(prices));
+    const average = parseFloat(utils.getAveragePrice(data));
 
-    if (prices) {
-      prices.forEach((value) => {
-        const date = new Date(value.date);
+    const sortedPrices = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        if (!uniqueDates.has(date.toISOString())) {
-          uniqueDates.add(date.toISOString());
+    return sortedPrices.reduce((acc, value) => {
+      const dateObj = new Date(value.date);
+      const isoDate = dateObj.toISOString();
 
-          chartData.push({
-            avg: average,
-            date: date.toLocaleDateString(),
-            price: parseFloat(utils.getFormattedPrice(value))
-          });
-        }
-      });
+      if (!uniqueDates.has(isoDate)) {
+        uniqueDates.add(isoDate);
 
-      chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
+        acc.push({
+          avg: average,
+          date: dateObj.toLocaleDateString('pt-PT'),
+          rawDate: isoDate,
+          price: parseFloat(utils.getFormattedPrice(value))
+        });
+      }
 
-    return chartData;
-  };
+      return acc;
+    }, []);
+  }, [data]);
 
-  const chartData = createChartData(data);
   const axisColor = isDarkMode ? '#ccc' : '#666';
 
   return (

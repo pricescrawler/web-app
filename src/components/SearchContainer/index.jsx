@@ -37,6 +37,8 @@ const SearchContainer = () => {
   const catalogErrorT = t('pages.search.catalog-error');
   const videoRef = useRef(null);
   const [experimentalFeatures, setExperimentalFeatures] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [selectedCatalogs, setSelectedCatalogs] = useState(
     catalogs.filter((catalog) => catalog.selected)
@@ -62,6 +64,15 @@ const SearchContainer = () => {
 
     if (experimentalEnabledLS !== null) {
       setExperimentalFeatures(JSON.parse(experimentalEnabledLS));
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+      setSearchHistory(history);
+    } catch {
+      setSearchHistory([]);
     }
   }, []);
 
@@ -146,11 +157,30 @@ const SearchContainer = () => {
     }
   };
 
+  const removeFromHistory = (event, itemToRemove) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSearchHistory((prev) => {
+      const updated = prev.filter((item) => item !== itemToRemove);
+      localStorage.setItem('searchHistory', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const handleProductSearch = (event) => {
     event.preventDefault();
 
     if (searchValue !== '' && selectedCatalogs.length > 0) {
       dispatch(productsActions.search({ selectedCatalogs, stringValue: searchValue.trim() }));
+
+      // Add to search history
+      const trimmed = searchValue.trim();
+      setSearchHistory((prev) => {
+        const updated = [trimmed, ...prev.filter((item) => item !== trimmed)].slice(0, 10);
+        localStorage.setItem('searchHistory', JSON.stringify(updated));
+        return updated;
+      });
+      setShowSuggestions(false);
     } else {
       toast.warning(inputErrorT);
     }
@@ -287,10 +317,54 @@ const SearchContainer = () => {
               className={
                 'w-full bg-background border border-input hover:border-ring/50 focus:border-ring rounded-lg pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all shadow-sm'
               }
-              onChange={(event) => setSearchValue(event.target.value)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+              onChange={(event) => {
+                setSearchValue(event.target.value);
+                setShowSuggestions(event.target.value.length > 0);
+              }}
               placeholder={t('general.search-for-some-product')}
               value={searchValue}
             />
+            {showSuggestions && searchHistory.length > 0 && (
+              <div
+                className={
+                  'absolute top-full left-0 right-0 bg-background border border-input rounded-lg mt-1 shadow-lg z-10 max-h-40 overflow-y-auto'
+                }
+              >
+                {searchHistory
+                  .filter((item) => item.toLowerCase().includes(searchValue.toLowerCase()))
+                  .map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className={'flex items-center group hover:bg-muted transition-colors'}
+                    >
+                      <button
+                        className={'flex-1 text-left px-4 py-2 text-sm outline-none'}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setSearchValue(suggestion);
+                          setShowSuggestions(false);
+                          dispatch(
+                            productsActions.search({ selectedCatalogs, stringValue: suggestion })
+                          );
+                        }}
+                        type={'button'}
+                      >
+                        {suggestion}
+                      </button>
+                      <button
+                        className={
+                          'p-2 mr-1 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all'
+                        }
+                        onMouseDown={(e) => removeFromHistory(e, suggestion)}
+                        type={'button'}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
           <Button
             className={'px-5 h-[46px] font-semibold shrink-0'}

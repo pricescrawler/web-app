@@ -126,7 +126,7 @@ function ProductCard({
       {/* Top-left action buttons: heart (above) + compare (below) */}
       <div className={'absolute top-3 left-3 z-10 flex flex-col gap-1'}>
         <button
-          className={`rounded-full p-1.5 shadow-md transition-colors ${
+          className={`rounded-full p-1.5 shadow-md transition-colors cursor-pointer ${
             isFavorite
               ? 'bg-red-500 text-white'
               : 'bg-background/80 text-muted-foreground hover:bg-background hover:text-red-500 border border-border'
@@ -142,7 +142,7 @@ function ProductCard({
 
         {onToggleCompare && (
           <button
-            className={`rounded-full p-1.5 shadow-md transition-colors ${
+            className={`rounded-full p-1.5 shadow-md transition-colors cursor-pointer ${
               isInComparison
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground border border-border'
@@ -228,7 +228,7 @@ function ProductCard({
         >
           <button
             className={
-              'w-full h-full flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md border border-border hover:bg-accent transition-colors'
+              'w-full h-full flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md border border-border hover:bg-accent transition-colors cursor-pointer'
             }
           >
             <ExternalLink size={12} />
@@ -242,7 +242,7 @@ function ProductCard({
           >
             <button
               className={
-                'w-full h-full flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md border border-border hover:bg-accent transition-colors'
+                'w-full h-full flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md border border-border hover:bg-accent transition-colors cursor-pointer'
               }
             >
               <History size={12} />
@@ -251,7 +251,7 @@ function ProductCard({
         )}
 
         <button
-          className={`flex-1 flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md transition-all duration-300 ${
+          className={`flex-1 flex items-center justify-center text-xs font-medium py-2 px-3 rounded-md transition-all duration-300 cursor-pointer ${
             added
               ? 'bg-green-500 text-white'
               : 'bg-primary text-primary-foreground hover:bg-primary/90'

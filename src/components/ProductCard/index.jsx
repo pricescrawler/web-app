@@ -170,12 +170,14 @@ function ProductCard({
 
       <CardContent className={'flex-1 p-4 flex flex-col gap-2'}>
         {/* Name */}
-        <p
-          className={'font-semibold text-sm leading-tight min-h-[2.5rem] line-clamp-2'}
-          title={productData.name}
-        >
-          {productData.name || '-'}
-        </p>
+        <div className={'min-h-[2.5rem]'}>
+          <p
+            className={'font-semibold text-sm leading-tight line-clamp-2 break-words'}
+            title={productData.name}
+          >
+            {productData.name || '-'}
+          </p>
+        </div>
 
         {/* Price */}
         <div className={'flex items-baseline gap-2'}>

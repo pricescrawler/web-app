@@ -61,6 +61,9 @@
     "format:write": "prettier --write .",
     "lint:check": "eslint src/**/*.{js,jsx}",
     "lint:fix": "eslint --fix .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "prepare": "husky",
     "commit": "cz"
   },
@@ -88,7 +91,9 @@
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.1",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.8",
     "cz-conventional-changelog": "3.3.0",
     "esbuild": "0.28.0",
     "eslint": "^10.2.0",
@@ -99,11 +104,13 @@
     "eslint-plugin-react-hooks": "^7.0.0",
     "globals": "^17.0.0",
     "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
     "lint-staged": "^16.2.4",
     "prop-types": "^15.8.1",
     "sass": "^1.93.2",
     "vite": "8.0.7",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.1.8"
   },
   "lint-staged": {
     "*.{jsx,js}": "yarn lint:check",

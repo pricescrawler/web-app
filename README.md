@@ -48,6 +48,14 @@ yarn build
 
 Builds the app for production to the dist folder.
 
+### Run tests
+
+```shell
+yarn test
+```
+
+Runs the test suite once with [Vitest](https://vitest.dev). Use `yarn test:watch` for watch mode or `yarn test:coverage` for a coverage report.
+
 ## Environment Variables
 
 | #   | Name                      | Type      | Description            | Default |

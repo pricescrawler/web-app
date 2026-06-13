@@ -7,6 +7,7 @@ import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import { addFavorite, removeFavorite } from '@services/store/favorites/favoritesReducer';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { selectActiveListItems } from '@services/store/products/productsSelectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Check, ExternalLink, GitCompareArrows, Heart, History, Plus, Tag } from 'lucide-react';
@@ -34,7 +35,7 @@ function ProductCard({
 }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const productList = useSelector((state) => state.productList);
+  const productList = useSelector(selectActiveListItems);
   const favorites = useSelector((state) => state.favorites);
   const [added, setAdded] = useState(false);
 

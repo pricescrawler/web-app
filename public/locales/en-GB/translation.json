@@ -42,6 +42,7 @@
     "expiration-text-2": "Share expiration date:",
     "yes": "Yes",
     "no": "No",
+    "confirm": "Confirm",
     "maintenance": "Please try again later. Available in:",
     "product-list-replace": "Are you sure you want to import this product list? This will replace your current product list.",
     "general.product-list-replace-title": "Import Product List:",
@@ -135,6 +136,14 @@
       "empty": {
         "title": "Your product list is empty",
         "subtitle": "Add products through search to start tracking prices."
+      },
+      "lists": {
+        "new": "New list",
+        "rename": "Rename list",
+        "delete": "Delete list",
+        "delete-confirm": "Are you sure you want to delete the list \"{{name}}\" and all its products? This action cannot be undone.",
+        "move": "Move to list",
+        "name-placeholder": "List name"
       }
     }
   },

@@ -21,6 +21,7 @@ import {
 import { Moon, Sun, Menu as MenuIcon, Heart, ShoppingCart } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { selectActiveListItems } from '@services/store/products/productsSelectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +32,7 @@ import { useTranslation } from 'react-i18next';
 function NavigationBar({ theme }) {
   const { i18n, t } = useTranslation();
   const [lang, setLang] = useState(i18n.language);
-  const productList = useSelector((state) => state.productList);
+  const productList = useSelector(selectActiveListItems);
   const favorites = useSelector((state) => state.favorites);
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const logo = '/logo.png';

@@ -30,6 +30,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
 import PricesChart from '@components/PricesChart';
+import { selectActiveListItems } from '@services/store/products/productsSelectors';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -43,7 +44,7 @@ function ProductDetails() {
   const isLoadingData = useSelector((state) => state.isLoadingData);
   const product = useSelector((state) => state.product);
   const products = useSelector((state) => state.products);
-  const productList = useSelector((state) => state.productList);
+  const productList = useSelector(selectActiveListItems);
 
   const dispatch = useDispatch();
 

@@ -5,7 +5,10 @@
 const initialState = {
   isLoadingData: false,
   product: {},
-  productList: [],
+  productLists: {
+    activeListId: 'default',
+    lists: [{ id: 'default', items: [], name: 'My List' }]
+  },
   productListId: {},
   products: [],
   searchQuery: {}

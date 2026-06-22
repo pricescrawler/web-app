@@ -5,6 +5,11 @@
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
 import {
+  selectActiveListId,
+  selectActiveListItems,
+  selectProductLists
+} from '@services/store/products/productsSelectors';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -17,11 +22,25 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -35,15 +54,20 @@ import {
 import {
   ArrowDown,
   ArrowUp,
+  Check,
   ChevronDown,
   ClipboardCopy,
   Download,
   ExternalLink,
+  FolderInput,
   History,
+  ListPlus,
   Minus,
+  Pencil,
   Plus,
   RefreshCw,
   ShoppingCart,
+  Trash2,
   Upload
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -62,7 +86,9 @@ function ProductList() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isLoadingData = useSelector((state) => state.isLoadingData);
-  const productList = useSelector((state) => state.productList);
+  const productList = useSelector(selectActiveListItems);
+  const lists = useSelector(selectProductLists);
+  const activeListId = useSelector(selectActiveListId);
   const productListUpload = useSelector((state) => state.productListUpload);
   const [isListUpdated, setIsListUpdated] = useState(true);
   const [showSharePanel, setShowSharePanel] = useState(false);
@@ -70,6 +96,52 @@ function ProductList() {
   const [isMaintenanceMode] = useState(import.meta.env.VITE_MAINTENANCE_MODE);
   const [pendingListId, setPendingListId] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [listDialogOpen, setListDialogOpen] = useState(false);
+  const [listDialogMode, setListDialogMode] = useState('create');
+  const [listNameInput, setListNameInput] = useState('');
+  const [deleteListConfirmOpen, setDeleteListConfirmOpen] = useState(false);
+
+  const activeList = lists.find((list) => list.id === activeListId);
+
+  const openCreateListDialog = () => {
+    setListDialogMode('create');
+    setListNameInput('');
+    setListDialogOpen(true);
+  };
+
+  const openRenameListDialog = () => {
+    setListDialogMode('rename');
+    setListNameInput(activeList?.name ?? '');
+    setListDialogOpen(true);
+  };
+
+  const submitListDialog = (event) => {
+    event.preventDefault();
+    const name = listNameInput.trim();
+
+    if (!name) return;
+
+    if (listDialogMode === 'create') {
+      dispatch(productsActions.createProductList(name));
+    } else {
+      dispatch(productsActions.renameProductList(activeListId, name));
+    }
+
+    setListDialogOpen(false);
+  };
+
+  const handleSelectList = (id) => {
+    dispatch(productsActions.selectProductList(id));
+  };
+
+  const handleDeleteList = () => {
+    dispatch(productsActions.deleteProductList(activeListId));
+    setDeleteListConfirmOpen(false);
+  };
+
+  const moveToList = (prod, toListId) => {
+    dispatch(productsActions.moveProductToList(prod.key, toListId));
+  };
 
   useEffect(() => {
     if (productList?.length > 0) {
@@ -323,6 +395,59 @@ function ProductList() {
         <Loader />
       ) : (
         <div className={'flex flex-col gap-6'}>
+          {/* List switcher */}
+          <div className={'flex flex-wrap items-center gap-2'}>
+            <Select
+              onValueChange={handleSelectList}
+              value={activeListId}
+            >
+              <SelectTrigger className={'w-full sm:w-[220px]'}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {lists.map((list) => (
+                  <SelectItem
+                    key={list.id}
+                    value={list.id}
+                  >
+                    {list.name} ({list.items.reduce((acc, prod) => acc + prod.quantity, 0)})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button
+              onClick={openCreateListDialog}
+              size={'sm'}
+              variant={'outline'}
+            >
+              <ListPlus
+                className={'mr-1.5'}
+                size={14}
+              />
+              {t('pages.product-list.lists.new')}
+            </Button>
+
+            <Button
+              aria-label={t('pages.product-list.lists.rename')}
+              onClick={openRenameListDialog}
+              size={'icon'}
+              variant={'outline'}
+            >
+              <Pencil size={14} />
+            </Button>
+
+            <Button
+              aria-label={t('pages.product-list.lists.delete')}
+              disabled={lists.length <= 1}
+              onClick={() => setDeleteListConfirmOpen(true)}
+              size={'icon'}
+              variant={'outline'}
+            >
+              <Trash2 size={14} />
+            </Button>
+          </div>
+
           {/* Toolbar */}
           {productList?.length > 0 && (
             <div className={'flex items-center justify-end gap-2'}>
@@ -491,6 +616,34 @@ function ProductList() {
                                 >
                                   {iconBtn(null, <ExternalLink size={12} />)}
                                 </a>
+                                {lists.length > 1 && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger
+                                      aria-label={t('pages.product-list.lists.move')}
+                                      className={
+                                        'w-7 h-7 inline-flex items-center justify-center rounded bg-muted hover:bg-accent transition-colors'
+                                      }
+                                    >
+                                      <FolderInput size={12} />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align={'end'}>
+                                      {lists
+                                        .filter((list) => list.id !== activeListId)
+                                        .map((list) => (
+                                          <DropdownMenuItem
+                                            key={list.id}
+                                            onClick={() => moveToList(prod, list.id)}
+                                          >
+                                            <FolderInput
+                                              className={'mr-2'}
+                                              size={14}
+                                            />
+                                            {list.name}
+                                          </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )}
                               </div>
                             </TableCell>
                             {showReorderControl && (
@@ -637,6 +790,60 @@ function ProductList() {
           <AlertDialogFooter>
             <AlertDialogCancel>{t('general.no')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmReplace}>{t('general.yes')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog
+        onOpenChange={setListDialogOpen}
+        open={listDialogOpen}
+      >
+        <DialogContent aria-describedby={undefined}>
+          <form onSubmit={submitListDialog}>
+            <DialogHeader>
+              <DialogTitle>
+                {listDialogMode === 'create'
+                  ? t('pages.product-list.lists.new')
+                  : t('pages.product-list.lists.rename')}
+              </DialogTitle>
+            </DialogHeader>
+            <Input
+              autoFocus
+              className={'my-4'}
+              onChange={(e) => setListNameInput(e.target.value)}
+              placeholder={t('pages.product-list.lists.name-placeholder')}
+              value={listNameInput}
+            />
+            <DialogFooter>
+              <Button
+                disabled={!listNameInput.trim()}
+                type={'submit'}
+              >
+                <Check
+                  className={'mr-1.5'}
+                  size={14}
+                />
+                {t('general.confirm')}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog
+        onOpenChange={setDeleteListConfirmOpen}
+        open={deleteListConfirmOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('pages.product-list.lists.delete')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('pages.product-list.lists.delete-confirm', { name: activeList?.name })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('general.no')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteList}>{t('general.yes')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

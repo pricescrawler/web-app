@@ -118,6 +118,51 @@ export const removeFromProductList = (product) => ({
 });
 
 /**
+ * Create Product List.
+ */
+
+export const createProductList = (name) => ({
+  payload: { id: crypto.randomUUID(), name },
+  type: actionTypes.CREATE_PRODUCT_LIST
+});
+
+/**
+ * Rename Product List.
+ */
+
+export const renameProductList = (id, name) => ({
+  payload: { id, name },
+  type: actionTypes.RENAME_PRODUCT_LIST
+});
+
+/**
+ * Delete Product List.
+ */
+
+export const deleteProductList = (id) => ({
+  payload: id,
+  type: actionTypes.DELETE_PRODUCT_LIST
+});
+
+/**
+ * Select Product List.
+ */
+
+export const selectProductList = (id) => ({
+  payload: id,
+  type: actionTypes.SELECT_PRODUCT_LIST
+});
+
+/**
+ * Move Product to another List.
+ */
+
+export const moveProductToList = (key, toListId) => ({
+  payload: { key, toListId },
+  type: actionTypes.MOVE_PRODUCT_TO_LIST
+});
+
+/**
  * Search.
  */
 

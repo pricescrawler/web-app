@@ -59,5 +59,14 @@ export default defineConfig({
     watch: {
       usePolling: true
     }
+  },
+  test: {
+    coverage: {
+      include: ['src/**/*.{js,jsx}'],
+      provider: 'v8',
+      reporter: ['text', 'lcov']
+    },
+    environment: 'jsdom',
+    setupFiles: ['./src/setupTests.js']
   }
 });

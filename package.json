@@ -95,7 +95,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "^4.1.8",
     "cz-conventional-changelog": "3.3.0",
-    "esbuild": "0.28.0",
+    "esbuild": "0.28.1",
     "eslint": "^10.2.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.32.0",

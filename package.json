@@ -108,7 +108,7 @@
     "lint-staged": "^17.0.8",
     "prop-types": "^15.8.1",
     "sass": "^1.93.2",
-    "vite": "8.0.16",
+    "vite": "8.1.2",
     "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.1.8"
   },

@@ -1,9 +1,13 @@
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { BarcodeFormat, BrowserMultiFormatReader, DecodeHintType } from '@zxing/library';
 
 let codeReaderInstance = null;
 
 /**
  * Scans for barcodes in a video stream from the user's camera.
+ *
+ * Uses `facingMode: environment` so the browser picks the back camera on mobile
+ * devices, and restricts decoding to retail barcode formats with TRY_HARDER for
+ * better detection in poor lighting.
  *
  * @param {HTMLVideoElement} videoElement - The video element to use for the camera stream.
  * @param {function} onScan - The function to call when a barcode is detected.
@@ -12,23 +16,32 @@ let codeReaderInstance = null;
  */
 
 export function barcode(videoElement, onScan, onError) {
-  codeReaderInstance = new BrowserMultiFormatReader();
+  const hints = new Map();
+
+  hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.UPC_A,
+    BarcodeFormat.UPC_E,
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.QR_CODE
+  ]);
+  hints.set(DecodeHintType.TRY_HARDER, true);
+
+  codeReaderInstance = new BrowserMultiFormatReader(hints);
+
+  const constraints = {
+    audio: false,
+    video: {
+      facingMode: { ideal: 'environment' },
+      height: { ideal: 720 },
+      width: { ideal: 1280 }
+    }
+  };
 
   codeReaderInstance
-    .listVideoInputDevices()
-    .then((videoInputDevices) => {
-      if (videoInputDevices.length > 0) {
-        codeReaderInstance
-          .decodeOnceFromVideoDevice(
-            videoInputDevices[videoInputDevices.length - 1].deviceId,
-            videoElement
-          )
-          .then(onScan)
-          .catch(onError);
-      } else {
-        onError('No video input devices found');
-      }
-    })
+    .decodeOnceFromConstraints(constraints, videoElement)
+    .then(onScan)
     .catch(onError);
 }
 

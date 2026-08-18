@@ -26,12 +26,13 @@ import {
   TrendingDown,
   TrendingUp
 } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
 import PricesChart from '@components/PricesChart';
+import api from '@services/api';
 import { selectActiveListItems } from '@services/store/products/productsSelectors';
-import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -53,6 +54,49 @@ function ProductDetails() {
   }, [dispatch, locale, catalog, reference]);
 
   const [added, setAdded] = useState(false);
+  const [otherStores, setOtherStores] = useState([]);
+
+  useEffect(() => {
+    const eans = (product.eanUpc || []).filter(Boolean);
+
+    if (eans.length === 0) {
+      setOtherStores([]);
+
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    Promise.all(
+      eans.slice(0, 3).map((ean) =>
+        api
+          .get('/api/v1/products/history', { params: { eanUpc: ean } })
+          .then((response) => response.data)
+          .catch(() => [])
+      )
+    ).then((results) => {
+      if (cancelled) return;
+
+      const currentKey = `${locale}.${catalog}.${reference}`;
+      const seen = new Set();
+      const stores = results.flat().filter((item) => {
+        if (!item?.prices?.length) return false;
+
+        const key = `${item.locale}.${item.catalog}.${item.reference}`;
+
+        if (key === currentKey || seen.has(key)) return false;
+        seen.add(key);
+
+        return true;
+      });
+
+      setOtherStores(stores);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [product.eanUpc, locale, catalog, reference]);
 
   const isProductLoaded = () => !!product.prices;
 
@@ -251,6 +295,44 @@ function ProductDetails() {
     );
   };
 
+  const renderOtherStores = () => {
+    if (otherStores.length === 0) return null;
+
+    return (
+      <div className={'flex flex-col gap-3 mb-6'}>
+        <h4 className={'text-lg font-semibold'}>{t('general.other-stores.title')}</h4>
+        <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'}>
+          {otherStores.map((store) => {
+            const lastPrice = store.prices[store.prices.length - 1];
+
+            return (
+              <Card key={`${store.locale}.${store.catalog}.${store.reference}`}>
+                <CardContent className={'p-4 flex flex-col gap-2'}>
+                  <span className={'text-xs font-mono bg-muted px-2 py-0.5 rounded w-fit'}>
+                    {store.data?.catalogName || store.catalog}
+                  </span>
+                  <p className={'text-sm font-medium leading-tight'}>{store.name}</p>
+                  <div className={'flex items-baseline gap-2'}>
+                    <span className={'text-lg font-bold'}>
+                      {lastPrice.campaignPrice || lastPrice.regularPrice}
+                    </span>
+                    <span className={'text-xs text-muted-foreground'}>{lastPrice.date}</span>
+                  </div>
+                  <Link
+                    className={'text-xs underline text-muted-foreground hover:text-foreground'}
+                    to={`/product/${store.locale}/${store.catalog}/${store.reference}`}
+                  >
+                    {t('general.other-stores.view-product')}
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const renderProductOutdatedAlert = () => {
     if (!product.prices?.length) return null;
 
@@ -360,6 +442,9 @@ function ProductDetails() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Same product in other stores (EAN match) */}
+      {renderOtherStores()}
 
       {/* Price evolution section */}
       <div className={'flex flex-col items-center gap-5 mb-6'}>

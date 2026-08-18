@@ -12,6 +12,8 @@
     "favorites": "Favourites",
     "about": "About",
     "privacy-terms": "Privacy & Terms",
+    "whats-new": "What's New",
+    "feedback": "Feedback",
     "view-mode-scroll": "Horizontal scroll",
     "view-mode-grid": "Grid",
     "order": {
@@ -51,6 +53,10 @@
       "add": "Add to favourites",
       "remove": "Remove from favourites"
     },
+    "other-stores": {
+      "title": "Available in other stores",
+      "view-product": "View product"
+    },
     "comparison": {
       "title": "Compare products",
       "compare": "Compare",
@@ -77,6 +83,26 @@
       "text2": "It does not collect, store, or use any personal data, and does not use cookies or any other tracking technologies that can be used to identify its users.",
       "delete-local-data-text": "This will delete all the data stored locally on your device, including product lists. This action cannot be undone.",
       "delete-local-data-button": "Delete Local Data"
+    },
+    "whats-new": {
+      "empty": "No news to show yet."
+    },
+    "feedback": {
+      "subtitle": "Found an issue or have a suggestion? Let us know what you think.",
+      "type": "Type",
+      "types": {
+        "suggestion": "Suggestion",
+        "bug": "Report an issue",
+        "other": "Other"
+      },
+      "message": "Message",
+      "message-placeholder": "Describe your suggestion or the issue you found...",
+      "message-required": "Please write a message.",
+      "email": "Email (optional)",
+      "email-placeholder": "your-email@example.com",
+      "submit": "Send",
+      "success": "Thank you for your feedback!",
+      "error": "Could not send your feedback. Please try again later."
     },
     "favorites": {
       "title": "Favourites",

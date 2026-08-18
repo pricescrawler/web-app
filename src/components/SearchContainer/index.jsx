@@ -391,6 +391,9 @@ const SearchContainer = () => {
         {experimentalFeatures && !searchValue && (
           <div className={'mt-3 flex justify-center'}>
             <video
+              autoPlay
+              muted
+              playsInline
               ref={videoRef}
               style={{ borderRadius: '0.5rem', height: 'auto', width: '75%' }}
             />

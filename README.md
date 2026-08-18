@@ -56,6 +56,11 @@ yarn test
 
 Runs the test suite once with [Vitest](https://vitest.dev). Use `yarn test:watch` for watch mode or `yarn test:coverage` for a coverage report.
 
+## Documentation
+
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) — pages, components, state, consumed
+  API endpoints and tooling.
+
 ## Environment Variables
 
 | #   | Name                      | Type      | Description            | Default |

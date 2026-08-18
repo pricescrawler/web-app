@@ -12,6 +12,8 @@
     "favorites": "Favoritos",
     "about": "Sobre",
     "privacy-terms": "Política de Privacidade",
+    "whats-new": "Novidades",
+    "feedback": "Feedback",
     "view-mode-scroll": "Scroll horizontal",
     "view-mode-grid": "Grelha",
     "order": {
@@ -51,6 +53,10 @@
       "add": "Adicionar aos favoritos",
       "remove": "Remover dos favoritos"
     },
+    "other-stores": {
+      "title": "Disponível noutras lojas",
+      "view-product": "Ver produto"
+    },
     "comparison": {
       "title": "Comparar produtos",
       "compare": "Comparar",
@@ -77,6 +83,26 @@
       "text2": "Não recolhe, armazena ou utiliza quaisquer dados pessoais e não utiliza cookies ou outras tecnologias de rastreio que possam ser usadas para identificar os seus utilizadores.",
       "delete-local-data-text": "Eliminar todos os dados locais, incluindo as listas de produtos. Esta ação não pode ser revertida.",
       "delete-local-data-button": "Eliminar dados"
+    },
+    "whats-new": {
+      "empty": "Ainda não há novidades para mostrar."
+    },
+    "feedback": {
+      "subtitle": "Encontraste um problema ou tens uma sugestão? Diz-nos o que pensas.",
+      "type": "Tipo",
+      "types": {
+        "suggestion": "Sugestão",
+        "bug": "Reportar um problema",
+        "other": "Outro"
+      },
+      "message": "Mensagem",
+      "message-placeholder": "Descreve a tua sugestão ou o problema que encontraste...",
+      "message-required": "Por favor, escreve uma mensagem.",
+      "email": "Email (opcional)",
+      "email-placeholder": "o-teu-email@exemplo.com",
+      "submit": "Enviar",
+      "success": "Obrigado pelo teu feedback!",
+      "error": "Não foi possível enviar o feedback. Tenta novamente mais tarde."
     },
     "favorites": {
       "title": "Favoritos",

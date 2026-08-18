@@ -18,9 +18,11 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Moon, Sun, Menu as MenuIcon, Heart, ShoppingCart } from 'lucide-react';
+import { Moon, Sun, Menu as MenuIcon, Heart, ShoppingCart, Sparkles } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import api from '@services/api';
+import { hasUnseenChangelogEntries } from '@services/changelog';
 import { selectActiveListItems } from '@services/store/products/productsSelectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -37,6 +39,27 @@ function NavigationBar({ theme }) {
   const numberOfProducts = () => productList.reduce((acc, prod) => acc + prod.quantity, 0);
   const logo = '/logo.png';
   const location = useLocation();
+  const [latestChangelogDate, setLatestChangelogDate] = useState(null);
+  const [hasNews, setHasNews] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/api/v1/changelog')
+      .then(({ data }) => {
+        if (!cancelled) setLatestChangelogDate(data?.[0]?.date ?? null);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setHasNews(hasUnseenChangelogEntries(latestChangelogDate));
+  }, [latestChangelogDate, location]);
 
   const selectedLanguage = () => {
     if (lang !== 'pt-PT' && lang !== 'en-GB') {
@@ -145,6 +168,21 @@ function NavigationBar({ theme }) {
             )}
           </Link>
 
+          <Link
+            className={`${navLinkClass('/whats-new')} flex items-center gap-1.5`}
+            to={'/whats-new'}
+          >
+            <span className={'relative'}>
+              <Sparkles size={14} />
+              {hasNews && (
+                <span
+                  className={'absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500'}
+                />
+              )}
+            </span>
+            {t('menu.whats-new')}
+          </Link>
+
           {/* Language select */}
           <Select
             onValueChange={changeLanguage}
@@ -250,6 +288,15 @@ function NavigationBar({ theme }) {
                       {favorites.length}
                     </span>
                   )}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  className={'w-full flex items-center justify-between'}
+                  to={'/whats-new'}
+                >
+                  {t('menu.whats-new')}
+                  {hasNews && <span className={'w-1.5 h-1.5 rounded-full bg-red-500'} />}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />

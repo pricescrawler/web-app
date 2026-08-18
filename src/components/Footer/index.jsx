@@ -45,6 +45,13 @@ function Footer() {
         >
           {t('menu.privacy-terms')}
         </Link>
+        <span className={'text-white/20 text-xs'}>·</span>
+        <Link
+          className={'text-sm text-white/50 hover:text-white transition-colors'}
+          to={'/feedback'}
+        >
+          {t('menu.feedback')}
+        </Link>
         {!isSmallScreen && !isMobileApp && mobileAppUrl && (
           <>
             <span className={'text-white/20 text-xs'}>·</span>

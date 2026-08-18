@@ -7,12 +7,14 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import About from '@pages/About';
 import ErrorBoundary from '@components/ErrorBoundary';
 import Favorites from '@pages/Favorites';
+import Feedback from '@pages/Feedback';
 import Footer from '@components/Footer';
 import NavigationBar from '@components/NavigationBar';
 import PrivacyTerms from '@pages/PrivacyTerms';
 import ProductDetails from '@pages/ProductDetails';
 import ProductList from '@pages/ProductList';
 import ProductSearch from '@pages/ProductSearch';
+import WhatsNew from '@pages/WhatsNew';
 
 /**
  * `App`.
@@ -58,6 +60,14 @@ function App() {
             <Route
               element={<PrivacyTerms />}
               path={'/privacy-terms'}
+            />
+            <Route
+              element={<WhatsNew />}
+              path={'/whats-new'}
+            />
+            <Route
+              element={<Feedback />}
+              path={'/feedback'}
             />
           </Routes>
         </ErrorBoundary>

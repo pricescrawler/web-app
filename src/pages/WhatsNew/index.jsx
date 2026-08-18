@@ -20,8 +20,10 @@ function WhatsNew() {
       .then(({ data }) => {
         if (cancelled) return;
 
-        setEntries(data);
-        markChangelogAsSeen(data?.[0]?.date);
+        const list = Array.isArray(data) ? data : [];
+
+        setEntries(list);
+        markChangelogAsSeen(list[0]?.date);
       })
       .catch((error) => {
         if (cancelled) return;
@@ -38,41 +40,41 @@ function WhatsNew() {
   }, [t]);
 
   return (
-    <div className={'max-w-2xl mx-auto px-4 py-10'}>
-      <div className={'text-center mb-8'}>
-        <div
-          className={'inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-muted mb-4'}
-        >
-          <Sparkles
-            className={'text-muted-foreground'}
-            size={24}
-          />
-        </div>
-        <h2 className={'text-2xl font-bold tracking-tight'}>{t('menu.whats-new')}</h2>
-      </div>
+    <div className={'max-w-2xl mx-auto px-4 py-8'}>
+      <h2 className={'text-2xl font-bold tracking-tight mb-6 text-center'}>
+        {t('menu.whats-new')}
+      </h2>
 
-      <div className={'flex flex-col gap-4'}>
-        {!loading && entries.length === 0 && (
-          <p className={'text-sm text-muted-foreground text-center'}>
-            {t('pages.whats-new.empty')}
+      {!loading && entries.length === 0 ? (
+        <div className={'flex flex-col items-center justify-center min-h-[40vh] gap-3 text-center'}>
+          <Sparkles
+            className={'text-muted-foreground/30'}
+            size={48}
+          />
+          <p className={'text-muted-foreground font-medium'}>{t('pages.whats-new.empty.title')}</p>
+          <p className={'text-muted-foreground/70 text-sm'}>
+            {t('pages.whats-new.empty.subtitle')}
           </p>
-        )}
-        {entries.map((entry) => (
-          <Card key={entry.id}>
-            <CardContent className={'p-5 flex flex-col gap-1'}>
-              <div className={'flex items-center justify-between gap-2'}>
-                <span className={'font-semibold text-sm'}>{entry.title?.[locale]}</span>
-                <span className={'text-xs text-muted-foreground shrink-0'}>
-                  {new Date(entry.date).toLocaleDateString(locale)}
-                </span>
-              </div>
-              <p className={'text-sm text-muted-foreground leading-relaxed'}>
-                {entry.description?.[locale]}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className={'flex flex-col gap-4'}>
+          {entries.map((entry) => (
+            <Card key={entry.id}>
+              <CardContent className={'p-5 flex flex-col gap-1'}>
+                <div className={'flex items-center justify-between gap-2'}>
+                  <span className={'font-semibold text-sm'}>{entry.title?.[locale]}</span>
+                  <span className={'text-xs text-muted-foreground shrink-0'}>
+                    {new Date(entry.date).toLocaleDateString(locale)}
+                  </span>
+                </div>
+                <p className={'text-sm text-muted-foreground leading-relaxed'}>
+                  {entry.description?.[locale]}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

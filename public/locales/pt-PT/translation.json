@@ -85,7 +85,10 @@
       "delete-local-data-button": "Eliminar dados"
     },
     "whats-new": {
-      "empty": "Ainda não há novidades para mostrar."
+      "empty": {
+        "title": "Ainda não há novidades",
+        "subtitle": "Quando houver atualizações, vão aparecer aqui."
+      }
     },
     "feedback": {
       "subtitle": "Encontraste um problema ou tens uma sugestão? Diz-nos o que pensas.",

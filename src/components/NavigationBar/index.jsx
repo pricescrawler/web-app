@@ -48,7 +48,8 @@ function NavigationBar({ theme }) {
     api
       .get('/api/v1/changelog')
       .then(({ data }) => {
-        if (!cancelled) setLatestChangelogDate(data?.[0]?.date ?? null);
+        if (!cancelled)
+          setLatestChangelogDate(Array.isArray(data) ? (data[0]?.date ?? null) : null);
       })
       .catch(() => {});
 

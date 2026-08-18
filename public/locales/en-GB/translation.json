@@ -85,7 +85,10 @@
       "delete-local-data-button": "Delete Local Data"
     },
     "whats-new": {
-      "empty": "No news to show yet."
+      "empty": {
+        "title": "No news yet",
+        "subtitle": "Updates will show up here when there's something new."
+      }
     },
     "feedback": {
       "subtitle": "Found an issue or have a suggestion? Let us know what you think.",

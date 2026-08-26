@@ -23,7 +23,11 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
         'fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-2xl px-3 py-2 sm:px-4 sm:py-3'
       }
     >
-      <div className={'max-w-7xl mx-auto flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3'}>
+      <div
+        className={
+          'max-w-[1800px] mx-auto flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3'
+        }
+      >
         {/* Product pills */}
         <div className={'flex items-center gap-2 flex-1 overflow-x-auto'}>
           {items.map((item) => (

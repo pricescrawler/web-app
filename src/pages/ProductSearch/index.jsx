@@ -161,16 +161,27 @@ function ProductSearch() {
     <div>
       {/* Search section */}
       <div className={'border-b border-border/60 bg-background pt-8 pb-10 px-4'}>
-        <div className={'max-w-2xl mx-auto text-center mb-6'}>
-          <h1 className={'text-3xl sm:text-4xl font-bold tracking-tight mb-1'}>{t('menu.home')}</h1>
-        </div>
         {isMaintenanceMode === 'true' ? (
-          <div className={'max-w-2xl mx-auto'}>
-            <Maintenance />
-          </div>
+          <>
+            <div className={'max-w-2xl mx-auto text-center mb-6'}>
+              <h1 className={'text-3xl sm:text-4xl font-bold tracking-tight mb-1'}>
+                {t('menu.home')}
+              </h1>
+            </div>
+            <div className={'max-w-2xl mx-auto'}>
+              <Maintenance />
+            </div>
+          </>
         ) : (
-          <div className={'max-w-2xl mx-auto'}>
-            <SearchContainer />
+          <div className={'max-w-3xl mx-auto'}>
+            <div className={'text-center mb-6'}>
+              <h1 className={'text-3xl sm:text-4xl font-bold tracking-tight mb-1'}>
+                {t('menu.home')}
+              </h1>
+            </div>
+            <div>
+              <SearchContainer />
+            </div>
           </div>
         )}
       </div>
@@ -178,7 +189,7 @@ function ProductSearch() {
       {/* Results section */}
       {isMaintenanceMode !== 'true' && (
         <div
-          className={`max-w-7xl mx-auto px-4 py-6 ${comparisonItems.length > 0 ? 'pb-24 sm:pb-20' : ''}`}
+          className={`max-w-[1800px] mx-auto px-4 py-6 ${comparisonItems.length > 0 ? 'pb-24 sm:pb-20' : ''}`}
         >
           {isLoadingData ? (
             <Loader />
@@ -452,7 +463,7 @@ function ProductSearch() {
                       <AccordionContent className={'px-4 pb-5 pt-3'}>
                         <div
                           className={
-                            'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3'
+                            'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3'
                           }
                         >
                           {productCatalogs.products.map((product, idx) => (

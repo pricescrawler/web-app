@@ -220,13 +220,28 @@ function ProductDetails() {
         <div className={'flex items-baseline gap-2'}>
           {campaignPrice ? (
             <>
-              <span className={'text-2xl font-bold text-green-600 dark:text-green-400'}>
-                {campaignPrice}
+              <span
+                className={
+                  'text-2xl font-bold text-green-600 dark:text-green-400 max-w-[220px] truncate'
+                }
+                title={campaignPrice}
+              >
+                {utils.truncate(campaignPrice, 30)}
               </span>
-              <span className={'text-base text-muted-foreground line-through'}>{regularPrice}</span>
+              <span
+                className={'text-base text-muted-foreground line-through max-w-[160px] truncate'}
+                title={regularPrice}
+              >
+                {utils.truncate(regularPrice, 30)}
+              </span>
             </>
           ) : (
-            <span className={'text-2xl font-bold'}>{regularPrice}</span>
+            <span
+              className={'text-2xl font-bold max-w-[220px] truncate'}
+              title={regularPrice}
+            >
+              {utils.truncate(regularPrice, 30)}
+            </span>
           )}
         </div>
         {pricePerQuantity && <p className={'text-sm text-muted-foreground'}>{pricePerQuantity}</p>}
@@ -313,8 +328,11 @@ function ProductDetails() {
                   </span>
                   <p className={'text-sm font-medium leading-tight'}>{store.name}</p>
                   <div className={'flex items-baseline gap-2'}>
-                    <span className={'text-lg font-bold'}>
-                      {lastPrice.campaignPrice || lastPrice.regularPrice}
+                    <span
+                      className={'text-lg font-bold max-w-[140px] truncate'}
+                      title={lastPrice.campaignPrice || lastPrice.regularPrice}
+                    >
+                      {utils.truncate(lastPrice.campaignPrice || lastPrice.regularPrice, 30)}
                     </span>
                     <span className={'text-xs text-muted-foreground'}>{lastPrice.date}</span>
                   </div>
@@ -487,9 +505,24 @@ function ProductDetails() {
                     .sort((a, b) => new Date(b.date) - new Date(a.date))
                     .map((row, index) => (
                       <TableRow key={index}>
-                        <TableCell className={'text-center'}>{row.regularPrice}</TableCell>
-                        <TableCell className={'text-center'}>{row.campaignPrice}</TableCell>
-                        <TableCell className={'text-center'}>{row.pricePerQuantity}</TableCell>
+                        <TableCell
+                          className={'text-center max-w-[140px] truncate'}
+                          title={row.regularPrice}
+                        >
+                          {utils.truncate(row.regularPrice, 30)}
+                        </TableCell>
+                        <TableCell
+                          className={'text-center max-w-[140px] truncate'}
+                          title={row.campaignPrice}
+                        >
+                          {utils.truncate(row.campaignPrice, 30)}
+                        </TableCell>
+                        <TableCell
+                          className={'text-center max-w-[140px] truncate'}
+                          title={row.pricePerQuantity}
+                        >
+                          {utils.truncate(row.pricePerQuantity, 30)}
+                        </TableCell>
                         <TableCell className={'text-center'}>{row.quantity ?? row.name}</TableCell>
                         <TableCell className={'text-center text-muted-foreground text-xs'}>
                           {row.date}

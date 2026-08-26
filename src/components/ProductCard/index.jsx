@@ -15,13 +15,6 @@ import React, { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
- * Truncates a string to a maximum length, appending an ellipsis if needed.
- */
-
-const truncate = (value, max = 40) =>
-  value && value.length > max ? `${value.substring(0, max)}…` : value;
-
-/**
  * Function `ProductCard`.
  */
 
@@ -182,39 +175,59 @@ function ProductCard({
         <div className={'flex items-baseline gap-2'}>
           {hasCampaign ? (
             <>
-              <span className={'text-lg font-bold text-green-600 dark:text-green-400'}>
-                {productData.campaignPrice}
+              <span
+                className={'text-lg font-bold text-green-600 dark:text-green-400'}
+                title={productData.campaignPrice}
+              >
+                {utils.truncate(productData.campaignPrice, 30)}
               </span>
-              <span className={'text-sm text-muted-foreground line-through'}>
-                {productData.regularPrice}
+              <span
+                className={'text-sm text-muted-foreground line-through'}
+                title={productData.regularPrice}
+              >
+                {utils.truncate(productData.regularPrice, 30)}
               </span>
             </>
           ) : (
-            <span className={'text-lg font-bold'}>{productData.regularPrice || '-'}</span>
+            <span
+              className={'text-lg font-bold'}
+              title={productData.regularPrice}
+            >
+              {productData.regularPrice ? utils.truncate(productData.regularPrice, 30) : '-'}
+            </span>
           )}
         </div>
 
         {/* Price per quantity */}
-        <p className={'text-xs text-muted-foreground min-h-[1rem]'}>
-          {productData.pricePerQuantity ? truncate(productData.pricePerQuantity) : ''}
+        <p
+          className={'text-xs text-muted-foreground min-h-[1rem]'}
+          title={productData.pricePerQuantity}
+        >
+          {productData.pricePerQuantity ? utils.truncate(productData.pricePerQuantity) : ''}
         </p>
 
         {/* Meta info */}
         <div className={'mt-auto pt-2 border-t border-border/50 flex flex-col gap-1'}>
           {productData.brand && (
-            <p className={'text-xs text-muted-foreground'}>
+            <p
+              className={'text-xs text-muted-foreground'}
+              title={productData.brand}
+            >
               <span className={'font-medium text-foreground/70'}>
                 {t('data.product-fields.brand')}:
               </span>{' '}
-              {truncate(productData.brand, 30)}
+              {utils.truncate(productData.brand, 30)}
             </p>
           )}
           {productData.quantity && (
-            <p className={'text-xs text-muted-foreground'}>
+            <p
+              className={'text-xs text-muted-foreground'}
+              title={productData.quantity}
+            >
               <span className={'font-medium text-foreground/70'}>
                 {t('data.product-fields.quantity')}:
               </span>{' '}
-              {truncate(productData.quantity, 30)}
+              {utils.truncate(productData.quantity, 30)}
             </p>
           )}
         </div>

@@ -10,7 +10,6 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageSquareHeart } from 'lucide-react';
 import React, { useState } from 'react';
 import api from '@services/api';
 import { toast } from 'sonner';
@@ -53,14 +52,6 @@ function Feedback() {
   return (
     <div className={'max-w-2xl mx-auto px-4 py-10'}>
       <div className={'text-center mb-8'}>
-        <div
-          className={'inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-muted mb-4'}
-        >
-          <MessageSquareHeart
-            className={'text-muted-foreground'}
-            size={24}
-          />
-        </div>
         <h2 className={'text-2xl font-bold tracking-tight'}>{t('menu.feedback')}</h2>
         <p className={'text-sm text-muted-foreground mt-2'}>{t('pages.feedback.subtitle')}</p>
       </div>

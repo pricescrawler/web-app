@@ -30,7 +30,9 @@ function Footer() {
   return (
     <footer className={'mt-auto border-t border-border/50 bg-[#1a1d20]'}>
       <div
-        className={'max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-6'}
+        className={
+          'max-w-[1800px] mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-6'
+        }
       >
         <Link
           className={'text-sm text-white/50 hover:text-white transition-colors'}

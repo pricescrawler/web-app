@@ -178,7 +178,10 @@
   },
   "components": {
     "search-container": {
-      "loading-stores": "Loading stores…"
+      "loading-stores": "Loading stores…",
+      "choose-stores": "Choose stores",
+      "stores-selected": "{{count}} store selected",
+      "stores-selected_plural": "{{count}} stores selected"
     }
   },
   "data": {

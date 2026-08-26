@@ -163,24 +163,93 @@ export const moveProductToList = (key, toListId) => ({
 });
 
 /**
+ * Builds the URL a client-fetch-required catalog's search page lives at, by
+ * substituting `{query}` into the catalog's `clientFetchSearchUrlTemplate` (a path
+ * relative to its `baseUrl`).
+ */
+
+const buildClientFetchUrl = (catalog, query) => {
+  const path = (catalog.clientFetchSearchUrlTemplate || '').replace(
+    '{query}',
+    encodeURIComponent(query)
+  );
+
+  return new URL(path, catalog.baseUrl).toString();
+};
+
+/**
+ * Fetches a client-fetch-required catalog's search page directly from the browser
+ * (so the request comes from the user's own IP/session, not the backend's), then
+ * hands the raw HTML to the backend's content parser, which reuses the same parsing
+ * logic as a normal search — the backend itself never contacts the catalog. Only
+ * catalogs with `isClientFetchRequired` reach this path; the backend also enforces
+ * this server-side and rejects any other catalog.
+ */
+
+const searchClientFetchCatalog = (catalog, query) => {
+  const catalogKey = catalog.value.split('#')[0];
+
+  return fetch(buildClientFetchUrl(catalog, query))
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.text();
+    })
+    .then((html) =>
+      api.post('/api/v1/products/parser/list', {
+        catalog: catalogKey,
+        content: html,
+        date: new Date().toISOString()
+      })
+    )
+    .then((response) => ({
+      catalog: catalogKey.split('.').pop(),
+      data: { catalogName: catalog.label, historyEnabled: false },
+      locale: catalogKey.split('.')[0],
+      products: response.data
+    }))
+    .catch((error) => {
+      toast.error(
+        `Erro ao pesquisar ${catalog.label} diretamente do browser: ${error?.message ?? error}`
+      );
+      return {
+        catalog: catalogKey.split('.').pop(),
+        data: {},
+        locale: catalogKey.split('.')[0],
+        products: []
+      };
+    });
+};
+
+/**
  * Search.
  */
 
 export const search = (searchParam) => {
   const { selectedCatalogs = [], stringValue = '' } = searchParam;
+  const serverCatalogs = selectedCatalogs.filter((catalog) => !catalog.isClientFetchRequired);
+  const clientCatalogs = selectedCatalogs.filter((catalog) => catalog.isClientFetchRequired);
   const request = {
-    catalogs: selectedCatalogs.map((catalog) => catalog.value),
+    catalogs: serverCatalogs.map((catalog) => catalog.value),
     query: stringValue
   };
 
   return (dispatch) => {
     dispatch(getProductsStart());
-    api
-      .post('/api/v1/products/search', request)
-      .then((response) => {
-        const reorderedResponse = selectedCatalogs.map((catalog) => {
-          return response.data.find((item) => item.catalog === catalog.value.split('.').pop());
-        });
+
+    const serverSearch =
+      serverCatalogs.length > 0
+        ? api.post('/api/v1/products/search', request).then((response) => response.data)
+        : Promise.resolve([]);
+    const clientSearch = Promise.all(
+      clientCatalogs.map((catalog) => searchClientFetchCatalog(catalog, stringValue))
+    );
+
+    Promise.all([serverSearch, clientSearch])
+      .then(([serverResults, clientResults]) => {
+        const allResults = [...serverResults, ...clientResults];
+        const reorderedResponse = selectedCatalogs.map((catalog) =>
+          allResults.find((item) => item.catalog === catalog.value.split('.').pop())
+        );
 
         dispatch(getSearchProducts(reorderedResponse, searchParam));
       })

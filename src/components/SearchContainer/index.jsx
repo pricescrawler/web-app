@@ -15,8 +15,8 @@ import {
   CommandList
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Search, QrCode, X, ChevronDown } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { Search, QrCode, X, ChevronDown, ChevronRight } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import api from '@services/api';
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
@@ -26,6 +26,8 @@ import { useTranslation } from 'react-i18next';
  * `SearchContainer`.
  */
 
+const SELECTED_CATALOGS_STORAGE_KEY = 'selectedCatalogValues';
+
 const SearchContainer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -33,10 +35,12 @@ const SearchContainer = () => {
   const [catalogs, setCatalogs] = useState([]);
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(true);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [catalogFilter, setCatalogFilter] = useState('');
+  const [expandedCategories, setExpandedCategories] = useState(new Set());
+  const [expandedStoreGroups, setExpandedStoreGroups] = useState(new Set());
   const inputErrorT = t('pages.search.input-error');
   const catalogErrorT = t('pages.search.catalog-error');
   const videoRef = useRef(null);
-  const [experimentalFeatures, setExperimentalFeatures] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -44,28 +48,34 @@ const SearchContainer = () => {
     catalogs.filter((catalog) => catalog.selected)
   );
 
+  const [scannerActive, setScannerActive] = useState(false);
+
   const handleError = (error) => {
     toast.error(String(error));
+    setScannerActive(false);
   };
 
   const handleScan = (result) => {
     setSearchValue(result.getText());
     dispatch(productsActions.search({ selectedCatalogs, stringValue: result.getText() }));
     scanner.stop();
+    setScannerActive(false);
   };
 
-  const startScanner = () => {
+  const toggleScanner = () => {
+    if (scannerActive) {
+      scanner.stop();
+      setScannerActive(false);
+
+      return;
+    }
+
     setSearchValue('');
+    setScannerActive(true);
     scanner.barcode(videoRef.current, handleScan, handleError);
   };
 
-  useEffect(() => {
-    const experimentalEnabledLS = localStorage.getItem('experimentalEnabled');
-
-    if (experimentalEnabledLS !== null) {
-      setExperimentalFeatures(JSON.parse(experimentalEnabledLS));
-    }
-  }, []);
+  useEffect(() => scanner.stop, []);
 
   useEffect(() => {
     try {
@@ -75,6 +85,50 @@ const SearchContainer = () => {
       setSearchHistory([]);
     }
   }, []);
+
+  /**
+   * Seeds which categories start expanded — any category that already has a
+   * selection (the resolved selection: the user's own last pick if valid, otherwise
+   * the backend's curated defaults) opens automatically, everything else starts
+   * collapsed so a long catalog list (currently ~20 catalogs across 4 categories,
+   * one with ~70 stores) doesn't dump everything on screen at once.
+   */
+
+  const seedExpandedCategories = (resolvedSelected) => {
+    const categoryIds = new Set(resolvedSelected.map((catalog) => catalog.categoryId));
+
+    setExpandedCategories(categoryIds);
+  };
+
+  /**
+   * Restores which catalogs should start selected: the user's own last choice
+   * (persisted in local storage) if it still validates against the current catalog
+   * list, otherwise the backend's curated defaults (data.selected.public). Covers
+   * first-time visitors and the case where every catalog the user had picked was
+   * since deactivated or removed — falling back instead of showing zero results.
+   */
+
+  const resolveSelectedCatalogs = (fetchedCatalogs) => {
+    let storedValues = null;
+
+    try {
+      storedValues = JSON.parse(localStorage.getItem(SELECTED_CATALOGS_STORAGE_KEY));
+    } catch {
+      storedValues = null;
+    }
+
+    if (Array.isArray(storedValues) && storedValues.length > 0) {
+      const validated = fetchedCatalogs.filter((catalog) => storedValues.includes(catalog.value));
+
+      if (validated.length > 0) return validated;
+    }
+
+    return fetchedCatalogs.filter((catalog) => catalog.selected);
+  };
+
+  const persistSelectedCatalogs = (list) => {
+    localStorage.setItem(SELECTED_CATALOGS_STORAGE_KEY, JSON.stringify(list.map((c) => c.value)));
+  };
 
   useEffect(() => {
     const cachedData = localStorage.getItem('catalogData');
@@ -86,9 +140,11 @@ const SearchContainer = () => {
 
       if (currentTime - parseInt(cachedTimestamp, 10) < cacheDuration) {
         const parsedData = JSON.parse(cachedData);
+        const resolvedSelected = resolveSelectedCatalogs(parsedData);
 
         setCatalogs(parsedData);
-        setSelectedCatalogs(parsedData.filter((catalog) => catalog.selected));
+        setSelectedCatalogs(resolvedSelected);
+        seedExpandedCategories(resolvedSelected);
         setIsLoadingCatalogs(false);
 
         return;
@@ -109,6 +165,12 @@ const SearchContainer = () => {
               if (catalog.active) {
                 if (catalog.stores.length === 0) {
                   fetchedCatalogs.push({
+                    baseUrl: catalog.baseUrl,
+                    categoryId: category.id,
+                    categoryName: category.name,
+                    clientFetchSearchUrlTemplate: catalog.clientFetchSearchUrlTemplate,
+                    isClientFetchRequired: catalog.isClientFetchRequired,
+                    kind: 'catalog',
                     label: catalog.name,
                     selected: catalog.data.selected,
                     value: catalog.id
@@ -116,7 +178,12 @@ const SearchContainer = () => {
                 } else {
                   catalog.stores.forEach((store) => {
                     fetchedCatalogs.push({
+                      categoryId: category.id,
+                      categoryName: category.name,
+                      kind: 'store',
                       label: `${catalog.name} - ${store.name}`,
+                      parentCatalogId: catalog.id,
+                      parentCatalogLabel: catalog.name,
                       selected: !!store.data.selected,
                       value: `${catalog.id}#${store.id}`
                     });
@@ -129,8 +196,12 @@ const SearchContainer = () => {
 
         localStorage.setItem('catalogData', JSON.stringify(fetchedCatalogs));
         localStorage.setItem('catalogDataTimestamp', new Date().getTime().toString());
+
+        const resolvedSelected = resolveSelectedCatalogs(fetchedCatalogs);
+
         setCatalogs(fetchedCatalogs);
-        setSelectedCatalogs(fetchedCatalogs.filter((catalog) => catalog.selected));
+        setSelectedCatalogs(resolvedSelected);
+        seedExpandedCategories(resolvedSelected);
         setIsLoadingCatalogs(false);
       })
       .catch((error) => {
@@ -141,21 +212,120 @@ const SearchContainer = () => {
 
   const toggleCatalog = (catalog) => {
     const isSelected = selectedCatalogs.some((c) => c.value === catalog.value);
+    const updated = isSelected
+      ? selectedCatalogs.filter((c) => c.value !== catalog.value)
+      : [...selectedCatalogs, catalog];
 
-    if (isSelected) {
-      setSelectedCatalogs(selectedCatalogs.filter((c) => c.value !== catalog.value));
-    } else {
-      setSelectedCatalogs([...selectedCatalogs, catalog]);
-    }
+    setSelectedCatalogs(updated);
+    persistSelectedCatalogs(updated);
   };
 
   const toggleAll = () => {
-    if (selectedCatalogs.length === catalogs.length) {
-      setSelectedCatalogs([]);
-    } else {
-      setSelectedCatalogs([...catalogs]);
-    }
+    const updated = selectedCatalogs.length === catalogs.length ? [] : [...catalogs];
+
+    setSelectedCatalogs(updated);
+    persistSelectedCatalogs(updated);
   };
+
+  const toggleCategoryExpanded = (categoryId) => {
+    setExpandedCategories((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(categoryId)) next.delete(categoryId);
+      else next.add(categoryId);
+
+      return next;
+    });
+  };
+
+  const toggleStoreGroupExpanded = (parentCatalogId) => {
+    setExpandedStoreGroups((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(parentCatalogId)) next.delete(parentCatalogId);
+      else next.add(parentCatalogId);
+
+      return next;
+    });
+  };
+
+  /**
+   * Selects/deselects every standalone (store-less) catalog in a category. Deliberately
+   * leaves store-based catalogs (e.g. Intermarché's ~70 stores) alone — bulk-selecting
+   * every store at once is rarely what "select this category" means to a user.
+   */
+
+  const toggleCategoryStandalone = (standaloneCatalogs) => {
+    const allSelected = standaloneCatalogs.every((catalog) =>
+      selectedCatalogs.some((selected) => selected.value === catalog.value)
+    );
+
+    const updated = allSelected
+      ? selectedCatalogs.filter(
+          (selected) => !standaloneCatalogs.some((catalog) => catalog.value === selected.value)
+        )
+      : [
+          ...selectedCatalogs,
+          ...standaloneCatalogs.filter(
+            (catalog) => !selectedCatalogs.some((selected) => selected.value === catalog.value)
+          )
+        ];
+
+    setSelectedCatalogs(updated);
+    persistSelectedCatalogs(updated);
+  };
+
+  /**
+   * Groups the flat catalog list into category → (standalone catalogs, store groups)
+   * for rendering. Kept as a plain flat array for selection state/search dispatch —
+   * this is a derived view, not a second source of truth.
+   */
+
+  const groupedCatalogs = useMemo(() => {
+    const categories = new Map();
+
+    catalogs.forEach((entry) => {
+      if (!categories.has(entry.categoryId)) {
+        categories.set(entry.categoryId, {
+          categoryName: entry.categoryName,
+          standalone: [],
+          storeGroups: new Map()
+        });
+      }
+
+      const category = categories.get(entry.categoryId);
+
+      if (entry.kind === 'catalog') {
+        category.standalone.push(entry);
+      } else {
+        if (!category.storeGroups.has(entry.parentCatalogId)) {
+          category.storeGroups.set(entry.parentCatalogId, {
+            parentCatalogLabel: entry.parentCatalogLabel,
+            stores: []
+          });
+        }
+
+        category.storeGroups.get(entry.parentCatalogId).stores.push(entry);
+      }
+    });
+
+    return Array.from(categories.entries())
+      .map(([categoryId, value]) => ({
+        categoryId,
+        categoryName: value.categoryName,
+        standalone: [...value.standalone].sort((a, b) => a.label.localeCompare(b.label)),
+        storeGroups: Array.from(value.storeGroups.entries())
+          .map(([parentCatalogId, group]) => ({
+            parentCatalogId,
+            parentCatalogLabel: group.parentCatalogLabel,
+            stores: [...group.stores].sort((a, b) => a.label.localeCompare(b.label))
+          }))
+          .sort((a, b) => a.parentCatalogLabel.localeCompare(b.parentCatalogLabel))
+      }))
+      .sort((a, b) => a.categoryName.localeCompare(b.categoryName));
+  }, [catalogs]);
+
+  const isFiltering = catalogFilter.trim() !== '';
 
   const removeFromHistory = (event, itemToRemove) => {
     event.preventDefault();
@@ -185,13 +355,6 @@ const SearchContainer = () => {
       toast.warning(inputErrorT);
     }
   };
-
-  const sortedCatalogs = [...catalogs].sort((a, b) => {
-    if (a.selected && !b.selected) return -1;
-    if (!a.selected && b.selected) return 1;
-
-    return a.label.localeCompare(b.label);
-  });
 
   const allSelected = selectedCatalogs.length === catalogs.length && catalogs.length > 0;
 
@@ -236,9 +399,10 @@ const SearchContainer = () => {
                       className={'hover:opacity-70 transition-opacity'}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedCatalogs(
-                          selectedCatalogs.filter((c) => c.value !== catalog.value)
-                        );
+                        const updated = selectedCatalogs.filter((c) => c.value !== catalog.value);
+
+                        setSelectedCatalogs(updated);
+                        persistSelectedCatalogs(updated);
                       }}
                       type={'button'}
                     >
@@ -263,9 +427,12 @@ const SearchContainer = () => {
           align={'start'}
           className={'p-0 w-[var(--radix-popover-trigger-width)] max-w-lg shadow-2xl'}
         >
-          <Command>
-            <CommandInput placeholder={'Pesquisar loja…'} />
-            <CommandList className={'max-h-64'}>
+          <Command shouldFilter={true}>
+            <CommandInput
+              onValueChange={setCatalogFilter}
+              placeholder={'Pesquisar loja…'}
+            />
+            <CommandList className={'max-h-80'}>
               <CommandEmpty>Nenhuma loja encontrada.</CommandEmpty>
               <CommandGroup>
                 <CommandItem
@@ -281,21 +448,136 @@ const SearchContainer = () => {
                   <span className={'ml-auto text-xs text-muted-foreground'}>{catalogs.length}</span>
                 </CommandItem>
               </CommandGroup>
-              <CommandGroup>
-                {sortedCatalogs.map((catalog) => (
-                  <CommandItem
-                    key={catalog.value}
-                    onSelect={() => toggleCatalog(catalog)}
-                    value={catalog.label}
+              {groupedCatalogs.map((category) => {
+                const categoryExpanded = isFiltering || expandedCategories.has(category.categoryId);
+                const standaloneSelectedCount = category.standalone.filter((catalog) =>
+                  selectedCatalogs.some((selected) => selected.value === catalog.value)
+                ).length;
+                const categoryTotal =
+                  category.standalone.length +
+                  category.storeGroups.reduce((acc, group) => acc + group.stores.length, 0);
+
+                return (
+                  <CommandGroup
+                    heading={category.categoryName}
+                    key={category.categoryId}
                   >
-                    <Checkbox
-                      checked={selectedCatalogs.some((c) => c.value === catalog.value)}
-                      className={'mr-2'}
-                    />
-                    {catalog.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                    <CommandItem
+                      onSelect={() => toggleCategoryExpanded(category.categoryId)}
+                      value={`cat:${category.categoryName}`}
+                    >
+                      {categoryExpanded ? (
+                        <ChevronDown
+                          className={'mr-1 text-muted-foreground shrink-0'}
+                          size={14}
+                        />
+                      ) : (
+                        <ChevronRight
+                          className={'mr-1 text-muted-foreground shrink-0'}
+                          size={14}
+                        />
+                      )}
+                      {category.standalone.length > 0 && (
+                        <Checkbox
+                          checked={
+                            standaloneSelectedCount === category.standalone.length
+                              ? true
+                              : standaloneSelectedCount > 0
+                                ? 'indeterminate'
+                                : false
+                          }
+                          className={'mr-2'}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCategoryStandalone(category.standalone);
+                          }}
+                        />
+                      )}
+                      <span className={'font-medium'}>{category.categoryName}</span>
+                      <span className={'ml-auto text-xs text-muted-foreground'}>
+                        {categoryTotal}
+                      </span>
+                    </CommandItem>
+
+                    {categoryExpanded && (
+                      <>
+                        {category.standalone.map((catalog) => (
+                          <CommandItem
+                            className={'pl-8'}
+                            key={catalog.value}
+                            onSelect={() => toggleCatalog(catalog)}
+                            value={catalog.label}
+                          >
+                            <Checkbox
+                              checked={selectedCatalogs.some((c) => c.value === catalog.value)}
+                              className={'mr-2'}
+                            />
+                            {catalog.label}
+                          </CommandItem>
+                        ))}
+
+                        {category.storeGroups.map((group) => {
+                          const groupExpanded =
+                            isFiltering || expandedStoreGroups.has(group.parentCatalogId);
+                          const selectedStoreCount = group.stores.filter((store) =>
+                            selectedCatalogs.some((selected) => selected.value === store.value)
+                          ).length;
+
+                          return (
+                            <React.Fragment key={group.parentCatalogId}>
+                              <CommandItem
+                                className={'pl-8'}
+                                onSelect={() => toggleStoreGroupExpanded(group.parentCatalogId)}
+                                value={`store-group:${group.parentCatalogLabel}`}
+                              >
+                                {groupExpanded ? (
+                                  <ChevronDown
+                                    className={'mr-1 text-muted-foreground shrink-0'}
+                                    size={14}
+                                  />
+                                ) : (
+                                  <ChevronRight
+                                    className={'mr-1 text-muted-foreground shrink-0'}
+                                    size={14}
+                                  />
+                                )}
+                                {group.parentCatalogLabel}
+                                <span
+                                  className={`ml-auto text-xs ${selectedStoreCount > 0 ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+                                >
+                                  {selectedStoreCount > 0
+                                    ? t('components.search-container.stores-selected', {
+                                        count: selectedStoreCount
+                                      })
+                                    : t('components.search-container.choose-stores')}
+                                </span>
+                              </CommandItem>
+
+                              {groupExpanded &&
+                                group.stores.map((store) => (
+                                  <CommandItem
+                                    className={'pl-14'}
+                                    key={store.value}
+                                    onSelect={() => toggleCatalog(store)}
+                                    value={store.label}
+                                  >
+                                    <Checkbox
+                                      checked={selectedCatalogs.some(
+                                        (c) => c.value === store.value
+                                      )}
+                                      className={'mr-2'}
+                                    />
+                                    {store.label}
+                                  </CommandItem>
+                                ))}
+                            </React.Fragment>
+                          );
+                        })}
+                      </>
+                    )}
+                  </CommandGroup>
+                );
+              })}
             </CommandList>
           </Command>
         </PopoverContent>
@@ -372,23 +654,28 @@ const SearchContainer = () => {
           >
             {t('general.search')}
           </Button>
-          {experimentalFeatures && (
-            <button
-              className={
-                'w-12 h-[46px] flex items-center justify-center rounded-lg border border-input hover:bg-muted transition-colors'
-              }
-              onClick={startScanner}
-              type={'button'}
-            >
+          <button
+            className={
+              'w-12 h-[46px] flex items-center justify-center rounded-lg border border-input hover:bg-muted transition-colors'
+            }
+            onClick={toggleScanner}
+            type={'button'}
+          >
+            {scannerActive ? (
+              <X
+                className={'text-muted-foreground'}
+                size={18}
+              />
+            ) : (
               <QrCode
                 className={'text-muted-foreground'}
                 size={18}
               />
-            </button>
-          )}
+            )}
+          </button>
         </div>
 
-        {experimentalFeatures && !searchValue && (
+        {scannerActive && (
           <div className={'mt-3 flex justify-center'}>
             <video
               autoPlay

@@ -386,7 +386,7 @@ function ProductList() {
   );
 
   return (
-    <div className={'max-w-7xl mx-auto px-4 py-8'}>
+    <div className={'max-w-[1800px] mx-auto px-4 py-8'}>
       <h2 className={'text-2xl font-bold tracking-tight mb-6 text-center'}>
         {t('title.products-list')}
       </h2>
@@ -570,17 +570,30 @@ function ProductList() {
                                 <div className={'flex flex-col items-center'}>
                                   <span
                                     className={
-                                      'font-bold text-green-600 dark:text-green-400 text-sm'
+                                      'font-bold text-green-600 dark:text-green-400 text-sm max-w-[100px] sm:max-w-[140px] truncate'
                                     }
+                                    title={campaignPrice}
                                   >
                                     {campaignPrice}
                                   </span>
-                                  <span className={'text-xs text-muted-foreground line-through'}>
+                                  <span
+                                    className={
+                                      'text-xs text-muted-foreground line-through max-w-[100px] sm:max-w-[140px] truncate'
+                                    }
+                                    title={regularPrice}
+                                  >
                                     {regularPrice}
                                   </span>
                                 </div>
                               ) : (
-                                <span className={'font-semibold text-sm'}>{regularPrice}</span>
+                                <span
+                                  className={
+                                    'font-semibold text-sm max-w-[100px] sm:max-w-[140px] truncate inline-block'
+                                  }
+                                  title={regularPrice}
+                                >
+                                  {regularPrice}
+                                </span>
                               )}
                             </TableCell>
                             <TableCell

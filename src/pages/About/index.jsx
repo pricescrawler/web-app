@@ -1,9 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { ExternalLink, FlaskConical, Info, Mail, Smartphone, Star } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { ExternalLink, Info, Mail, Smartphone, Star } from 'lucide-react';
+import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import packageJson from '../../../package.json';
 import { useTranslation } from 'react-i18next';
@@ -13,23 +11,6 @@ function About() {
   const email = `mailto:${import.meta.env.VITE_EMAIL}`;
   const donateUrl = import.meta.env.VITE_DONATE_URL;
   const mobileAppUrl = import.meta.env.VITE_MOBILE_APP_URL;
-  const isMobileApp = localStorage.getItem('isMobileApp') === 'true';
-
-  const [experimentalEnabled, setExperimentalEnabled] = useState(false);
-
-  useEffect(() => {
-    const val = localStorage.getItem('experimentalEnabled');
-
-    if (val !== null) setExperimentalEnabled(JSON.parse(val));
-    if (isMobileApp) setExperimentalEnabled(false);
-  }, [isMobileApp]);
-
-  const handleExperimentalToggle = () => {
-    const newValue = !experimentalEnabled;
-
-    setExperimentalEnabled(newValue);
-    localStorage.setItem('experimentalEnabled', JSON.stringify(newValue));
-  };
 
   return (
     <div className={'max-w-2xl mx-auto px-4 py-10'}>
@@ -85,31 +66,6 @@ function About() {
             </a>
           </CardContent>
         </Card>
-
-        {/* Experimental features */}
-        {!isMobileApp && (
-          <Card>
-            <CardContent className={'p-5 flex items-center justify-between'}>
-              <div className={'flex items-center gap-2'}>
-                <FlaskConical
-                  className={'text-muted-foreground'}
-                  size={16}
-                />
-                <Label
-                  className={'text-sm cursor-pointer'}
-                  htmlFor={'experimental-toggle'}
-                >
-                  {t('pages.about.experimental-features')}
-                </Label>
-              </div>
-              <Switch
-                checked={experimentalEnabled}
-                id={'experimental-toggle'}
-                onCheckedChange={handleExperimentalToggle}
-              />
-            </CardContent>
-          </Card>
-        )}
 
         {/* Mobile app */}
         {mobileAppUrl && (

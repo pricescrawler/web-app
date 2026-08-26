@@ -128,7 +128,8 @@ function ComparisonModal({ items, open, onOpenChange }) {
                       <span className={'text-xs text-muted-foreground'}>{row.label}</span>
                       {value ? (
                         <span
-                          className={`text-xs font-medium ${isBest ? 'text-green-600 dark:text-green-400 font-bold' : ''}`}
+                          className={`text-xs font-medium max-w-[140px] truncate ${isBest ? 'text-green-600 dark:text-green-400 font-bold' : ''}`}
+                          title={value}
                         >
                           {isBest && (
                             <span
@@ -139,7 +140,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
                               {t('general.comparison.best')}
                             </span>
                           )}
-                          {value}
+                          {utils.truncate(value, 30)}
                         </span>
                       ) : (
                         <span className={'text-xs text-muted-foreground'}>—</span>
@@ -230,9 +231,8 @@ function ComparisonModal({ items, open, onOpenChange }) {
                         >
                           {value ? (
                             <span
-                              className={
-                                isBest ? 'font-bold text-green-600 dark:text-green-400' : ''
-                              }
+                              className={`inline-block max-w-[180px] truncate align-bottom ${isBest ? 'font-bold text-green-600 dark:text-green-400' : ''}`}
+                              title={value}
                             >
                               {isBest && (
                                 <span
@@ -243,7 +243,7 @@ function ComparisonModal({ items, open, onOpenChange }) {
                                   {t('general.comparison.best')}
                                 </span>
                               )}
-                              {value}
+                              {utils.truncate(value, 30)}
                             </span>
                           ) : (
                             <span className={'text-muted-foreground'}>—</span>

@@ -90,3 +90,17 @@ export const renderCatalogName = (product) => {
 export const handleImageError = (e) => {
   e.target.style.display = 'none';
 };
+
+/**
+ * Truncates a string to a maximum length, appending an ellipsis if needed. Used as a
+ * safety net for card/table layouts against unexpectedly long values (e.g. a
+ * catalog's price field occasionally including extra promo text scraped from the
+ * source site) — pair with a `title` attribute on the rendering element so the full
+ * value is still available on hover.
+ * @param {string} value - The string to truncate.
+ * @param {number} [max=40] - The maximum length before truncating.
+ * @returns {string} The truncated string, or the original if within the limit.
+ * */
+
+export const truncate = (value, max = 40) =>
+  value && value.length > max ? `${value.substring(0, max)}…` : value;

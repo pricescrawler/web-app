@@ -82,16 +82,6 @@ export const renderCatalogName = (product) => {
 };
 
 /**
- * Hides a broken image by setting its display to none.
- * Shared handler for onError across all product image elements.
- * @param {React.SyntheticEvent} e - The image error event.
- * */
-
-export const handleImageError = (e) => {
-  e.target.style.display = 'none';
-};
-
-/**
  * Truncates a string to a maximum length, appending an ellipsis if needed. Used as a
  * safety net for card/table layouts against unexpectedly long values (e.g. a
  * catalog's price field occasionally including extra promo text scraped from the

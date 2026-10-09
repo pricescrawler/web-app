@@ -5,6 +5,7 @@
 
 import { X, GitCompareArrows, Trash2 } from 'lucide-react';
 import React from 'react';
+import ProductImage from '@components/ProductImage';
 import * as utils from '@services/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -37,12 +38,10 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
               }
               key={`${item.locale}.${item.catalog}.${item.productData.reference}`}
             >
-              <img
+              <ProductImage
                 alt={item.productData.name}
                 className={'w-7 h-7 sm:w-8 sm:h-8 object-contain flex-shrink-0'}
-                referrerPolicy={'no-referrer'}
-                src={item.productData.imageUrl || '/logo.png'}
-                onError={utils.handleImageError}
+                src={item.productData.imageUrl}
               />
               <div className={'flex flex-col min-w-0 hidden sm:flex'}>
                 <span className={'text-xs font-medium truncate max-w-[100px]'}>

@@ -28,6 +28,7 @@
     "mobile-app": "Aplicação Móvel"
   },
   "general": {
+    "image-unavailable": "Imagem indisponível",
     "total-price": "Preço Total",
     "total-price-by-catalog": "Preço Total por Catálogo",
     "search": "Pesquisar",

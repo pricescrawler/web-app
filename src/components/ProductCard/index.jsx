@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Check, ExternalLink, GitCompareArrows, Heart, History, Plus, Tag } from 'lucide-react';
 import React, { memo, useCallback, useState } from 'react';
+import ProductImage from '@components/ProductImage';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -151,14 +152,13 @@ function ProductCard({
 
       {/* Product image */}
       <div className={'relative flex items-center justify-center p-4 h-[140px] overflow-hidden'}>
-        <img
+        <ProductImage
           alt={productData.name || 'Product'}
           className={
             'max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105'
           }
-          referrerPolicy={'no-referrer'}
-          src={productData.imageUrl || '/logo.png'}
-          onError={utils.handleImageError}
+          showLabel
+          src={productData.imageUrl}
         />
       </div>
 

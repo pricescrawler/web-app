@@ -31,6 +31,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@components/Loader';
 import PricesChart from '@components/PricesChart';
+import ProductImage from '@components/ProductImage';
 import api from '@services/api';
 import { selectActiveListItems } from '@services/store/products/productsSelectors';
 import { useTranslation } from 'react-i18next';
@@ -398,11 +399,10 @@ function ProductDetails() {
                 'flex-shrink-0 flex items-center justify-center bg-muted/40 rounded-lg p-4 w-full md:w-48 h-48'
               }
             >
-              <img
+              <ProductImage
                 alt={product.name}
                 className={'max-h-full max-w-full object-contain'}
-                loading={'lazy'}
-                referrerPolicy={'no-referrer'}
+                showLabel
                 src={product.imageUrl}
               />
             </div>

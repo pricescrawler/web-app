@@ -117,7 +117,7 @@ export const productsData = (state = initialState.products, action = {}) => {
     }
 
     case actionTypes.GET_PRODUCTS_FAIL: {
-      return {};
+      return [];
     }
 
     default:

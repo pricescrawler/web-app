@@ -104,3 +104,17 @@ export const handleImageError = (e) => {
 
 export const truncate = (value, max = 40) =>
   value && value.length > max ? `${value.substring(0, max)}…` : value;
+
+/**
+ * Escapes a value for safe interpolation into HTML.
+ * @param {*} value - The value to escape; null and undefined become an empty string.
+ * @returns {string} The escaped text.
+ * */
+
+export const escapeHtml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');

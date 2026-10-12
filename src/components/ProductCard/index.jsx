@@ -120,7 +120,7 @@ function ProductCard({
       {/* Top-left action buttons: heart (above) + compare (below) */}
       <div className={'absolute top-3 left-3 z-10 flex flex-col gap-1'}>
         <button
-          className={`rounded-full p-1.5 shadow-md transition-colors cursor-pointer ${
+          className={`rounded-full p-1.5 shadow-md transition active:scale-90 cursor-pointer ${
             isFavorite
               ? 'bg-red-500 text-white'
               : 'bg-background/80 text-muted-foreground hover:bg-background hover:text-red-500 border border-border'
@@ -136,7 +136,7 @@ function ProductCard({
 
         {onToggleCompare && (
           <button
-            className={`rounded-full p-1.5 shadow-md transition-colors cursor-pointer ${
+            className={`rounded-full p-1.5 shadow-md transition active:scale-90 cursor-pointer ${
               isInComparison
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground border border-border'
@@ -252,6 +252,7 @@ function ProductCard({
         {historyEnabled && (
           <Link
             className={'flex-1'}
+            viewTransition
             to={`/product/${locale}/${catalog}/${productData.reference}`}
           >
             <button

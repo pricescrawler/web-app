@@ -20,7 +20,7 @@ function ComparisonBar({ items, onRemove, onClear, onCompare }) {
   return (
     <div
       className={
-        'fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-2xl px-3 py-2 sm:px-4 sm:py-3'
+        'fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-2xl px-3 py-2 sm:px-4 sm:py-3 animate-slide-up'
       }
     >
       <div

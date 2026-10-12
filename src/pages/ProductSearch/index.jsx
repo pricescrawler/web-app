@@ -369,7 +369,7 @@ function ProductSearch() {
                   {filteredProducts.map((productCatalogs, index) => (
                     <div
                       className={
-                        'border border-border rounded-lg shadow-sm overflow-hidden bg-card'
+                        'border border-border rounded-lg shadow-sm overflow-hidden bg-card animate-rise'
                       }
                       key={index}
                     >
@@ -437,7 +437,7 @@ function ProductSearch() {
                   {filteredProducts.map((productCatalogs, index) => (
                     <AccordionItem
                       className={
-                        'border border-border rounded-lg mb-4 shadow-sm overflow-hidden bg-card border-l-4 border-l-primary/40'
+                        'border border-border rounded-lg mb-4 shadow-sm overflow-hidden bg-card border-l-4 border-l-primary/40 animate-rise'
                       }
                       key={index}
                       value={`item-${index}`}

@@ -618,7 +618,10 @@ function ProductList() {
                             <TableCell>
                               <div className={'flex items-center justify-center gap-1'}>
                                 {historyEnabled && (
-                                  <Link to={`/product/${locale}/${catalog}/${reference}`}>
+                                  <Link
+                                    to={`/product/${locale}/${catalog}/${reference}`}
+                                    viewTransition
+                                  >
                                     {iconBtn(null, <History size={12} />)}
                                   </Link>
                                 )}

@@ -72,9 +72,6 @@
   "pages": {
     "about": {
       "contact": "Contact",
-      "text1": "The main goal of this project is to enable the search of product prices in online stores and save them for future comparison and analysis.",
-      "text2": "Product data is collected automatically and may contain errors or inconsistencies. If you find any, please contact us.",
-      "text3": "This project is non-commercial and is not affiliated with any company or organization. It is open-source and can be used by anyone.",
       "version": "Version",
       "experimental-features": "Experimental Features"
     },

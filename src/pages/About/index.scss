@@ -1,1 +1,42 @@
-/* About page styles handled by Tailwind */
+.search-demo-row {
+  animation: about-rise 0.4s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  animation-delay: calc(0.3s + var(--i) * 0.15s);
+}
+
+.search-demo-cheapest {
+  animation: about-stamp 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.4) 1.2s both;
+}
+
+.pipeline-stage {
+  animation: about-highlight 0.9s ease both;
+  animation-delay: calc(1.6s + var(--i) * 0.35s);
+}
+
+@keyframes about-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes about-stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.8) rotate(-8deg);
+  }
+}
+
+@keyframes about-highlight {
+  40% {
+    border-color: var(--foreground);
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-demo-row,
+  .search-demo-cheapest,
+  .pipeline-stage {
+    animation: none;
+  }
+}

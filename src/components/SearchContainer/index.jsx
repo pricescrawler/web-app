@@ -72,8 +72,13 @@ const SearchContainer = () => {
 
     setSearchValue('');
     setScannerActive(true);
-    scanner.barcode(videoRef.current, handleScan, handleError);
   };
+
+  useEffect(() => {
+    if (scannerActive) {
+      scanner.barcode(videoRef.current, handleScan, handleError);
+    }
+  }, [scannerActive]);
 
   useEffect(() => scanner.stop, []);
 

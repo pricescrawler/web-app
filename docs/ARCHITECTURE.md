@@ -57,13 +57,15 @@ browser.
 
 ## Testing & tooling
 
-- **Vitest** (`yarn test`, jsdom) with Testing Library; coverage via
-  `yarn test:coverage`.
-- ESLint (airbnb config + plugins, `yarn lint:check`) and Prettier
-  (`yarn format:check`); husky + lint-staged on commit; commitlint (conventional
-  commits, `yarn commit`).
+- **Vitest** (`npm test`, jsdom) with Testing Library; coverage via
+  `npm run test:coverage`.
+- ESLint (flat config with `eslint-plugin-react`, `npm run lint:check`) and Prettier
+  (`npm run format:check`); husky + lint-staged on commit; commitlint (conventional
+  commits, `npm run commit`).
 - **PWA** via `vite-plugin-pwa` (service worker generated at build).
-- Deploys on Vercel (`vercel.json`); Docker build via `Dockerfile` (port 3000).
+- Deploys on Vercel (`vercel.json`); Docker image builds the app and serves `dist/`
+  with nginx on port 3000 (`VITE_*` values are build args).
 
-> ⚠️ Package manager: **Yarn** (npm fails on a peer-dependency conflict between
-> eslint 10 and `eslint-plugin-flowtype`).
+> Package manager: **npm** with the committed `package-lock.json` (CI and Docker use
+> `npm ci`). `.npmrc` sets `legacy-peer-deps` because `eslint-plugin-react` 7 still
+> declares eslint <= 9 as a peer.

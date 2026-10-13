@@ -26,24 +26,24 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Installation and Setup Instructions
 
-⚠️ Using [Yarn Package Manager](https://yarnpkg.com) is recommended over `npm`.
+Uses `npm` with the committed `package-lock.json`.
 
 ### Install dependencies
 
 ```shell
-yarn
+npm install
 ```
 
 ### To run project in DEV
 
 ```shell
-yarn start
+npm start
 ```
 
 ### Create a production build
 
 ```shell
-yarn build
+npm run build
 ```
 
 Builds the app for production to the dist folder.
@@ -51,10 +51,10 @@ Builds the app for production to the dist folder.
 ### Run tests
 
 ```shell
-yarn test
+npm test
 ```
 
-Runs the test suite once with [Vitest](https://vitest.dev). Use `yarn test:watch` for watch mode or `yarn test:coverage` for a coverage report.
+Runs the test suite once with [Vitest](https://vitest.dev). Use `npm run test:watch` for watch mode or `npm run test:coverage` for a coverage report.
 
 ## Documentation
 

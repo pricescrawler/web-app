@@ -39,6 +39,7 @@
 
   --animate-rise: rise 0.35s cubic-bezier(0.2, 0.8, 0.3, 1) both;
   --animate-slide-up: slide-up 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  --animate-wiggle: wiggle 3s ease-in-out infinite;
 
   @keyframes rise {
     from {
@@ -50,6 +51,21 @@
   @keyframes slide-up {
     from {
       transform: translateY(100%);
+    }
+  }
+
+  @keyframes wiggle {
+    0%,
+    80%,
+    100% {
+      transform: rotate(0);
+    }
+    85%,
+    95% {
+      transform: rotate(-15deg);
+    }
+    90% {
+      transform: rotate(15deg);
     }
   }
 }

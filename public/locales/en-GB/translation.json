@@ -46,7 +46,14 @@
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
-    "maintenance": "Please try again later. Available in:",
+    "maintenance": "Please try again later.",
+    "maintenance-countdown": {
+      "title": "Available in",
+      "days": "days",
+      "hours": "hours",
+      "minutes": "min",
+      "seconds": "sec"
+    },
     "product-list-replace": "Are you sure you want to import this product list? This will replace your current product list.",
     "general.product-list-replace-title": "Import Product List:",
     "error": "Error",

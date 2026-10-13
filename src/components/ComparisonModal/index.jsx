@@ -6,6 +6,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ExternalLink } from 'lucide-react';
 import React from 'react';
+import ProductImage from '@components/ProductImage';
 import * as utils from '@services/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -89,12 +90,10 @@ function ComparisonModal({ items, open, onOpenChange }) {
               key={`${item.locale}.${item.catalog}.${item.productData.reference}`}
             >
               <div className={'flex items-center gap-3 p-3 bg-muted/20 border-b border-border'}>
-                <img
+                <ProductImage
                   alt={item.productData.name}
                   className={'w-10 h-10 object-contain flex-shrink-0'}
-                  referrerPolicy={'no-referrer'}
-                  src={item.productData.imageUrl || '/logo.png'}
-                  onError={utils.handleImageError}
+                  src={item.productData.imageUrl}
                 />
                 <div className={'min-w-0'}>
                   <p className={'text-xs font-semibold leading-tight line-clamp-2'}>
@@ -169,14 +168,10 @@ function ComparisonModal({ items, open, onOpenChange }) {
                   >
                     <div className={'flex flex-col items-center gap-2'}>
                       <div className={'w-16 h-16 flex items-center justify-center overflow-hidden'}>
-                        <img
+                        <ProductImage
                           alt={item.productData.name}
                           className={'max-w-full max-h-full object-contain'}
-                          referrerPolicy={'no-referrer'}
-                          src={item.productData.imageUrl || '/logo.png'}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                          }}
+                          src={item.productData.imageUrl}
                         />
                       </div>
                       <span

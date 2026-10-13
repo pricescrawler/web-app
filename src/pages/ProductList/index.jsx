@@ -4,6 +4,7 @@
 
 import * as productsActions from '@services/store/products/productsActions';
 import * as utils from '@services/utils';
+import ProductImage from '@components/ProductImage';
 import {
   selectActiveListId,
   selectActiveListItems,
@@ -544,10 +545,9 @@ function ProductList() {
                         return (
                           <TableRow key={index}>
                             <TableCell className={'text-center'}>
-                              <img
+                              <ProductImage
                                 alt={name}
                                 className={'h-8 w-8 sm:h-10 sm:w-10 object-contain mx-auto'}
-                                referrerPolicy={'no-referrer'}
                                 src={product.imageUrl}
                               />
                             </TableCell>

@@ -244,10 +244,10 @@ function ProductList() {
 
         return `
           <tr>
-            <td>${locale}.${catalog}</td>
-            <td>${product.name ?? ''}</td>
-            <td style="text-align:center">${price}</td>
-            <td style="text-align:center">${quantity}</td>
+            <td>${utils.escapeHtml(`${locale}.${catalog}`)}</td>
+            <td>${utils.escapeHtml(product.name)}</td>
+            <td style="text-align:center">${utils.escapeHtml(price)}</td>
+            <td style="text-align:center">${utils.escapeHtml(quantity)}</td>
             <td style="text-align:right;font-weight:600">${lineTotal}€</td>
           </tr>`;
       })
@@ -256,7 +256,7 @@ function ProductList() {
     const catalogTotalRows = catalogTotals
       .map(
         ({ catalog, total }) =>
-          `<tr><td colspan="4" style="text-align:right;color:#666">${catalog}</td><td style="text-align:right;font-weight:600">${total}€</td></tr>`
+          `<tr><td colspan="4" style="text-align:right;color:#666">${utils.escapeHtml(catalog)}</td><td style="text-align:right;font-weight:600">${total}€</td></tr>`
       )
       .join('');
 

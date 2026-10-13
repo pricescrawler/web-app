@@ -4,6 +4,7 @@
 
 import {
   convertToFloat,
+  escapeHtml,
   getAveragePrice,
   getFormattedPrice,
   getLastPrice,
@@ -117,5 +118,27 @@ describe('renderCatalogName', () => {
 
   it('falls back to the catalog identifier', () => {
     expect(renderCatalogName({ catalog: 'catalog-id', data: {} })).toBe('catalog-id');
+  });
+});
+
+/**
+ * Tests for `escapeHtml`.
+ */
+
+describe('escapeHtml', () => {
+  it('escapes markup so it is rendered as text', () => {
+    expect(escapeHtml('<img src=x onerror="alert(1)">')).toBe(
+      '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;'
+    );
+  });
+
+  it('escapes ampersands and single quotes', () => {
+    expect(escapeHtml("Tom & Jerry's")).toBe('Tom &amp; Jerry&#39;s');
+  });
+
+  it('turns null and undefined into an empty string and keeps numbers', () => {
+    expect(escapeHtml(null)).toBe('');
+    expect(escapeHtml(undefined)).toBe('');
+    expect(escapeHtml(2)).toBe('2');
   });
 });

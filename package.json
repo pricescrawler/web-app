@@ -21,7 +21,7 @@
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@vercel/analytics": "^2.0.1",
-    "@zxing/library": "0.21.3",
+    "@zxing/library": "0.23.0",
     "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

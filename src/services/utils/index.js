@@ -57,18 +57,38 @@ export const getLastPrice = (product) => {
   return 0;
 };
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 /**
  * Get Average Price.
+ * The history stores a price when it changes, so each price counts for the days it
+ * lasted, until the next entry (the last entry counts as one day). Without dates, every
+ * entry counts the same.
  * @param {Array} prices - Array of prices.
  * @returns {string} - Average price rounded to two decimal places.
  * */
 
 export const getAveragePrice = (prices) => {
-  const sum = prices
-    .map((price) => parseFloat(getFormattedPrice(price)))
-    .reduce((acc, val) => acc + val, 0);
+  const entries = prices.map((price) => ({
+    time: price.date ? new Date(price.date).getTime() : NaN,
+    value: parseFloat(getFormattedPrice(price))
+  }));
+  const dated = entries.every((entry) => !Number.isNaN(entry.time));
 
-  return (sum / prices.length).toFixed(2);
+  if (dated) entries.sort((a, b) => a.time - b.time);
+
+  let sum = 0;
+  let weights = 0;
+
+  entries.forEach((entry, index) => {
+    const next = entries[index + 1];
+    const weight = dated && next ? Math.max(Math.round((next.time - entry.time) / DAY_MS), 1) : 1;
+
+    sum += entry.value * weight;
+    weights += weight;
+  });
+
+  return (sum / weights).toFixed(2);
 };
 
 /**

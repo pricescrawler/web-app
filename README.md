@@ -72,3 +72,17 @@ Runs the test suite once with [Vitest](https://vitest.dev). Use `npm run test:wa
 | 5   | VITE_MOBILE_APP_URL       | String    | Mobile App URL         | -       |
 | 6   | VITE_API_TIMEOUT          | Number    | API request timeout ms | 30000   |
 | 7   | VITE_DONATE_URL           | String    | Donation page URL      | -       |
+
+`VITE_*` values are inlined at build time. `CONTENT_API_URL` is different: it is read at
+request time by the Vercel middleware below and never reaches the browser.
+
+| Name            | Type   | Description                                                  | Default |
+| --------------- | ------ | ------------------------------------------------------------ | ------- |
+| CONTENT_API_URL | String | Content API base URL that `/mcp` is proxied to (Vercel only) | -       |
+
+## MCP endpoint
+
+On Vercel, `middleware.js` proxies `/mcp` to `${CONTENT_API_URL}/mcp`, so AI clients
+connect to a stable address (`https://<web-app domain>/mcp`) even when the API moves. To
+point it elsewhere, change `CONTENT_API_URL` in the Vercel project and redeploy. Without
+the variable, `/mcp` answers `503`.

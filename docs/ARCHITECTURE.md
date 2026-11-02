@@ -65,6 +65,9 @@ browser.
 - **PWA** via `vite-plugin-pwa` (service worker generated at build).
 - Deploys on Vercel (`vercel.json`); Docker image builds the app and serves `dist/`
   with nginx on port 3000 (`VITE_*` values are build args).
+- `middleware.js` (Vercel Routing Middleware) proxies `/mcp` to the content API's MCP
+  server, using the server-side `CONTENT_API_URL` variable. The Docker image does not
+  proxy it.
 
 > Package manager: **npm** with the committed `package-lock.json` (CI and Docker use
 > `npm ci`). `.npmrc` sets `legacy-peer-deps` because `eslint-plugin-react` 7 still

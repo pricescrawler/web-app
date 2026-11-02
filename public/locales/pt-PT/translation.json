@@ -190,6 +190,10 @@
       "choose-stores": "Escolher lojas",
       "stores-selected": "{{count}} loja selecionada",
       "stores-selected_plural": "{{count}} lojas selecionadas"
+    },
+    "extension": {
+      "install-to-search": "Para pesquisar em {{catalog}}, instala a extensão Prices Crawler no browser.",
+      "timeout": "A extensão não respondeu a tempo"
     }
   },
   "data": {

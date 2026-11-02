@@ -4,6 +4,8 @@
 
 import * as actionTypes from './productsActionTypes';
 import api from '@services/api';
+import { fetchViaExtension, isExtensionInstalled } from '@services/extension';
+import i18n from 'i18next';
 import { toast } from 'sonner';
 
 /**
@@ -178,21 +180,33 @@ const buildClientFetchUrl = (catalog, query) => {
 };
 
 /**
- * Fetches a client-fetch-required catalog's search page directly from the browser
- * (so the request comes from the user's own IP/session, not the backend's), then
- * hands the raw HTML to the backend's content parser, which reuses the same parsing
- * logic as a normal search — the backend itself never contacts the catalog. Only
- * catalogs with `isClientFetchRequired` reach this path; the backend also enforces
- * this server-side and rejects any other catalog.
+ * Fetches a client-fetch-required catalog's search page from the user's own browser,
+ * through the Prices Crawler browser extension (a plain page `fetch()` can't read
+ * other sites' HTML because of CORS), then hands the raw HTML to the backend's content
+ * parser, which reuses the same parsing logic as a normal search — the backend itself
+ * never contacts the catalog. Only catalogs with `isClientFetchRequired` reach this
+ * path; the backend also enforces this server-side and rejects any other catalog.
  */
+
+const emptyCatalogResult = (catalogKey) => ({
+  catalog: catalogKey.split('.').pop(),
+  data: {},
+  locale: catalogKey.split('.')[0],
+  products: []
+});
 
 const searchClientFetchCatalog = (catalog, query) => {
   const catalogKey = catalog.value.split('#')[0];
 
-  return fetch(buildClientFetchUrl(catalog, query))
+  if (!isExtensionInstalled()) {
+    toast.info(i18n.t('components.extension.install-to-search', { catalog: catalog.label }));
+    return Promise.resolve(emptyCatalogResult(catalogKey));
+  }
+
+  return fetchViaExtension(buildClientFetchUrl(catalog, query))
     .then((response) => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.text();
+      return response.content;
     })
     .then((html) =>
       api.post('/api/v1/products/parser/list', {
@@ -211,12 +225,7 @@ const searchClientFetchCatalog = (catalog, query) => {
       toast.error(
         `Erro ao pesquisar ${catalog.label} diretamente do browser: ${error?.message ?? error}`
       );
-      return {
-        catalog: catalogKey.split('.').pop(),
-        data: {},
-        locale: catalogKey.split('.')[0],
-        products: []
-      };
+      return emptyCatalogResult(catalogKey);
     });
 };
 

@@ -8,6 +8,8 @@ import { fetchViaExtension, isExtensionInstalled } from '@services/extension';
 import i18n from 'i18next';
 import { toast } from 'sonner';
 
+const errorMessage = (error) => error?.message ?? String(error);
+
 /**
  * Get Product Start.
  */
@@ -223,7 +225,10 @@ const searchClientFetchCatalog = (catalog, query) => {
     }))
     .catch((error) => {
       toast.error(
-        `Erro ao pesquisar ${catalog.label} diretamente do browser: ${error?.message ?? error}`
+        i18n.t('general.errors.search-catalog-from-browser', {
+          catalog: catalog.label,
+          message: errorMessage(error)
+        })
       );
       return emptyCatalogResult(catalogKey);
     });
@@ -263,7 +268,7 @@ export const search = (searchParam) => {
         dispatch(getSearchProducts(reorderedResponse, searchParam));
       })
       .catch((error) => {
-        toast.error(`Erro ao pesquisar produtos: ${error?.message ?? error}`);
+        toast.error(i18n.t('general.errors.search-products', { message: errorMessage(error) }));
         dispatch(getProductsFail(error));
       });
   };
@@ -281,7 +286,7 @@ export const getUpdatedProductList = (searchParam) => (dispatch) => {
       dispatch(updateProductList(response.data));
     })
     .catch((error) => {
-      toast.error(`Erro ao atualizar lista: ${error?.message ?? error}`);
+      toast.error(i18n.t('general.errors.refresh-list', { message: errorMessage(error) }));
       dispatch(getProductsFail(error));
     });
 };
@@ -301,7 +306,7 @@ export const getProduct = (searchParam) => {
         dispatch(getProductSuccess(response.data));
       })
       .catch((error) => {
-        toast.error(`Erro ao carregar produto: ${error?.message ?? error}`);
+        toast.error(i18n.t('general.errors.load-product', { message: errorMessage(error) }));
         dispatch(getProductsFail(error));
       });
   };
@@ -315,7 +320,7 @@ export const saveProductList = (searchParam) => (dispatch) => {
       dispatch(uploadProductList(response));
     })
     .catch((error) => {
-      toast.error(`Erro ao guardar lista: ${error?.message ?? error}`);
+      toast.error(i18n.t('general.errors.save-list', { message: errorMessage(error) }));
       dispatch(getProductsFail(error));
     });
 };
@@ -328,7 +333,7 @@ export const retrieveProductList = (searchParam) => (dispatch) => {
       dispatch(updateProductList(response.data));
     })
     .catch((error) => {
-      toast.error(`Erro ao recuperar lista: ${error?.message ?? error}`);
+      toast.error(i18n.t('general.errors.restore-list', { message: errorMessage(error) }));
       dispatch(getProductsFail(error));
     });
 };

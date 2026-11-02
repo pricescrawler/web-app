@@ -75,6 +75,14 @@
       "add": "Adicionar à comparação",
       "remove": "Remover da comparação",
       "price-final": "Preço final"
+    },
+    "errors": {
+      "search-catalog-from-browser": "Erro ao pesquisar {{catalog}} diretamente do browser: {{message}}",
+      "search-products": "Erro ao pesquisar produtos: {{message}}",
+      "refresh-list": "Erro ao atualizar lista: {{message}}",
+      "load-product": "Erro ao carregar produto: {{message}}",
+      "save-list": "Erro ao guardar lista: {{message}}",
+      "restore-list": "Erro ao recuperar lista: {{message}}"
     }
   },
   "pages": {

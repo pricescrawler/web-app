@@ -63,7 +63,7 @@ browser.
   (`npm run format:check`); husky + lint-staged on commit; commitlint (conventional
   commits, `npm run commit`).
 - **PWA** via `vite-plugin-pwa` (service worker generated at build).
-- Deploys on Vercel (`vercel.json`); Docker image builds the app and serves `dist/`
+- Deploys on Vercel (`vercel.json`, installed with `npm ci` from `package-lock.json`); Docker image builds the app and serves `dist/`
   with nginx on port 3000 (`VITE_*` values are build args).
 - `middleware.js` (Vercel Routing Middleware) proxies `/mcp` to the content API's MCP
   server, using the server-side `CONTENT_API_URL` variable. The Docker image does not

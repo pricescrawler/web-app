@@ -7,5 +7,7 @@ export default defineConfig([
   { ignores: ['src/components/ui/**'] },
   { files: ['**/*.{js,mjs,cjs,jsx}'], plugins: { js }, extends: ['js/recommended'] },
   { files: ['**/*.{js,mjs,cjs,jsx}'], languageOptions: { globals: globals.browser } },
+  // Vercel Routing Middleware runs on Node.js.
+  { files: ['middleware.js'], languageOptions: { globals: globals.node } },
   pluginReact.configs.flat.recommended
 ]);

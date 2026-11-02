@@ -103,6 +103,26 @@ describe('getAveragePrice', () => {
 
     expect(getAveragePrice(prices)).toBe('1.50');
   });
+
+  it('weighs each price by the days it lasted', () => {
+    const prices = [
+      { date: '2026-10-01', regularPrice: '1,00 €' },
+      { date: '2026-10-04', regularPrice: '2,00 €' },
+      { date: '2026-10-05', regularPrice: '2,00 €' }
+    ];
+
+    // 3 days at 1,00 €, then 1 day and the last day at 2,00 €.
+    expect(getAveragePrice(prices)).toBe('1.40');
+  });
+
+  it('matches the plain average for one entry a day', () => {
+    const prices = [
+      { date: '2026-10-01', regularPrice: '1,00 €' },
+      { date: '2026-10-02', regularPrice: '2,00 €' }
+    ];
+
+    expect(getAveragePrice(prices)).toBe('1.50');
+  });
 });
 
 /**

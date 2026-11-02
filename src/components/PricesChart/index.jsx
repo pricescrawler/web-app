@@ -96,7 +96,7 @@ function PricesChart({ data }) {
             dot={false}
             name={t('data.product-fields.regular-price')}
             stroke={isDarkMode ? 'white' : 'black'}
-            type={'linear'}
+            type={'stepAfter'}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -75,6 +75,14 @@
       "add": "Add to comparison",
       "remove": "Remove from comparison",
       "price-final": "Final price"
+    },
+    "errors": {
+      "search-catalog-from-browser": "Could not search {{catalog}} from the browser: {{message}}",
+      "search-products": "Could not search products: {{message}}",
+      "refresh-list": "Could not refresh the list: {{message}}",
+      "load-product": "Could not load the product: {{message}}",
+      "save-list": "Could not save the list: {{message}}",
+      "restore-list": "Could not retrieve the list: {{message}}"
     }
   },
   "pages": {
